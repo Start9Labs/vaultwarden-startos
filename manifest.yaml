@@ -1,0 +1,21 @@
+compat: v0
+id: bitwarden
+version: 1.17.0
+os-version-required: ">=0.2.4"
+os-version-recommended: ">=0.2.4"
+title: "Bitwarden RS"
+description:
+  short: "Secure password management"
+  long: Bitwarden RS is a lightweight and secure password manager for storing and autofilling sensitive information such as usernames and passwords, credit cards, identities, and notes. All data is stored in an encrypted vault on your Embassy.
+release-notes: https://github.com/dani-garcia/bitwarden_rs/releases/tag/v1.17.0
+ports:
+  - internal: 80
+    tor: 80
+  - internal: 3012
+    tor: 3012
+image:
+  type: tar
+mount: /data
+has-instructions: true
+assets: []
+hidden-service-version: v3
