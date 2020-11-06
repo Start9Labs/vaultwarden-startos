@@ -14,7 +14,7 @@
 
 ![](./assets/img-3.png)
 
-5. Copy your Bitwarden Tor onion URL from your Companion App and paste it into the “Self Hosted Environment” → “Server URL” field. Add “http://” (*not* https://) to the frontend of the onion URL. Then click “Save”.
+5. Copy your Bitwarden Tor Address from your Companion App and paste it into the “Self Hosted Environment” → “Server URL” field. Add “http://” (*not* https://) to the frontend of the onion URL. Then click “Save”.
 
 ![](./assets/img-4.png)
 
@@ -26,4 +26,4 @@ This *does not* mean you are creating an account with Bitwarden or any other thi
 
 ## Keep in Mind
 
-Bitwarden is a *self-hosted* password management solution, which means your passwords physically live on your Embassy. Remember to create backups and keep them safe. If you lose your Embassy or uninstall Bitwarden, and you have not made a backup, all your passwords will be gone forever.
+Bitwarden on the Embassy is a *self-hosted* password manager, which means your passwords physically live on your Embassy. Be sure to create backups and keep them safe. If you lose your Embassy or uninstall Bitwarden, and you have not made a backup, all your passwords will be gone forever.
