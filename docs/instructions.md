@@ -11,7 +11,7 @@
 3. **Access your Bitwarden web vault by visiting its Tor Address from any Tor-enabled browser.**
 
 
-The instrictions below are for Tor Browser on Mac, but it is the same basic for instuctions for using the extension on alternative platforms.
+The instructions below are for Tor Browser on Mac, but it is the same basic for instuctions for using the extension on alternative platforms.
 
 1. Open the browser and visit the add-ons section.
 
