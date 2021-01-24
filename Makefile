@@ -1,4 +1,4 @@
-ASSETS := $(shell yq r manifest.yaml assets.*.src)
+ASSETS := $(shell yq e '.assets.[].src' manifest.yaml)
 DOC_ASSETS := $(shell find ./docs/assets)
 ASSET_PATHS := $(addprefix assets/,$(ASSETS))
 VERSION := $(shell git --git-dir=bitwarden_rs/.git describe --tags)
@@ -28,5 +28,5 @@ Dockerfile: bitwarden_rs/docker/arm32v7/Dockerfile.alpine
 	echo 'ENTRYPOINT ["/start.sh"]' >> Dockerfile
 
 manifest.yaml: $(BITWARDEN_GIT_FILE)
-	yq w -i manifest.yaml version $(VERSION)
-	yq w -i manifest.yaml release-notes https://github.com/dani-garcia/bitwarden_rs/releases/tag/v$(VERSION)
+	yq eval -i ".version = \"$(VERSION)\"" manifest.yaml
+	yq eval -i ".release-notes = \"https://github.com/dani-garcia/bitwarden_rs/releases/tag/v$(VERSION)\"" manifest.yaml
