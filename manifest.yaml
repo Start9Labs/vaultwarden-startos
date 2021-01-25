@@ -7,7 +7,7 @@ title: "Bitwarden RS"
 description:
   short: "Secure password management"
   long: Bitwarden RS is a lightweight and secure password manager for storing and autofilling sensitive information such as usernames and passwords, credit cards, identities, and notes. All data is stored in an encrypted vault on your Embassy.
-release-notes: https://github.com/dani-garcia/bitwarden_rs/releases/tag/v1.18.0
+release-notes: https://github.com/dani-garcia/bitwarden_rs/releases/tag/1.18.0
 ports:
   - internal: 80
     tor: 80
