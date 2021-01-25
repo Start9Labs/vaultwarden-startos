@@ -1,1 +1,12 @@
-{}
+admin-token:
+  type: string
+  name: Admin Token
+  description: Authentication token for logging into your admin dashboard.
+  nullable: false
+  pattern: '[a-zA-Z0-9/=\-_]+'
+  patternDescription: 'Must be a valid base 64 string'
+  copyable: true
+  masked: true
+  default:
+    charset: 'a-z,A-Z,0-9,/,='
+    len: 64
