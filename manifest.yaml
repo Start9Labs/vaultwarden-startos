@@ -2,7 +2,7 @@ compat: v0
 id: bitwarden
 version: 1.18.0
 os-version-required: ">=0.2.4"
-os-version-recommended: ">=0.2.4"
+os-version-recommended: ">=0.2.8"
 title: "Bitwarden RS"
 description:
   short: "Secure password management"
