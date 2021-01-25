@@ -33,4 +33,4 @@ Dockerfile: bitwarden_rs/docker/arm32v7/Dockerfile.alpine
 
 manifest.yaml: $(BITWARDEN_GIT_FILE)
 	yq eval -i ".version = \"$(VERSION)\"" manifest.yaml
-	yq eval -i ".release-notes = \"https://github.com/dani-garcia/bitwarden_rs/releases/tag/v$(VERSION)\"" manifest.yaml
+	yq eval -i ".release-notes = \"https://github.com/dani-garcia/bitwarden_rs/releases/tag/$(VERSION)\"" manifest.yaml
