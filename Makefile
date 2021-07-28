@@ -1,6 +1,4 @@
-ASSETS := $(shell yq e '.assets.[].src' manifest.yaml)
 DOC_ASSETS := $(shell find ./docs/assets)
-ASSET_PATHS := $(addprefix assets/,$(ASSETS))
 VERSION := $(shell git --git-dir=bitwarden_rs/.git describe --tags)
 BITWARDEN_SRC := $(shell find bitwarden_rs/src) bitwarden_rs/Cargo.toml bitwarden_rs/Cargo.lock
 BITWARDEN_GIT_REF := $(shell cat .git/modules/bitwarden_rs/HEAD)
@@ -16,7 +14,7 @@ verify: bitwarden.s9pk $(S9PK_PATH)
 install: bitwarden.s9pk
 	appmgr install bitwarden.s9pk
 
-bitwarden.s9pk: manifest.yaml config_spec.yaml config_rules.yaml image.tar instructions.md $(ASSET_PATHS)
+bitwarden.s9pk: manifest.yaml config_spec.yaml config_rules.yaml image.tar instructions.md
 	embassy-sdk pack
 
 instructions.md: docs/instructions.md $(DOC_ASSETS)
@@ -24,8 +22,10 @@ instructions.md: docs/instructions.md $(DOC_ASSETS)
 
 image.tar: Dockerfile $(BITWARDEN_SRC) docker_entrypoint.sh
 	cp ./docker_entrypoint.sh ./bitwarden_rs/docker_entrypoint.sh
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/bitwarden --platform=linux/arm/v7 -o type=docker,dest=image.tar -f Dockerfile ./bitwarden_rs
+	cp ./main.sh ./bitwarden_rs/main.sh
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/bitwarden --platform=linux/arm/v8 -o type=docker,dest=image.tar -f Dockerfile ./bitwarden_rs
 	rm ./bitwarden_rs/docker_entrypoint.sh
+	rm ./bitwarden_rs/main.sh
 
 Dockerfile: bitwarden_rs/docker/arm64v8/Dockerfile
 	grep -v "^CMD" < bitwarden_rs/docker/arm64v8/Dockerfile > Dockerfile
