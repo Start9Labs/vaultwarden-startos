@@ -23,18 +23,18 @@ instructions.md: docs/instructions.md $(DOC_ASSETS)
 
 image.tar: Dockerfile $(BITWARDEN_SRC) docker_entrypoint.sh
 	cp ./docker_entrypoint.sh ./bitwarden_rs/docker_entrypoint.sh
-	cp ./main.sh ./bitwarden_rs/main.sh
+	cp ./config.sh ./bitwarden_rs/config.sh
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/bitwarden --platform=linux/amd64 -o type=docker,dest=image.tar -f Dockerfile ./bitwarden_rs
 	rm ./bitwarden_rs/docker_entrypoint.sh
-	rm ./bitwarden_rs/main.sh
+	rm ./bitwarden_rs/config.sh
 
 Dockerfile: bitwarden_rs/docker/arm64v8/Dockerfile
 	grep -v "^CMD" < bitwarden_rs/docker/arm64v8/Dockerfile > Dockerfile
 	echo 'RUN apt-get install -y wget' >> Dockerfile
 	echo 'RUN wget -O /usr/local/bin/yq https://beta-registry.start9labs.com/sys/yq?spec=^4.4.1 && chmod a+x /usr/local/bin/yq' >> Dockerfile
 	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
-	echo 'ADD ./main.sh /usr/local/bin/main' >> Dockerfile
-	echo 'RUN chmod a+x /usr/local/bin/main' >> Dockerfile
+	echo 'ADD ./config.sh /usr/local/bin/config' >> Dockerfile
+	echo 'RUN chmod a+x /usr/local/bin/config' >> Dockerfile
 	echo 'ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]' >> Dockerfile
 
 manifest.yaml: $(BITWARDEN_GIT_FILE)
