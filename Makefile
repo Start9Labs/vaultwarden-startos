@@ -25,7 +25,7 @@ instructions.md: docs/instructions.md $(DOC_ASSETS)
 image.tar: Dockerfile $(BITWARDEN_SRC) docker_entrypoint.sh config.sh
 	cp ./docker_entrypoint.sh ./bitwarden_rs/docker_entrypoint.sh
 	cp ./config.sh ./bitwarden_rs/config.sh
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/bitwarden --platform=linux/amd64 -o type=docker,dest=image.tar -f Dockerfile ./bitwarden_rs
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/bitwarden --platform=linux/arm64 -o type=docker,dest=image.tar -f Dockerfile ./bitwarden_rs
 	rm ./bitwarden_rs/docker_entrypoint.sh
 	rm ./bitwarden_rs/config.sh
 
