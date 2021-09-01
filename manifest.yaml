@@ -1,10 +1,13 @@
 id: bitwarden
 title: "Bitwarden"
-version: 1.18.0.1
-release-notes: "Upgrade to EmbassyOS v0.3.0"
+version: 1.18.0
+release-notes: "https://github.com/dani-garcia/bitwarden_rs/releases/tag/1.18.0"
 license: gnu
 wrapper-repo: "https://github.com/Start9Labs/bitwarden-wrapper"
 upstream-repo: "https://github.com/dani-garcia/vaultwarden"
+support-site: "https://vaultwarden.discourse.group/"
+marketing-site: "https://github.com/dani-garcia/vaultwarden/"
+donation-url: "https://www.paypal.com/paypalme/DaniGG"
 build: ["make"]
 min-os-version: "0.3.0"
 description:
@@ -31,7 +34,7 @@ config:
     image: compat
     system: true
     entrypoint: config
-    args: 
+    args:
       - "get"
       - "/data"
     mounts: {}
@@ -48,12 +51,22 @@ config:
     io-format: yaml
 dependencies: {}
 volumes: {}
+alerts: {}
 interfaces:
   main:
+    name: Network Interface
+    description: Specifies the interfaces to listen on for HTTP connections.
     tor-config:
       port-mapping:
         80: "80"
         3012: "3012"
+    lan-config:
+      80:
+        ssl: false
+        mapping: 80
+      3012:
+        ssl: false
+        mapping: 3012
     ui: true
     protocols:
       - tcp
