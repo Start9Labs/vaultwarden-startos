@@ -1,3 +1,0 @@
-[submodule "bitwarden_rs"]
-	path = bitwarden_rs
-	url = git@github.com:dani-garcia/bitwarden_rs.git
