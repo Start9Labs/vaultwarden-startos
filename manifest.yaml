@@ -1,9 +1,9 @@
-id: bitwarden
-title: "Bitwarden"
-version: 1.18.0
-release-notes: "Upgrade to EmbassyOS v0.3.0"
+id: vaultwarden
+title: Vaultwarden
+version: 1.22.2
+release-notes: "Upgrade to EmbassyOS v0.3.0 and support project rename to Vaultwarden. Visit here for more information: https://github.com/dani-garcia/vaultwarden/discussions/1642"
 license: gnu
-wrapper-repo: "https://github.com/Start9Labs/bitwarden-wrapper"
+wrapper-repo: "https://github.com/Start9Labs/vaultwarden-wrapper"
 upstream-repo: "https://github.com/dani-garcia/vaultwarden"
 support-site: "https://vaultwarden.discourse.group/"
 marketing-site: "https://github.com/dani-garcia/vaultwarden/"
@@ -13,7 +13,7 @@ min-os-version: "0.3.0"
 description:
   short: Secure password management
   long: |
-    Bitwarden RS is a lightweight and secure password manager for storing and autofilling sensitive information such as usernames and passwords, credit cards, identities, and notes. All data is stored in an encrypted vault on your Embassy.
+    Vaultwarden is a lightweight and secure password manager for storing and autofilling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. All data is stored in an encrypted vault on your Embassy.
 assets:
   license: LICENSE
   icon: icon.png
@@ -32,8 +32,8 @@ health-checks:
     type: docker
     image: main
     system: false
-    entrypoint: sh
-    args: ["-c", "echo 'TODO' || exit 1"]
+    entrypoint: "/healthcheck.sh"
+    args: []
     mounts:
       main: /data
     io-format: yaml
@@ -61,7 +61,7 @@ config:
     args:
       - config
       - set
-      - bitwarden
+      - vaultwarden
       - /data
       - "/mnt/assets/config_rules.yaml"
     mounts:
@@ -114,7 +114,7 @@ backup:
     args:
       - duplicity
       - create
-      - bitwarden
+      - vaultwarden
       - /mnt/backup
       - /data
     mounts:
@@ -128,7 +128,7 @@ backup:
     args:
       - duplicity
       - restore
-      - bitwarden
+      - vaultwarden
       - /data
       - /mnt/backup
     mounts:
