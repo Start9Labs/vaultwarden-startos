@@ -23,5 +23,5 @@ make
 
 ## Installing (on Embassy)
 ```
-sudo appmgr install bitwarden.s9pk
+embassy-cli package install bitwarden.s9pk
 ```

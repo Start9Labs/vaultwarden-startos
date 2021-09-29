@@ -1,7 +1,7 @@
 id: bitwarden
 title: "Bitwarden"
 version: 1.18.0
-release-notes: "https://github.com/dani-garcia/bitwarden_rs/releases/tag/1.18.0"
+release-notes: "Upgrade to EmbassyOS v0.3.0"
 license: gnu
 wrapper-repo: "https://github.com/Start9Labs/bitwarden-wrapper"
 upstream-repo: "https://github.com/dani-garcia/vaultwarden"
@@ -19,38 +19,72 @@ assets:
   icon: icon.png
   instructions: instructions.md
   docker-images: image.tar
-  icon-type: png
 main:
   type: docker
   image: main
   entrypoint: "/usr/local/bin/docker_entrypoint.sh"
   args: []
-  mounts: {}
+  mounts:
+    main: /data
   io-format: yaml
-health-checks: {}
+health-checks:
+  main: 
+    type: docker
+    image: main
+    system: false
+    entrypoint: sh
+    args: ["-c", "echo 'TODO' || exit 1"]
+    mounts:
+      main: /data
+    io-format: yaml
+    critical: false
 config:
   get:
     type: docker
     image: compat
     system: true
-    entrypoint: config
-    args:
-      - "get"
-      - "/data"
-    mounts: {}
+    entrypoint: compat
+    args: 
+      - config
+      - get
+      - /data
+      - "/mnt/assets/config_spec.yaml"
+    mounts:
+      compat: /mnt/assets
+      main: /data
     io-format: yaml
   set:
     type: docker
     image: compat
     system: true
-    entrypoint: config
+    entrypoint: compat
     args:
-      - "set"
-      - "/data"
-    mounts: {}
-    io-format: yaml
+      - config
+      - set
+      - bitwarden
+      - /data
+      - "/mnt/assets/config_rules.yaml"
+    mounts:
+      compat: /mnt/assets
+      main: /data
+properties:
+  type: docker
+  image: compat
+  system: true
+  entrypoint: compat
+  args:
+    - properties
+    - /data
+  mounts:
+    main: /data
+    compat: /mnt/assets
+  io-format: yaml
 dependencies: {}
-volumes: {}
+volumes:
+  main:
+    type: data
+  compat:
+    type: assets
 alerts: {}
 interfaces:
   main:
@@ -76,13 +110,27 @@ backup:
     type: docker
     image: compat
     system: true
-    entrypoint: "true"
-    args: []
-    mounts: {}
+    entrypoint: compat
+    args:
+      - duplicity
+      - create
+      - bitwarden
+      - /mnt/backup
+      - /data
+    mounts:
+      BACKUP: /mnt/backup
+      main: /data
   restore:
     type: docker
     image: compat
     system: true
-    entrypoint: "true"
-    args: []
-    mounts: {}
+    entrypoint: compat
+    args:
+      - duplicity
+      - restore
+      - bitwarden
+      - /data
+      - /mnt/backup
+    mounts:
+      BACKUP: /mnt/backup
+      main: /data

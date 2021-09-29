@@ -1,4 +1,6 @@
 DOC_ASSETS := $(shell find ./docs/assets)
+EMVER := $(shell yq e ".version" manifest.yaml)
+ASSET_PATHS := $(shell find ./assets/*)
 VERSION := $(shell git --git-dir=bitwarden_rs/.git describe --tags)
 BITWARDEN_SRC := $(shell find bitwarden_rs/src) bitwarden_rs/Cargo.toml bitwarden_rs/Cargo.lock
 BITWARDEN_GIT_REF := $(shell cat .git/modules/bitwarden_rs/HEAD)
@@ -14,9 +16,9 @@ verify: bitwarden.s9pk $(S9PK_PATH)
 	embassy-sdk verify $(S9PK_PATH)
 
 install: bitwarden.s9pk
-	appmgr install bitwarden.s9pk
+	embassy-cli package install bitwarden.s9pk
 
-bitwarden.s9pk: manifest.yaml config_spec.yaml config_rules.yaml image.tar instructions.md
+bitwarden.s9pk: manifest.yaml image.tar instructions.md LICENSE icon.png $(ASSET_PATHS)
 	embassy-sdk pack
 
 instructions.md: docs/instructions.md $(DOC_ASSETS)
@@ -24,9 +26,8 @@ instructions.md: docs/instructions.md $(DOC_ASSETS)
 
 image.tar: Dockerfile $(BITWARDEN_SRC) docker_entrypoint.sh
 	cp ./docker_entrypoint.sh ./bitwarden_rs/docker_entrypoint.sh
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/bitwarden --platform=linux/arm64 -o type=docker,dest=image.tar -f Dockerfile ./bitwarden_rs
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/bitwarden/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./bitwarden_rs
 	rm ./bitwarden_rs/docker_entrypoint.sh
-	rm ./bitwarden_rs/config.sh
 
 Dockerfile: bitwarden_rs/docker/arm64v8/Dockerfile
 	grep -v "^CMD" < bitwarden_rs/docker/arm64v8/Dockerfile > Dockerfile
@@ -35,6 +36,6 @@ Dockerfile: bitwarden_rs/docker/arm64v8/Dockerfile
 	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
 	echo 'ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]' >> Dockerfile
 
-manifest.yaml: $(BITWARDEN_GIT_FILE)
-	yq eval -i ".version = \"$(VERSION)\"" manifest.yaml
-	yq eval -i ".release-notes = \"https://github.com/dani-garcia/bitwarden_rs/releases/tag/$(VERSION)\"" manifest.yaml
+# manifest.yaml: $(BITWARDEN_GIT_FILE)
+# 	yq eval -i ".version = \"$(VERSION)\"" manifest.yaml
+# 	yq eval -i ".release-notes = \"https://github.com/dani-garcia/bitwarden_rs/releases/tag/$(VERSION)\"" manifest.yaml
