@@ -31,6 +31,8 @@ image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh
 
 Dockerfile: vaultwarden/Dockerfile
 	grep -v "^CMD" < vaultwarden/Dockerfile > Dockerfile
+	sed -i '' 's/CMD \[\"\/start\.sh\"\]/#removed default CMD in favor of custom entrypoint /g' Dockerfile
+	sed -i '' 's/ENTRYPOINT \[\"\/usr\/bin\/dumb\-init\"\, \"\-\-\"\]/#removed default ENTRYPOINT in favor of custom entrypoint/g' Dockerfile
 	echo 'RUN apt-get update && apt-get install -y wget' >> Dockerfile
 	echo 'RUN wget -O /usr/local/bin/yq https://beta-registry.start9labs.com/sys/yq?spec=^4.4.1 && chmod a+x /usr/local/bin/yq' >> Dockerfile
 	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
