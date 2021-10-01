@@ -68,6 +68,7 @@ config:
     mounts:
       compat: /mnt/assets
       main: /data
+    io-format: yaml
 properties:
   type: docker
   image: compat
