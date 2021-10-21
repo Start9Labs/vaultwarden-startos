@@ -98,8 +98,8 @@ interfaces:
         3012: "3012"
     lan-config:
       80:
-        ssl: false
-        mapping: 80
+        ssl: true
+        mapping: 443
       3012:
         ssl: false
         mapping: 3012

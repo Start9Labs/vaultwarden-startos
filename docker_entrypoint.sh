@@ -12,4 +12,5 @@ echo "    copyable: true" >> /data/start9/stats.yaml
 echo "    qr: false" >> /data/start9/stats.yaml
 echo "    masked: true" >> /data/start9/stats.yaml
 
+# /usr/bin/dumb-init --
 exec /start.sh
