@@ -35,10 +35,9 @@ health-checks:
     system: false
     entrypoint: "/healthcheck.sh"
     args: []
-    mounts:
-      main: /data
     io-format: yaml
     critical: false
+    inject: true
 config:
   get:
     type: docker
