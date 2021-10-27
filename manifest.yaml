@@ -32,7 +32,6 @@ health-checks:
   main: 
     type: docker
     image: main
-    system: false
     entrypoint: "/healthcheck.sh"
     args: []
     io-format: yaml
@@ -115,12 +114,12 @@ backup:
     args:
       - duplicity
       - create
-      - bitwarden
       - /mnt/backup
       - /data
     mounts:
       BACKUP: /mnt/backup
       main: /data
+    io-format: true
   restore:
     type: docker
     image: compat
@@ -129,9 +128,9 @@ backup:
     args:
       - duplicity
       - restore
-      - bitwarden
-      - /data
       - /mnt/backup
+      - /data
     mounts:
       BACKUP: /mnt/backup
       main: /data
+    io-format: true
