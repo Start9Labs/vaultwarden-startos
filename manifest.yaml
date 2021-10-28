@@ -119,7 +119,7 @@ backup:
     mounts:
       BACKUP: /mnt/backup
       main: /data
-    io-format: true
+    io-format: yaml
   restore:
     type: docker
     image: compat
@@ -133,4 +133,4 @@ backup:
     mounts:
       BACKUP: /mnt/backup
       main: /data
-    io-format: true
+    io-format: yaml
