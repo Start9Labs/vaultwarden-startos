@@ -29,7 +29,7 @@ main:
     compat: /mnt/assets
   io-format: yaml
 health-checks:
-  main: 
+  alive: 
     type: docker
     image: main
     entrypoint: "/healthcheck.sh"
