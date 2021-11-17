@@ -1,9 +1,9 @@
-id: bitwarden
+id: vaultwarden
 title: Vaultwarden
 version: 1.22.2
 release-notes: "Upgrade to EmbassyOS v0.3.0 and support project rename to Vaultwarden. Visit here for more information: https://github.com/dani-garcia/vaultwarden/discussions/1642"
 license: gnu
-wrapper-repo: "https://github.com/Start9Labs/bitwarden-wrapper"
+wrapper-repo: "https://github.com/Start9Labs/vaultwarden-wrapper"
 upstream-repo: "https://github.com/dani-garcia/vaultwarden"
 support-site: "https://vaultwarden.discourse.group/"
 marketing-site: "https://github.com/dani-garcia/vaultwarden/"
@@ -60,7 +60,7 @@ config:
     args:
       - config
       - set
-      - bitwarden
+      - vaultwarden
       - /data
       - "/mnt/assets/config_rules.yaml"
     mounts:
