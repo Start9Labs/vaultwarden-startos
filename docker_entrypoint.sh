@@ -13,4 +13,4 @@ echo "    qr: false" >> /data/start9/stats.yaml
 echo "    masked: true" >> /data/start9/stats.yaml
 
 # /usr/bin/dumb-init --
-exec /start.sh
+exec  tini -p SIGTERM -- /start.sh
