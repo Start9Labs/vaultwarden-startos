@@ -1,5 +1,6 @@
 DOC_ASSETS := $(shell find ./docs/assets)
 EMVER := $(shell yq e ".version" manifest.yaml)
+PKG_ID := $(shell yq e ".id" manifest.yaml)
 ASSET_PATHS := $(shell find ./assets/*)
 VERSION := $(shell git --git-dir=vaultwarden/.git describe --tags)
 VAULTWARDEN_SRC := $(shell find vaultwarden/src) vaultwarden/Cargo.toml vaultwarden/Cargo.lock
@@ -24,9 +25,9 @@ vaultwarden.s9pk: manifest.yaml LICENSE image.tar instructions.md icon.png $(ASS
 instructions.md: docs/instructions.md $(DOC_ASSETS)
 	cd docs && md-packer < instructions.md > ../instructions.md
 
-image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh
+image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh manifest.yaml
 	cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/vaultwarden/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./vaultwarden
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/${PKG_ID}/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./vaultwarden
 	rm ./vaultwarden/docker_entrypoint.sh
 
 Dockerfile: vaultwarden/Dockerfile
