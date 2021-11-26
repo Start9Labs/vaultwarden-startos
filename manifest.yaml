@@ -30,12 +30,14 @@ main:
   io-format: yaml
 health-checks:
   alive: 
+    name: Alive
+    description: Indicates that Vaultwarden is ready to use
     type: docker
     image: main
     entrypoint: "/healthcheck.sh"
     args: []
     io-format: yaml
-    critical: false
+    severity: warning
     inject: true
 config:
   get:
