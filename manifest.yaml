@@ -34,8 +34,8 @@ health-checks:
     description: Indicates that Vaultwarden is ready to use
     type: docker
     image: main
-    entrypoint: "/healthcheck.sh"
-    args: []
+    entrypoint: sh
+    args: ["-c", 'curl -ksS "http://localhost:80/alive" || exit 1']
     io-format: yaml
     severity: warning
     inject: true
