@@ -89,8 +89,8 @@ volumes:
 alerts: {}
 interfaces:
   main:
-    name: Network Interface
-    description: Specifies the interfaces to listen on for HTTP connections.
+    name: Web Interface/Bitwarden Protocol
+    description: Main user interface for interacting with Vaultwarden in a web browser. Also serves the bitwarden protocol.
     tor-config:
       port-mapping:
         80: "80"
