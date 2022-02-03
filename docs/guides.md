@@ -18,7 +18,7 @@ Now you can log in to your new password manager!
 
 ## Bitwarden Browser Extension
 
-The Bitwarden browser extension will only work with Tor Borwser or Firefox browser, since those are the only two browsers capable of using Tor, or in other words, access .onion URLs. Brave Browser can also access .onion URLs, but only in special tabs, not in extension, so the Bitwarden extension will not work.
+The Bitwarden browser extension will only work with Tor browser or Firefox browser, since those are the only two browsers capable of using Tor, or in other words, access .onion URLs. Brave Browser can also access .onion URLs, but only in special tabs, not in extension, so the Bitwarden extension will not work on Brave.
 
 1. If you choose Tor Browser, everything will just work right out of the box. If you choose Firefox, you will need to configure both your computer and Firefox to enable Tor. We have guides available for multiple platforms and devices. Please see the documentation links in the description below.
 
