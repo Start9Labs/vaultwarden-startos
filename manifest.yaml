@@ -29,7 +29,7 @@ main:
     compat: /mnt/assets
   io-format: yaml
 health-checks:
-  alive: 
+  alive:
     name: Alive
     description: Indicates that Vaultwarden is ready to use
     type: docker
@@ -44,7 +44,7 @@ config:
     image: compat
     system: true
     entrypoint: compat
-    args: 
+    args:
       - config
       - get
       - /data
@@ -96,12 +96,12 @@ interfaces:
         80: "80"
         3012: "3012"
     lan-config:
-      80:
-        ssl: true
-        mapping: 443
       3012:
         ssl: false
-        mapping: 3012
+        internal: 3012
+      443:
+        ssl: true
+        internal: 80
     ui: true
     protocols:
       - tcp
