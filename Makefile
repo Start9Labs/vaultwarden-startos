@@ -14,7 +14,7 @@ PWD=$(shell pwd)
 all: verify
 
 verify: vaultwarden.s9pk $(S9PK_PATH)
-	embassy-sdk verify $(S9PK_PATH)
+	embassy-sdk verify s9pk $(S9PK_PATH)
 
 install: vaultwarden.s9pk
 	embassy-cli package install vaultwarden.s9pk
