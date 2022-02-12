@@ -1,36 +1,40 @@
-ASSETS := $(shell yq e '.assets.[].src' manifest.yaml)
 DOC_ASSETS := $(shell find ./docs/assets)
-ASSET_PATHS := $(addprefix assets/,$(ASSETS))
-VERSION := $(shell git --git-dir=bitwarden_rs/.git describe --tags)
-BITWARDEN_SRC := $(shell find bitwarden_rs/src) bitwarden_rs/Cargo.toml bitwarden_rs/Cargo.lock
-BITWARDEN_GIT_REF := $(shell cat .git/modules/bitwarden_rs/HEAD)
-BITWARDEN_GIT_FILE := $(addprefix .git/modules/bitwarden_rs/,$(if $(filter ref:%,$(BITWARDEN_GIT_REF)),$(lastword $(BITWARDEN_GIT_REF)),HEAD))
+EMVER := $(shell yq e ".version" manifest.yaml)
+PKG_ID := $(shell yq e ".id" manifest.yaml)
+ASSET_PATHS := $(shell find ./assets/*)
+VERSION := $(shell git --git-dir=vaultwarden/.git describe --tags)
+VAULTWARDEN_SRC := $(shell find vaultwarden/src) vaultwarden/Cargo.toml vaultwarden/Cargo.lock
+VAULTWARDEN_GIT_REF := $(shell cat .git/modules/vaultwarden/HEAD)
+VAULTWARDEN_GIT_FILE := $(addprefix .git/modules/vaultwarden/,$(if $(filter ref:%,$(VAULTWARDEN_GIT_REF)),$(lastword $(VAULTWARDEN_GIT_REF)),HEAD))
+S9PK_PATH=$(shell find . -name vaultwarden.s9pk -print)
+PWD=$(shell pwd)
 
 .DELETE_ON_ERROR:
 
-all: bitwarden.s9pk
+all: verify
 
-install: bitwarden.s9pk
-	appmgr install bitwarden.s9pk
+verify: vaultwarden.s9pk $(S9PK_PATH)
+	embassy-sdk verify s9pk $(S9PK_PATH)
 
-bitwarden.s9pk: manifest.yaml config_spec.yaml config_rules.yaml image.tar instructions.md $(ASSET_PATHS)
-	appmgr -vv pack $(shell pwd) -o bitwarden.s9pk
-	appmgr -vv verify bitwarden.s9pk
+install: vaultwarden.s9pk
+	embassy-cli package install vaultwarden.s9pk
+
+vaultwarden.s9pk: manifest.yaml LICENSE image.tar instructions.md icon.png $(ASSET_PATHS)
+	embassy-sdk pack
 
 instructions.md: docs/instructions.md $(DOC_ASSETS)
 	cd docs && md-packer < instructions.md > ../instructions.md
 
-image.tar: Dockerfile $(BITWARDEN_SRC) docker_entrypoint.sh
-	cp ./docker_entrypoint.sh ./bitwarden_rs/docker_entrypoint.sh
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/bitwarden --platform=linux/arm/v7 -o type=docker,dest=image.tar -f Dockerfile ./bitwarden_rs
-	rm ./bitwarden_rs/docker_entrypoint.sh
+image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh manifest.yaml
+	cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/${PKG_ID}/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./vaultwarden
+	rm ./vaultwarden/docker_entrypoint.sh
 
-Dockerfile: bitwarden_rs/docker/arm32v7/Dockerfile.alpine
-	grep -v "^CMD" < bitwarden_rs/docker/arm32v7/Dockerfile.alpine > Dockerfile
-	echo 'RUN wget -O /usr/local/bin/yq https://beta-registry.start9labs.com/sys/yq?spec=^4.4.1 && chmod a+x /usr/local/bin/yq' >> Dockerfile
+Dockerfile: vaultwarden/Dockerfile
+	grep -v "^CMD" < vaultwarden/Dockerfile > Dockerfile
+	sed -i '' 's/CMD \[\"\/start\.sh\"\]/#removed default CMD in favor of custom entrypoint /g' Dockerfile
+	sed -i '' 's/ENTRYPOINT \[\"\/usr\/bin\/dumb\-init\"\, \"\-\-\"\]/#removed default ENTRYPOINT in favor of custom entrypoint/g' Dockerfile
+	echo 'RUN apt-get update && apt-get install -y wget tini' >> Dockerfile
+	echo 'RUN wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.13.5/yq_linux_arm64 && chmod a+x /usr/local/bin/yq' >> Dockerfile
 	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
 	echo 'ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]' >> Dockerfile
-
-manifest.yaml: $(BITWARDEN_GIT_FILE)
-	yq eval -i ".version = \"$(VERSION)\"" manifest.yaml
-	yq eval -i ".release-notes = \"https://github.com/dani-garcia/bitwarden_rs/releases/tag/$(VERSION)\"" manifest.yaml

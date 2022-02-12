@@ -34,7 +34,7 @@ The instructions below are for Tor Browser on Mac, but you should follow similar
 ![](./assets/img-3.png)
 <!-- MD_PACKER_INLINE END -->
 
-4. Copy your Bitwarden Tor Address from the Services menu on your Embassy and paste it into the “Self Hosted Environment” → “Server URL” field. 
+4. Copy your Vaultwarden Tor Address from the Services menu on your Embassy and paste it into the “Self Hosted Environment” → “Server URL” field. 
 ⚠ **Add “http://” (*not* https://) to the frontend of the onion URL.**
 Then click “Save”.
 
@@ -46,7 +46,7 @@ Then click “Save”.
 
 ⚠ **This *does not* mean you are creating an account with Bitwarden or any other third party.** 
 You are creating an account with *yourself* on your own Embassy. 
-In fact, your friends and family can also create accounts on your personal Bitwarden.
+In fact, your friends and family can also create accounts on your personal Vaultwarden.
 It’s awesome!
 
 <!-- MD_PACKER_INLINE BEGIN -->
@@ -56,18 +56,18 @@ It’s awesome!
 6. Fill in an email address. This is *only* used for functions such as 2 Factor Authentication, and it will *only* be stored on your personal Embassy.
 ⚠ **This is unrelated to any accounts you might have on Bitwarden's premium service.** 
 
-7. Fill in a new password for this BitWarden account. It should be different from your Admin Token.
+7. Fill in a new password for this Bitwarden account. It should be different from your Admin Token.
 
 8. Click “Submit”. You're all set! Now you can log in with your email address and password.
 
 ## Important!!
 
-Bitwarden on the Embassy is a *self-hosted* password manager, which means your passwords physically live on your Embassy. Be sure to create backups and keep them safe. If you lose your Embassy or uninstall Bitwarden, and you have not made a backup, all your passwords will be lost forever.
+Vaultwarden on the Embassy is a *self-hosted* password manager, which means your passwords physically live on your Embassy. Be sure to create backups and keep them safe. If you lose your Embassy or uninstall Vaultwarden, and you have not made a backup, all your passwords will be lost forever.
 
 ## System Administrator Portal
 
 This portal enables you to configure environment settings, edit users, edit organizations and check version information. To use the admin portal: 
 
 1. Copy the admin token from `Properties`
-2. Navigate to your Bitwarden Tor address + `/admin` ie. `http://<your_bitwarden_tor_address>.onion/admin`
+2. Navigate to your Vaultwarden Tor address + `/admin` ie. `http://<your_vaultwarden_tor_address>.onion/admin`
 3. Paste the admin token into the input field to login to the admin dashboard. 

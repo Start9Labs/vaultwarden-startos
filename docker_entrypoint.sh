@@ -12,4 +12,5 @@ echo "    copyable: true" >> /data/start9/stats.yaml
 echo "    qr: false" >> /data/start9/stats.yaml
 echo "    masked: true" >> /data/start9/stats.yaml
 
-exec /start.sh
+# /usr/bin/dumb-init --
+exec  tini -p SIGTERM -- /start.sh

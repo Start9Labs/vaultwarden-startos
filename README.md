@@ -1,4 +1,4 @@
-# Wrapper for Bitwarden
+# Wrapper for Vaultwarden
 
 ## Dependencies
 
@@ -10,8 +10,8 @@
 
 ## Cloning
 ```
-git clone git@github.com:Start9Labs/bitwarden-wrapper.git
-cd bitwarden-wrapper
+git clone git@github.com:Start9Labs/vaultwarden-wrapper.git
+cd vaultwarden-wrapper
 git submodule update --init
 ```
 
@@ -23,5 +23,5 @@ make
 
 ## Installing (on Embassy)
 ```
-sudo appmgr install bitwarden.s9pk
+embassy-cli package install vaultwarden.s9pk
 ```

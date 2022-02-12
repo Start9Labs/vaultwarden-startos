@@ -4,7 +4,7 @@ admin-token:
   description: Authentication token for logging into your admin dashboard.
   nullable: false
   pattern: '[a-zA-Z0-9/=\-_]+'
-  patternDescription: 'Must be a valid base 64 string'
+  pattern-description: 'Must be a valid base 64 string'
   copyable: true
   masked: true
   default:
