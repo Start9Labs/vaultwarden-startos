@@ -27,8 +27,10 @@ instructions.md: docs/instructions.md $(DOC_ASSETS)
 
 image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh manifest.yaml
 	cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
+	cp ./check-web.sh ./vaultwarden/check-web.sh
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/${PKG_ID}/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./vaultwarden
 	rm ./vaultwarden/docker_entrypoint.sh
+	rm ./vaultwarden/check-web.sh
 
 Dockerfile: vaultwarden/Dockerfile
 	grep -v "^CMD" < vaultwarden/Dockerfile > Dockerfile
