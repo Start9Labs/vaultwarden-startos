@@ -37,4 +37,6 @@ Dockerfile: vaultwarden/Dockerfile
 	echo 'RUN apt-get update && apt-get install -y wget tini' >> Dockerfile
 	echo 'RUN wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.13.5/yq_linux_arm64 && chmod a+x /usr/local/bin/yq' >> Dockerfile
 	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
+	echo 'ADD ./check-web.sh /usr/local/bin/check-web.sh' >> Dockerfile
+	echo 'RUN chmod a+x /usr/local/bin/check-web.sh' >> Dockerfile
 	echo 'ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]' >> Dockerfile

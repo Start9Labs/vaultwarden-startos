@@ -30,13 +30,13 @@ main:
   io-format: yaml
 health-checks:
   alive:
-    name: Alive
+    name: Web Interface
     description: Indicates that Vaultwarden is ready to use
     type: docker
     image: main
-    entrypoint: sh
-    args: ["-c", 'curl -ksS "http://localhost:80/alive" || exit 1']
-    io-format: yaml
+    entrypoint: check-web.sh
+    args: []
+    io-format: json
     inject: true
 config:
   get:
