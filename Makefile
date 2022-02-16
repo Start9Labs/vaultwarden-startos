@@ -33,9 +33,9 @@ image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh manifest.yaml
 	rm ./vaultwarden/check-web.sh
 
 Dockerfile: vaultwarden/Dockerfile
-	grep -v "^CMD" < vaultwarden/Dockerfile > Dockerfile
-	sed -i '' 's/CMD \[\"\/start\.sh\"\]/#removed default CMD in favor of custom entrypoint /g' Dockerfile
-	sed -i '' 's/ENTRYPOINT \[\"\/usr\/bin\/dumb\-init\"\, \"\-\-\"\]/#removed default ENTRYPOINT in favor of custom entrypoint/g' Dockerfile
+	cat vaultwarden/Dockerfile | grep -v "^CMD" > Dockerfile
+	sed -i 's/CMD \[\"\/start\.sh\"\]/#removed default CMD in favor of custom entrypoint /g' Dockerfile
+	sed -i 's/ENTRYPOINT \[\"\/usr\/bin\/dumb\-init\"\, \"\-\-\"\]/#removed default ENTRYPOINT in favor of custom entrypoint/g' Dockerfile
 	echo 'RUN apt-get update && apt-get install -y wget tini' >> Dockerfile
 	echo 'RUN wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.13.5/yq_linux_arm64 && chmod a+x /usr/local/bin/yq' >> Dockerfile
 	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
