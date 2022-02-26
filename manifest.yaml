@@ -9,7 +9,6 @@ support-site: "https://vaultwarden.discourse.group/"
 marketing-site: "https://github.com/dani-garcia/vaultwarden/"
 donation-url: "https://www.paypal.com/paypalme/DaniGG"
 build: ["make"]
-min-os-version: "0.3.0"
 description:
   short: Secure password management
   long: |
@@ -30,8 +29,8 @@ main:
   io-format: yaml
 health-checks:
   alive:
-    name: Web Interface
-    description: Indicates that Vaultwarden is ready to use
+    name: Web UI
+    success-message: Vaultwarden is ready to use
     type: docker
     image: main
     entrypoint: check-web.sh
