@@ -4,6 +4,7 @@ version: 1.25.0
 release-notes: |
   * Updates to new version of Vaultwarden to 2.25.0. Lots of bug fixes + features. Look at https://github.com/dani-garcia/vaultwarden/releases/tag/1.25.0 for more
   * Switch to using new EOS apis for faster configuration and properties
+license: GPL-3.0
 wrapper-repo: "https://github.com/Start9Labs/vaultwarden-wrapper"
 upstream-repo: "https://github.com/dani-garcia/vaultwarden"
 support-site: "https://vaultwarden.discourse.group/"

@@ -27,19 +27,16 @@ instructions.md: docs/instructions.md $(DOC_ASSETS)
 
 image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh check-web.sh manifest.yaml
 	cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
-	cp ./check-web.sh ./vaultwarden/check-web.sh
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/${PKG_ID}/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./vaultwarden
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --tag start9/${PKG_ID}/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./vaultwarden
 	rm ./vaultwarden/docker_entrypoint.sh
-	rm ./vaultwarden/check-web.sh
 
 Dockerfile: vaultwarden/Dockerfile
-	cat vaultwarden/Dockerfile | grep -v "^CMD" > Dockerfile
+	cat vaultwarden/docker/amd64/Dockerfile.alpine | grep -v "^CMD" > Dockerfile
 	sed -i 's/CMD \[\"\/start\.sh\"\]/#removed default CMD in favor of custom entrypoint /g' Dockerfile
 	sed -i 's/ENTRYPOINT \[\"\/usr\/bin\/dumb\-init\"\, \"\-\-\"\]/#removed default ENTRYPOINT in favor of custom entrypoint/g' Dockerfile
-	echo 'RUN apt-get update && apt-get install -y wget tini' >> Dockerfile
+	echo 'RUN apk add wget tini' >> Dockerfile
 	echo 'RUN wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.13.5/yq_linux_arm64 && chmod a+x /usr/local/bin/yq' >> Dockerfile
 	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
-	echo 'RUN chmod a+x /usr/local/bin/check-web.sh' >> Dockerfile
 	echo 'ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]' >> Dockerfile
 
 scripts/embassy.js: scripts/**/*.ts
