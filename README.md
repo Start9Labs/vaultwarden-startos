@@ -7,6 +7,7 @@
 - [yq](https://mikefarah.gitbook.io/yq)
 - [appmgr](https://github.com/Start9Labs/embassy-os/tree/master/appmgr)
 - [md-packer](https://github.com/Start9Labs/md-packer)
+- [deno](https://deno.land/#installation)
 
 ## Cloning
 ```

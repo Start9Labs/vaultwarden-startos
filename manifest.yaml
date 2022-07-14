@@ -1,8 +1,9 @@
 id: vaultwarden
 title: Vaultwarden
-version: 1.22.2
-release-notes: "Upgrade to EmbassyOS v0.3.0 and support project rename to Vaultwarden. Visit here for more information: https://github.com/dani-garcia/vaultwarden/discussions/1642"
-license: gnu
+version: 1.25.0
+release-notes: |
+  * Updates to new version of Vaultwarden to 2.25.0. Lots of bug fixes + features. Look at https://github.com/dani-garcia/vaultwarden/releases/tag/1.25.0 for more
+  * Switch to using new EOS apis for faster configuration and properties
 wrapper-repo: "https://github.com/Start9Labs/vaultwarden-wrapper"
 upstream-repo: "https://github.com/dani-garcia/vaultwarden"
 support-site: "https://vaultwarden.discourse.group/"
