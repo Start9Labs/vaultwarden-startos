@@ -19,7 +19,7 @@ verify: vaultwarden.s9pk $(S9PK_PATH)
 install: vaultwarden.s9pk
 	embassy-cli package install vaultwarden.s9pk
 
-vaultwarden.s9pk: manifest.yaml LICENSE image.tar instructions.md icon.png $(ASSET_PATHS)
+vaultwarden.s9pk: manifest.yaml LICENSE image.tar instructions.md icon.png $(ASSET_PATHS) scripts/embassy.js
 	embassy-sdk pack
 
 instructions.md: docs/instructions.md $(DOC_ASSETS)
@@ -42,3 +42,6 @@ Dockerfile: vaultwarden/Dockerfile
 	echo 'ADD ./check-web.sh /usr/local/bin/check-web.sh' >> Dockerfile
 	echo 'RUN chmod a+x /usr/local/bin/check-web.sh' >> Dockerfile
 	echo 'ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]' >> Dockerfile
+
+scripts/embassy.js: scripts/**/*.ts
+	deno bundle scripts/embassy.ts scripts/embassy.js
