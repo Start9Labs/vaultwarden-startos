@@ -31,7 +31,7 @@ image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh check-web.sh manif
 	rm ./vaultwarden/docker_entrypoint.sh
 
 Dockerfile: vaultwarden/Dockerfile
-	cat vaultwarden/docker/amd64/Dockerfile.alpine | grep -v "^CMD" > Dockerfile
+	cat vaultwarden/docker/arm64/Dockerfile.alpine | grep -v "^CMD" > Dockerfile
 	sed -i 's/CMD \[\"\/start\.sh\"\]/#removed default CMD in favor of custom entrypoint /g' Dockerfile
 	sed -i 's/ENTRYPOINT \[\"\/usr\/bin\/dumb\-init\"\, \"\-\-\"\]/#removed default ENTRYPOINT in favor of custom entrypoint/g' Dockerfile
 	echo 'RUN apk add wget tini' >> Dockerfile

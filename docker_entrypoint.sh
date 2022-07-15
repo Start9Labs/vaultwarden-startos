@@ -1,7 +1,6 @@
 #!/bin/sh
-
 ADMIN_TOKEN=`yq e '.admin-token' /data/start9/config.yaml`
-echo "ADMIN_TOKEN=${ADMIN_TOKEN}" >> /.env
+echo "ADMIN_TOKEN=\"${ADMIN_TOKEN}\"" >> /.env
 echo "version: 2" > /data/start9/stats.yaml
 echo "data:" >> /data/start9/stats.yaml
 echo "  \"Admin Token\":" >> /data/start9/stats.yaml
