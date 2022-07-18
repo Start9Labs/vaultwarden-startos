@@ -25,7 +25,7 @@ vaultwarden.s9pk: manifest.yaml LICENSE image.tar instructions.md icon.png $(ASS
 instructions.md: docs/instructions.md $(DOC_ASSETS)
 	cd docs && md-packer < instructions.md > ../instructions.md
 
-image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh check-web.sh manifest.yaml
+image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh manifest.yaml
 	cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --tag start9/${PKG_ID}/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./vaultwarden
 	rm ./vaultwarden/docker_entrypoint.sh
