@@ -1,7 +1,7 @@
 import { matches, types as T } from "../deps.ts";
 const { string, shape, tuple, number } = matches;
 const isError = shape({ error: string }).test;
-const isErrorCode = shape({'error-code': tuple(number, string)}).test
+const isErrorCode = shape({ "error-code": tuple(number, string) }).test;
 const error = (error: string) => ({ error });
 const errorCode = (code: number, error: string) => ({
   "error-code": [code, error] as const,
@@ -26,7 +26,7 @@ const guardDurationAboveMinimum = (
 
 const checkHealthDuration = 5000;
 
-export const healtAlive: T.ExpectedExports.health[""] = async (
+export const healthAlive: T.ExpectedExports.health[""] = async (
   effects,
   duration,
 ) => {
@@ -46,6 +46,6 @@ export const health: T.ExpectedExports.health = {
   /** Checks that the server is running and reachable via cli */
   // deno-lint-ignore require-await
   async alive(effects, duration) {
-    return healtAlive(effects, duration).catch(catchError(effects));
+    return healthAlive(effects, duration).catch(catchError(effects));
   },
 };
