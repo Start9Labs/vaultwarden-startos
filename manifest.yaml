@@ -96,3 +96,10 @@ backup:
       BACKUP: /mnt/backup
       main: /data
     io-format: yaml
+migrations:
+  from:
+    "*":
+      type: script
+  to:
+    "*":
+      type: script
