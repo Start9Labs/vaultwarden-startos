@@ -1,6 +1,6 @@
 DOC_ASSETS := $(shell find ./docs/assets)
-EMVER := $(shell yq e ".version" manifest.yaml)
-PKG_ID := $(shell yq e ".id" manifest.yaml)
+EMVER := $(shell cat manifest.json | jq -r '.version')
+PKG_ID := $(shell cat manifest.json | jq -r '.id')
 ASSET_PATHS := $(shell find ./assets/*)
 VERSION := $(shell git --git-dir=vaultwarden/.git describe --tags)
 VAULTWARDEN_SRC := $(shell find vaultwarden/src) vaultwarden/Cargo.toml vaultwarden/Cargo.lock
@@ -20,13 +20,13 @@ verify: vaultwarden.s9pk $(S9PK_PATH)
 install: vaultwarden.s9pk
 	embassy-cli package install vaultwarden.s9pk
 
-vaultwarden.s9pk: manifest.yaml LICENSE image.tar instructions.md icon.png $(ASSET_PATHS) scripts/embassy.js
+vaultwarden.s9pk: manifest.json LICENSE image.tar instructions.md icon.png $(ASSET_PATHS) scripts/embassy.js
 	embassy-sdk pack
 
 instructions.md: docs/instructions.md $(DOC_ASSETS)
 	cd docs && md-packer < instructions.md > ../instructions.md
 
-image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh manifest.yaml
+image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh manifest.json
 	cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --tag start9/${PKG_ID}/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./vaultwarden
 	rm ./vaultwarden/docker_entrypoint.sh

@@ -1,6 +1,9 @@
-import { types as T } from "../deps.ts";
+import { migrations, types as T } from "../deps.ts";
+import manifest from "../../manifest.json" assert { type: "json" };
 
-// deno-lint-ignore require-await
-export const migration: T.ExpectedExports.migration = async () => ({
-  result: { configured: true },
-});
+export const migration: T.ExpectedExports.migration = migrations.fromMapping(
+  {
+    // 1.22.2 No migration needed
+  },
+  manifest.version,
+);
