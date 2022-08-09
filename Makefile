@@ -8,7 +8,7 @@ VAULTWARDEN_GIT_REF := $(shell cat .git/modules/vaultwarden/HEAD)
 VAULTWARDEN_GIT_FILE := $(addprefix .git/modules/vaultwarden/,$(if $(filter ref:%,$(VAULTWARDEN_GIT_REF)),$(lastword $(VAULTWARDEN_GIT_REF)),HEAD))
 S9PK_PATH=$(shell find . -name vaultwarden.s9pk -print)
 PWD=$(shell pwd)
-TS_FILES := $(shell find find ./ -name \*.ts)
+TS_FILES := $(shell find ./ -name \*.ts)
 
 .DELETE_ON_ERROR:
 
