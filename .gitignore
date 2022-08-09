@@ -2,3 +2,4 @@ image.tar
 vaultwarden.s9pk
 Dockerfile
 instructions.md
+scripts/embassy.js
