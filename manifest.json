@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.25.1",
-  "release-notes": "* Updates to Vaultwarden v1.25.1. Lots of bug fixes + features. Look at https://github.com/dani-garcia/vaultwarden/releases/tag/1.25.1 for more\n* Switch to using new EOS apis for faster configuration and properties\n",
+  "version": "1.25.2",
+  "release-notes": "* Updates to Vaultwarden v1.25.2. Lots of bug fixes + features. Look at https://github.com/dani-garcia/vaultwarden/releases/tag/1.25.2 for more\n* Switch to using new EOS apis for faster configuration and properties\n",
   "license": "GPL-3.0",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
