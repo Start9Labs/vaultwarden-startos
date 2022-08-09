@@ -40,5 +40,5 @@ Dockerfile: vaultwarden/Dockerfile
 	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
 	echo 'ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]' >> Dockerfile
 
-scripts/embassy.js: $(TS_FILES)
+scripts/embassy.js: $(TS_FILES) manifest.json
 	deno bundle scripts/embassy.ts scripts/embassy.js
