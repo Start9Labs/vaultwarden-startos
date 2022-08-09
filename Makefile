@@ -8,7 +8,7 @@ VAULTWARDEN_GIT_REF := $(shell cat .git/modules/vaultwarden/HEAD)
 VAULTWARDEN_GIT_FILE := $(addprefix .git/modules/vaultwarden/,$(if $(filter ref:%,$(VAULTWARDEN_GIT_REF)),$(lastword $(VAULTWARDEN_GIT_REF)),HEAD))
 S9PK_PATH=$(shell find . -name vaultwarden.s9pk -print)
 PWD=$(shell pwd)
-TS_FILES := $(shell find **/*.ts)
+TS_FILES := $(shell find find ./ -name \*.ts)
 
 .DELETE_ON_ERROR:
 
@@ -40,5 +40,8 @@ Dockerfile: vaultwarden/Dockerfile
 	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
 	echo 'ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]' >> Dockerfile
 
-scripts/embassy.js: $(TS_FILES) manifest.json
+scripts/embassy.js: $(TS_FILES) 
 	deno bundle scripts/embassy.ts scripts/embassy.js
+
+scripts/generated/manifest.ts: manifest.json scripts/generators/generateManifest.ts
+	deno run --allow-write scripts/generators/generateManifest.ts

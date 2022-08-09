@@ -3,3 +3,4 @@ vaultwarden.s9pk
 Dockerfile
 instructions.md
 scripts/embassy.js
+scripts/generated/manifest.ts
