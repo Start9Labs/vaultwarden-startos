@@ -17,8 +17,6 @@ Vaultwarden is a _self-hosted_ password manager, which means your passwords phys
 
 ## Detailed Instructions for using the browser extension
 
-The browser extension will only work on Firefox (recommended) or Tor Browser. It will _not_ work on Chrome, Internet Explorer, or Brave. For Firefox, you must first enable Tor by following ([these instructions](https://docs.start9labs.com/misc-guides/tor-firefox/index.html)).
-
 1. Open the browser and visit the add-ons section.
 
 <!-- MD_PACKER_INLINE BEGIN -->
