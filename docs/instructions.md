@@ -1,20 +1,23 @@
+## Important!!
+
+Vaultwarden is a _self-hosted_ password manager, which means your passwords physically live on your Embassy. Be sure to create backups and keep them safe. If you lose your Embassy or uninstall Vaultwarden, and you have not made a backup, all your passwords will be lost forever.
+
 # Usage Instructions
 
-## Choose your platform
+## Connecting to Your Vaultwarden Server
 
-A. **Use the Bitwarden browser extension (detailed screen shots below) on:**
+### Using Bitwarden Browser Extension (detailed screen shots below)
+- The Bitwarden browser extension will work on Firefox (recommended) or Tor Browser. It will _not_ work on Chrome, Internet Explorer, or Brave. For Firefox, you must first enable Tor by following ([these instructions](https://docs.start9labs.com/misc-guides/tor-firefox/index.html)).
 
-- [Firefox](https://docs.start9labs.com/misc-guides/tor-firefox/index.html) (with Socks5 Proxy enabled) - (Mac, Windows, Linux, Android)
-- Tor Browser - (Mac, Windows, Linux, Android)
+### Using Bitwarden Mobile App
+- To use the Bitwarden mobile app, you must first enable Tor on your device by following the [iOS instructions](https://docs.start9labs.com/misc-guides/tor-os/ios.html) or [Android instructions](https://docs.start9labs.com/misc-guides/tor-os/android.html)
 
-B. **Use the Android Bitwarden native app with [Orbot](https://docs.start9labs.com/misc-guides/tor-os/android.html) running in VPN mode.**
-⚠ (for this to work, `Private DNS` must be disabled in your Android settings)
+### Using Bitwarden Web Vault
+- Simply click "Launch UI" from your Embassy Vaultwarden page.
 
-C. **Access your Bitwarden web vault by visiting its Tor Address from any Tor-enabled browser.**
+## Detailed Instructions for using the browser extension
 
-## Connecting to your App or Browser Extention
-
-The instructions below are for Tor Browser on Mac, but you should follow similar steps on other platforms (such as browser extentions).
+The browser extension will only work on Firefox (recommended) or Tor Browser. It will _not_ work on Chrome, Internet Explorer, or Brave. For Firefox, you must first enable Tor by following ([these instructions](https://docs.start9labs.com/misc-guides/tor-firefox/index.html)).
 
 1. Open the browser and visit the add-ons section.
 
@@ -40,7 +43,7 @@ The instructions below are for Tor Browser on Mac, but you should follow similar
 
 <!-- MD_PACKER_INLINE END -->
 
-4. Copy your Vaultwarden Tor Address from the Services menu on your Embassy and paste it into the “Self Hosted Environment” → “Server URL” field.
+4. Copy your Vaultwarden Tor Address from the "Interfaces" section in your Embassy Vaultwarden page and paste it into the “Self Hosted Environment” → “Server URL” field.
    ⚠ **Add “http://” (_not_ https://) to the frontend of the onion URL.**
    Then click “Save”.
 
@@ -53,9 +56,7 @@ The instructions below are for Tor Browser on Mac, but you should follow similar
 5. Click “Create Account” and fill in the required fields.
 
 ⚠ **This _does not_ mean you are creating an account with Bitwarden or any other third party.**
-You are creating an account with _yourself_ on your own Embassy.
-In fact, your friends and family can also create accounts on your personal Vaultwarden.
-It’s awesome!
+You are creating an account with _yourself_ on your own Embassy. If youn want
 
 <!-- MD_PACKER_INLINE BEGIN -->
 
@@ -70,14 +71,10 @@ It’s awesome!
 
 8. Click “Submit”. You're all set! Now you can log in with your email address and password.
 
-## Important!!
+## Admin Portal
 
-Vaultwarden on the Embassy is a _self-hosted_ password manager, which means your passwords physically live on your Embassy. Be sure to create backups and keep them safe. If you lose your Embassy or uninstall Vaultwarden, and you have not made a backup, all your passwords will be lost forever.
+This portal enables you to configure environment settings, enable or disable new signups, edit users, edit organizations, and more. To use the admin portal:
 
-## System Administrator Portal
-
-This portal enables you to configure environment settings, edit users, edit organizations and check version information. To use the admin portal:
-
-1. Copy the admin token from `Properties`
-2. Navigate to your Vaultwarden Tor address + `/admin` ie. `http://<your_vaultwarden_tor_address>.onion/admin`
-3. Paste the admin token into the input field to login to the admin dashboard.
+1. Copy your `admin token` from "Properties" in your Embassy Vaultwarden.
+2. Navigate to your Vaultwarden addres with "/admin" siffixed. e.g. `http://<your_vaultwarden_address>/admin`
+3. Authenticate with you admin token copied in step 1.
