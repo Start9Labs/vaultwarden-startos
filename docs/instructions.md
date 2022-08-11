@@ -74,5 +74,5 @@ You are creating an account with _yourself_ on your own Embassy. If youn want
 This portal enables you to configure environment settings, enable or disable new signups, edit users, edit organizations, and more. To use the admin portal:
 
 1. Copy your `admin token` from "Properties" in your Embassy Vaultwarden.
-2. Navigate to your Vaultwarden addres with "/admin" siffixed. e.g. `http://<your_vaultwarden_address>/admin`
+2. Navigate to your Vaultwarden addres with "/admin" suffixed. e.g. `http://<your_vaultwarden_address>/admin`
 3. Authenticate with you admin token copied in step 1.
