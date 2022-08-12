@@ -28,8 +28,7 @@
     "entrypoint": "/usr/local/bin/docker_entrypoint.sh",
     "args": [],
     "mounts": {
-      "main": "/data",
-      "compat": "/mnt/assets"
+      "main": "/data"
     },
     "io-format": "yaml"
   },
@@ -55,9 +54,6 @@
   "volumes": {
     "main": {
       "type": "data"
-    },
-    "compat": {
-      "type": "assets"
     }
   },
   "alerts": {},

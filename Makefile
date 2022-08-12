@@ -1,7 +1,6 @@
 DOC_ASSETS := $(shell find ./docs/assets)
 EMVER := $(shell cat manifest.json | jq -r '.version')
 PKG_ID := $(shell cat manifest.json | jq -r '.id')
-ASSET_PATHS := $(shell find ./assets/*)
 VERSION := $(shell git --git-dir=vaultwarden/.git describe --tags)
 VAULTWARDEN_SRC := $(shell find vaultwarden/src) vaultwarden/Cargo.toml vaultwarden/Cargo.lock
 VAULTWARDEN_GIT_REF := $(shell cat .git/modules/vaultwarden/HEAD)
@@ -20,7 +19,7 @@ verify: vaultwarden.s9pk $(S9PK_PATH)
 install: vaultwarden.s9pk
 	embassy-cli package install vaultwarden.s9pk
 
-vaultwarden.s9pk: manifest.json LICENSE image.tar instructions.md icon.png $(ASSET_PATHS) scripts/embassy.js
+vaultwarden.s9pk: manifest.json LICENSE image.tar instructions.md icon.png scripts/embassy.js
 	embassy-sdk pack
 
 instructions.md: docs/instructions.md $(DOC_ASSETS)
