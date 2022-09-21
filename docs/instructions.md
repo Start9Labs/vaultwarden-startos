@@ -7,12 +7,15 @@ Vaultwarden is a _self-hosted_ password manager, which means your passwords phys
 ## Connecting to Your Vaultwarden Server
 
 ### Using Bitwarden Browser Extension (detailed screen shots below)
-- The Bitwarden browser extension will work on Firefox (recommended) or Tor Browser. It will _not_ work on Chrome, Internet Explorer, or Brave. For Firefox, you must first enable Tor by following ([these instructions](https://docs.start9labs.com/misc-guides/tor-firefox/index.html)).
+
+- The Bitwarden browser extension will work on Firefox (recommended) or Tor Browser. It will _not_ work on Chrome, Internet Explorer, or Brave. For Firefox, you must first enable Tor by following ([these instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-firefox/index)).
 
 ### Using Bitwarden Mobile App
-- To use the Bitwarden mobile app, you must first enable Tor on your device by following the [iOS instructions](https://docs.start9labs.com/misc-guides/tor-os/ios.html) or [Android instructions](https://docs.start9labs.com/misc-guides/tor-os/android.html)
+
+- To use the Bitwarden mobile app, you must first enable Tor on your device by following the [iOS instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-firefox/torff-ios) or [Android instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-firefox/torff-android)
 
 ### Using Bitwarden Web Vault
+
 - Simply click "Launch UI" from your Embassy Vaultwarden page.
 
 ## Detailed Instructions for using the browser extension
