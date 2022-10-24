@@ -30,15 +30,11 @@ instructions.md: docs/instructions.md $(DOC_ASSETS)
 
  docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh manifest.json
 	mkdir -p docker-images
-	# cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --build-arg PLATFORM=arm64 --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/arm64/v8 -o type=docker,dest=docker-images/aarch64.tar -f Dockerfile .
-	# rm ./vaultwarden/docker_entrypoint.sh
 
  docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh manifest.json
 	mkdir -p docker-images
-	# cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --build-arg PLATFORM=amd64 --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/amd64 -o type=docker,dest=docker-images/x86_64.tar -f Dockerfile .
-	# rm ./vaultwarden/docker_entrypoint.sh
 
 scripts/embassy.js: $(TS_FILES) scripts/generated/manifest.ts
 	deno bundle scripts/embassy.ts scripts/embassy.js
