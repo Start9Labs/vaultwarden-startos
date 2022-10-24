@@ -38,7 +38,7 @@ export const healthAlive: T.ExpectedExports.health[""] = async (
   if (response.ok) {
     return ok;
   }
-  return error("Web interface is unreachable");
+  return error("The Vaultwarden UI is unreachable");
 };
 
 /** These are the health checks in the manifest */

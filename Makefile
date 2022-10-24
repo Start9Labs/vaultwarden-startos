@@ -1,46 +1,51 @@
 DOC_ASSETS := $(shell find ./docs/assets)
-EMVER := $(shell cat manifest.json | jq -r '.version')
+PKG_VERSION := $(shell cat manifest.json | jq -r '.version')
+UPSTREAM_VERSION :=$(shell ./utils/get_upstream_version.sh ${PKG_VERSION})
 PKG_ID := $(shell cat manifest.json | jq -r '.id')
-VERSION := $(shell git --git-dir=vaultwarden/.git describe --tags)
-VAULTWARDEN_SRC := $(shell find vaultwarden/src) vaultwarden/Cargo.toml vaultwarden/Cargo.lock
-VAULTWARDEN_GIT_REF := $(shell cat .git/modules/vaultwarden/HEAD)
-VAULTWARDEN_GIT_FILE := $(addprefix .git/modules/vaultwarden/,$(if $(filter ref:%,$(VAULTWARDEN_GIT_REF)),$(lastword $(VAULTWARDEN_GIT_REF)),HEAD))
-S9PK_PATH=$(shell find . -name vaultwarden.s9pk -print)
-PWD=$(shell pwd)
 TS_FILES := $(shell find ./ -name \*.ts)
 
 .DELETE_ON_ERROR:
 
 all: verify
 
-verify: vaultwarden.s9pk $(S9PK_PATH)
-	embassy-sdk verify s9pk $(S9PK_PATH)
+# assumes /etc/embassy/config.yaml exists on local system with `host: "http://embassy-server-name.local"` configured
+install: $(PKG_ID).s9pk
+	embassy-cli package install $(PKG_ID).s9pk
 
-install: vaultwarden.s9pk
-	embassy-cli package install vaultwarden.s9pk
+verify: $(PKG_ID).s9pk
+	embassy-sdk verify s9pk $(PKG_ID).s9pk
 
-vaultwarden.s9pk: manifest.json LICENSE image.tar instructions.md icon.png scripts/embassy.js
+clean:
+	rm -rf docker-images
+	rm -f  $(PKG_ID).s9pk
+	rm -f image.tar
+	rm -f scripts/*.js
+
+$(PKG_ID).s9pk: manifest.json LICENSE instructions.md icon.png scripts/embassy.js docker-images/aarch64.tar docker-images/x86_64.tar
+	if ! [ -z "$(ARCH)" ]; then cp docker-images/$(ARCH).tar image.tar; fi
 	embassy-sdk pack
 
 instructions.md: docs/instructions.md $(DOC_ASSETS)
 	cd docs && md-packer < instructions.md > ../instructions.md
 
-image.tar: Dockerfile $(VAULTWARDEN_SRC) docker_entrypoint.sh manifest.json
-	cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --tag start9/${PKG_ID}/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar -f Dockerfile ./vaultwarden
-	rm ./vaultwarden/docker_entrypoint.sh
+ docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh manifest.json
+	mkdir -p docker-images
+	# cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --build-arg PLATFORM=arm64 --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/arm64/v8 -o type=docker,dest=docker-images/aarch64.tar -f Dockerfile .
+	# rm ./vaultwarden/docker_entrypoint.sh
 
-Dockerfile: vaultwarden/Dockerfile
-	cat vaultwarden/docker/arm64/Dockerfile.alpine | grep -v "^CMD" > Dockerfile
-	sed -i 's/CMD \[\"\/start\.sh\"\]/#removed default CMD in favor of custom entrypoint /g' Dockerfile
-	sed -i 's/ENTRYPOINT \[\"\/usr\/bin\/dumb\-init\"\, \"\-\-\"\]/#removed default ENTRYPOINT in favor of custom entrypoint/g' Dockerfile
-	echo 'RUN apk add wget tini' >> Dockerfile
-	echo 'RUN wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.13.5/yq_linux_arm64 && chmod a+x /usr/local/bin/yq' >> Dockerfile
-	echo 'ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh' >> Dockerfile
-	echo 'ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]' >> Dockerfile
+ docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh manifest.json
+	mkdir -p docker-images
+	# cp ./docker_entrypoint.sh ./vaultwarden/docker_entrypoint.sh
+	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --build-arg PLATFORM=amd64 --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/amd64 -o type=docker,dest=docker-images/x86_64.tar -f Dockerfile .
+	# rm ./vaultwarden/docker_entrypoint.sh
 
-scripts/embassy.js: $(TS_FILES) 
+scripts/embassy.js: $(TS_FILES) scripts/generated/manifest.ts
 	deno bundle scripts/embassy.ts scripts/embassy.js
 
-scripts/generated/manifest.ts: manifest.json scripts/generators/generateManifest.ts
+scripts/generated/manifest.ts: manifest.json
+	mkdir -p scripts/generated
 	deno run --allow-write scripts/generators/generateManifest.ts
+
+LICENSE:
+	wget https://raw.githubusercontent.com/dani-garcia/vaultwarden/$(UPSTREAM_VERSION)/LICENSE.txt -O - > LICENSE
