@@ -2,7 +2,7 @@
   "id": "vaultwarden",
   "title": "Vaultwarden",
   "version": "1.26.0",
-  "release-notes": "* Update upstream to v1.26.0, official release notes: https://github.com/dani-garcia/vaultwarden/releases/tag/1.26.0 \n * Update to run on x86 architecture",
+  "release-notes": "* Update upstream to v1.26.0, official release notes: https://github.com/dani-garcia/vaultwarden/releases/tag/1.26.0 \n * Update to run on x86 architecture \n * Utilize new eOS APIs",
   "license": "GPL-3.0",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
@@ -22,14 +22,15 @@
     "instructions": "instructions.md"
   },
   "main": {
-    "type": "docker",
-    "image": "main",
-    "entrypoint": "/usr/local/bin/docker_entrypoint.sh",
-    "args": [],
-    "mounts": {
-      "main": "/data"
-    },
-    "io-format": "yaml"
+    "type": "script"
+  },
+  "containers": {
+    "main": {
+      "image": "main",
+      "mounts": {
+        "main": "/data"
+      }
+    }
   },
   "health-checks": {
     "alive": {
