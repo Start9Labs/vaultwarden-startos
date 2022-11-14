@@ -12,7 +12,7 @@ Vaultwarden is a _self-hosted_ password manager, which means your passwords phys
 
 ### Using Bitwarden Mobile App
 
-- To use the Bitwarden mobile app, you must first enable Tor on your device by following the [iOS instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-os/tor-ios) or [Android instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-os/tor-android)
+- To use the Bitwarden mobile app, see the [Android instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-os/tor-android).  Unfortunately the iOS Bitwarden mobile app is not compatible with Embassy yet.
 
 ### Using Bitwarden Web Vault
 
