@@ -57,7 +57,7 @@ Vaultwarden is a _self-hosted_ password manager, which means your passwords phys
 5. Click “Create Account” and fill in the required fields.
 
 ⚠ **This _does not_ mean you are creating an account with Bitwarden or any other third party.**
-You are creating an account with _yourself_ on your own Embassy. If youn want
+You are creating an account with _yourself_ on your own Embassy.
 
 <!-- MD_PACKER_INLINE BEGIN -->
 
