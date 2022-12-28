@@ -8,7 +8,7 @@ Vaultwarden is a _self-hosted_ password manager, which means your passwords phys
 
 ### Using Bitwarden Browser Extension (detailed screen shots below)
 
-- The Bitwarden browser extension will work on Firefox (recommended) or Tor Browser. It will _not_ work on Chrome, Internet Explorer, or Brave. For Firefox, you must first ([get Tor running on your machine](https://docs.start9.com/latest/user-manual/connecting/connecting-tor/tor-os/index#tor-os) and then enable Tor by following ([these instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-firefox/index)).
+- The Bitwarden browser extension will work on Firefox (recommended) or Tor Browser. It will _not_ work on Chrome, Internet Explorer, or Brave. For Firefox, you must first ([get Tor running on your machine](https://docs.start9.com/latest/user-manual/connecting/connecting-tor/tor-os/index#tor-os)) and then enable Tor by following ([these instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-firefox/index)).
 
 ### Using Bitwarden Mobile App
 
