@@ -14,6 +14,10 @@ Vaultwarden is a _self-hosted_ password manager, which means your passwords phys
 
 - To use the Bitwarden mobile app, you must first enable Tor on your device by following the [iOS instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-os/tor-ios) or [Android instructions](https://start9.com/latest/user-manual/connecting/connecting-tor/tor-os/tor-android)
 
+- It is also possible to connect using your LAN (.local) address, and your data will be cached for use on the go.  Please note that this method will not allow updating or syncing with your server when not on your local network.
+
+> **_NOTE:_** Some mobile device users see an error with the text *"We were unable to process your request. Please try again or contact us." or similar* when using the `.local` address, this can be bypassed by continuing as if there were no error. If this does not work, more troubleshooting may be required.
+
 ### Using Bitwarden Web Vault
 
 - Simply click "Launch UI" from your Embassy Vaultwarden page.
