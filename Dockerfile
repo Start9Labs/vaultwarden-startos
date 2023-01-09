@@ -1,4 +1,4 @@
-FROM vaultwarden/server:1.26.0
+FROM vaultwarden/server:1.27.0
 
 # arm64 or amd64
 ARG PLATFORM
