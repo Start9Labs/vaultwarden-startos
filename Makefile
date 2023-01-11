@@ -1,6 +1,5 @@
 DOC_ASSETS := $(shell find ./docs/assets)
 PKG_VERSION := $(shell cat manifest.json | jq -r '.version')
-UPSTREAM_VERSION :=$(shell ./utils/get_upstream_version.sh ${PKG_VERSION})
 PKG_ID := $(shell cat manifest.json | jq -r '.id')
 TS_FILES := $(shell find ./ -name \*.ts)
 
@@ -25,9 +24,6 @@ $(PKG_ID).s9pk: manifest.json LICENSE instructions.md icon.png scripts/embassy.j
 	if ! [ -z "$(ARCH)" ]; then cp docker-images/$(ARCH).tar image.tar; fi
 	embassy-sdk pack
 
-instructions.md: docs/instructions.md $(DOC_ASSETS)
-	cd docs && md-packer < instructions.md > ../instructions.md
-
  docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh manifest.json
 	mkdir -p docker-images
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --build-arg PLATFORM=arm64 --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/arm64/v8 -o type=docker,dest=docker-images/aarch64.tar -f Dockerfile .
@@ -42,6 +38,3 @@ scripts/embassy.js: $(TS_FILES) scripts/generated/manifest.ts
 scripts/generated/manifest.ts: manifest.json
 	mkdir -p scripts/generated
 	deno run --allow-write scripts/generators/generateManifest.ts
-
-LICENSE:
-	wget https://raw.githubusercontent.com/dani-garcia/vaultwarden/$(UPSTREAM_VERSION)/LICENSE.txt -O - > LICENSE

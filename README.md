@@ -10,7 +10,6 @@ Install the system dependencies below to build this project by following the ins
 - [docker-buildx](https://docs.docker.com/buildx/working-with-buildx/)
 - [jq](https://stedolan.github.io/jq/)
 - [embassy-sdk](https://github.com/Start9Labs/embassy-os/blob/master/backend/install-sdk.sh)
-- [md-packer](https://github.com/Start9Labs/md-packer)
 - [deno](https://deno.land/#installation)
 - [make](https://www.gnu.org/software/make/)
 - [wget](https://command-not-found.com/wget)
