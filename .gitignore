@@ -4,3 +4,4 @@ scripts/*.js
 scripts/generated/manifest.ts
 .vscode/
 docker-images
+vaultwarden/
