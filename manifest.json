@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.27.0.1",
-  "release-notes": "* Use new eOS APIs for backups",
+  "version": "1.27.0.2",
+  "release-notes": "* Using gzip \n * Allow tls/https over onion \n * Set the password iterations to 2_000_000",
   "license": "GPL-3.0",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
@@ -25,7 +25,8 @@
     "entrypoint": "/usr/local/bin/docker_entrypoint.sh",
     "args": [],
     "mounts": {
-      "main": "/data"
+      "main": "/data",
+      "cert": "/mnt/cert"
     },
     "io-format": "yaml"
   },
@@ -51,6 +52,10 @@
   "volumes": {
     "main": {
       "type": "data"
+    },
+    "cert": {
+      "type": "certificate",
+      "interface-id": "main"
     }
   },
   "alerts": {},
@@ -60,14 +65,15 @@
       "description": "Main user interface for interacting with Vaultwarden in a web browser. Also serves the bitwarden protocol.",
       "tor-config": {
         "port-mapping": {
-          "80": "80",
-          "3012": "3012"
+          "80": "8080",
+          "3012": "3012",
+          "443": "3443"
         }
       },
       "lan-config": {
         "443": {
           "ssl": true,
-          "internal": 80
+          "internal": 8080
         },
         "3012": {
           "ssl": false,
