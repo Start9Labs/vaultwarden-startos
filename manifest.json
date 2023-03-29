@@ -25,7 +25,8 @@
     "entrypoint": "/usr/local/bin/docker_entrypoint.sh",
     "args": [],
     "mounts": {
-      "main": "/data"
+      "main": "/data",
+      "cert": "/mnt/cert"
     },
     "io-format": "yaml"
   },
@@ -51,6 +52,10 @@
   "volumes": {
     "main": {
       "type": "data"
+    },
+    "cert": {
+      "type": "certificate",
+      "interface-id": "main"
     }
   },
   "alerts": {},
@@ -61,7 +66,8 @@
       "tor-config": {
         "port-mapping": {
           "80": "80",
-          "3012": "3012"
+          "3012": "3012",
+          "443": "3443"
         }
       },
       "lan-config": {
