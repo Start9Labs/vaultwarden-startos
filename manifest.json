@@ -2,7 +2,7 @@
   "id": "vaultwarden",
   "title": "Vaultwarden",
   "version": "1.27.0.2",
-  "release-notes": "* Use new eOS APIs for backups",
+  "release-notes": "* Using gzip \n * Allow ssh over onion",
   "license": "GPL-3.0",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
