@@ -1,7 +1,7 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.27.0.1",
+  "version": "1.27.0.2",
   "release-notes": "* Use new eOS APIs for backups",
   "license": "GPL-3.0",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
@@ -65,7 +65,7 @@
       "description": "Main user interface for interacting with Vaultwarden in a web browser. Also serves the bitwarden protocol.",
       "tor-config": {
         "port-mapping": {
-          "80": "80",
+          "80": "8080",
           "3012": "3012",
           "443": "3443"
         }
@@ -73,7 +73,7 @@
       "lan-config": {
         "443": {
           "ssl": true,
-          "internal": 80
+          "internal": 8080
         },
         "3012": {
           "ssl": false,
