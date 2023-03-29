@@ -1,12 +1,20 @@
 FROM vaultwarden/server:1.27.0
 
-RUN apt-get update
-RUN apt-get install -y wget tini nginx
-ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
-
 # arm64 or amd64
 ARG PLATFORM
-RUN wget --no-check-certificate -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.13.5/yq_linux_${PLATFORM} && chmod a+x /usr/local/bin/yq
-RUN wget --no-check-certificate -O /usr/local/bin/proxyboi https://github.com/svenstaro/proxyboi/releases/download/v0.5.0/proxyboi-v0.5.0-linux-x86_64 && chmod a+x /usr/local/bin/proxyboi
+ENV YQ_VER v4.3.2
 
-ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]
+RUN apt update && \
+    apt install -y \
+    tini \
+    nginx-core; \
+    apt clean; \
+    rm -rf \
+    /tmp/* \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+RUN mkdir /run/nginx
+RUN curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${PLATFORM} -o /usr/local/bin/yq \
+    && chmod a+x /usr/local/bin/yq
+
+COPY --chmod=755 ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
