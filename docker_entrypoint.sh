@@ -1,6 +1,10 @@
 #!/bin/sh
 ADMIN_TOKEN=$(yq e '.admin-token' /data/start9/config.yaml)
 echo "ADMIN_TOKEN=\"${ADMIN_TOKEN}\"" >> /.env
+cat << EOF >> /.env
+PASSWORD_ITERATIONS=2000000
+EOF
+
 cat << EOF > /data/start9/stats.yaml
 version: 2
 data:
