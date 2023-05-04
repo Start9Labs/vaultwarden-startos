@@ -5,3 +5,4 @@ scripts/generated/manifest.ts
 .vscode/
 docker-images
 vaultwarden/
+node_modules/

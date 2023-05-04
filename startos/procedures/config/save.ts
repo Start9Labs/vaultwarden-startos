@@ -1,27 +1,23 @@
-#!/bin/sh
-ADMIN_TOKEN=$(yq e '.admin-token' /data/start9/config.yaml)
-echo "ADMIN_TOKEN=\"${ADMIN_TOKEN}\"" >> /.env
-cat << EOF >> /.env
-PASSWORD_ITERATIONS=2000000
-EOF
+import { ConfigSpec } from './spec'
+import { WrapperData } from '../../wrapperData'
+import { Save } from '@start9labs/start-sdk/lib/config/setupConfig'
+import { Manifest } from '../../manifest'
 
-cat << EOF > /data/start9/stats.yaml
-version: 2
-data:
-  "Admin Token":
-    type: string
-    value: "$ADMIN_TOKEN"
-    description: "Authentication token for logging into your admin dashboard."
-    copyable: true
-    qr: false
-    masked: true
-EOF
-
-CONF_FILE="/etc/nginx/conf.d/default.conf"
-NGINX_CONF='
-server {
+/**
+ * This function executes on config save
+ *
+ * Use it to persist config data to various files and to establish any resulting dependencies
+ */
+export const save: Save<WrapperData, ConfigSpec, Manifest> = async ({
+  effects,
+  utils,
+  input,
+  dependencies,
+}) => {
+  await utils.setOwnWrapperData('/config', input)
+  const nginxFile = `server {
     ##
-    # `gzip` Settings
+    # \`gzip\` Settings
     #
     #
     gzip on;
@@ -62,10 +58,12 @@ server {
     location / {
         proxy_pass http://0.0.0.0:80;
     }
-}
-'
-rm /etc/nginx/sites-enabled/default
-echo "$NGINX_CONF" > $CONF_FILE
+}`
 
-nginx -g 'daemon off;' &
-exec  tini -p SIGTERM -- /start.sh
+  const dependenciesReceipt = await effects.setDependencies([])
+
+  return {
+    dependenciesReceipt,
+    restart: true,
+  }
+}
