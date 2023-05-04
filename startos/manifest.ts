@@ -25,6 +25,12 @@ export const manifest = setupManifest({
     icon: 'icon.png',
     instructions: 'instructions.md',
   },
+  dependencies: {},
+
+  /// Changed
+  volumes: {
+    main: 'data',
+  },
   containers: {
     main: {
       // Identifier for the main image volume, which will be used when other actions need to mount to this volume.
@@ -35,10 +41,6 @@ export const manifest = setupManifest({
         main: '/data',
       },
     },
-  },
-  dependencies: {},
-  volumes: {
-    main: 'data',
   },
   actions: actionsMetadata,
   alerts: {
