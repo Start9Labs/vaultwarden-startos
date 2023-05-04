@@ -19,7 +19,7 @@ export const main: ExpectedExports.main = setupMain<WrapperData>(
      */
     const env = {
       ADMIN_TOKEN: await utils.getOwnWrapperData('/config/adminToken').const(),
-      PASSWORD_ITERATIONS: 2_000_000,
+      PASSWORD_ITERATIONS: '2000000',
       CONF_FILE: '/etc/nginx/conf.d/default.conf',
     }
 
@@ -126,6 +126,7 @@ export const main: ExpectedExports.main = setupMain<WrapperData>(
       healthReceipts, // Provide the healthReceipts or [] to prove they were at least considered
     }).addDaemon('webui', {
       command: '/start.sh', // The command to start the daemon
+      env,
       ready: {
         display: 'Web Interface',
         // The function to run to determine the health status of the daemon
