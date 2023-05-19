@@ -13,7 +13,3 @@ RUN apt update && \
 
 # arm64 or amd64
 ARG PLATFORM
-ENV YQ_VER v4.3.2
-RUN curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${PLATFORM} -o /usr/local/bin/yq \
-    && chmod a+x /usr/local/bin/yq
-
