@@ -23,6 +23,8 @@ export const setInterfaces = sdk.setupInterfaces(
       ui: true,
       username: null,
       path: '',
+      hasPrimary: true,
+      disabled: false,
       search: {},
     })
 

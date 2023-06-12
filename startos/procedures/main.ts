@@ -13,7 +13,7 @@ export const main: ExpectedExports.main = sdk.setupMain(
      * In this section, you will fetch any resources or run any commands necessary to run the service
      */
     const env = {
-      ADMIN_TOKEN: await utils.vault.get('adminToken').const(),
+      ADMIN_TOKEN: await utils.store.getOwn('/adminToken').const(),
       PASSWORD_ITERATIONS: '2000000',
       CONF_FILE: '/etc/nginx/conf.d/default.conf',
     }
@@ -42,7 +42,7 @@ export const main: ExpectedExports.main = sdk.setupMain(
         display: 'Web Interface',
         // The function to run to determine the health status of the daemon
         fn: async (): Promise<CheckResult> =>
-          effects.fetch('http://vaultwarden.embassy:80/alive').then(
+          fetch('http://vaultwarden.embassy:80/alive').then(
             () => ({
               status: 'passing',
             }),

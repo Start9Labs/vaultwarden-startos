@@ -2,18 +2,21 @@ import { migrations } from './migrations'
 import { sdk } from '../sdk'
 import { setInterfaces } from './interfaces'
 import { ADMIN_DEFAULT } from './actions/changeToken'
-
+import { createOrUpdateVault } from './createOrUpdateVault'
 /**
  * Here you define arbitrary code that runs once, on fresh install only
  */
 const install = sdk.setupInstall(async ({ effects, utils }) => {
-  await utils.createOrUpdateVault({
-    key: 'adminToken',
-    value: null,
-    generator: ADMIN_DEFAULT,
-  })
+  const key = '/adminToken'
+  const generator = ADMIN_DEFAULT
+  await createOrUpdateVault(utils, key, generator)
 })
-
+const setupExports = sdk.setupExports(({ effects, utils }) => {
+  return {
+    ui: [{ path: '/adminToken', title: 'Admin Token' }],
+    services: [],
+  }
+})
 /**
  * Here you define arbitrary code that runs once, on uninstall only
  */
@@ -27,4 +30,5 @@ export const { init, uninit } = sdk.setupInit(
   install,
   uninstall,
   setInterfaces,
+  setupExports,
 )

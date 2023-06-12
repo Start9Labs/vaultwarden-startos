@@ -50,7 +50,7 @@ export const changeToken = sdk.createAction(
     allowedStatuses: 'any',
   },
   async ({ effects, utils, input }) => {
-    await utils.vault.set('adminToken', input.adminToken)
+    await utils.store.setOwn('/adminToken', input.adminToken)
 
     return {
       message: `Changed the admin token`,
