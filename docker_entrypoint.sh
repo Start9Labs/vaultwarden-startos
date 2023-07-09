@@ -67,6 +67,7 @@ server {
 '
 rm /etc/nginx/sites-enabled/default
 echo "$NGINX_CONF" > $CONF_FILE
+sed -i "s/TLSv1 TLSv1.1 //" /etc/nginx/nginx.conf
 
 nginx -g 'daemon off;' &
 exec  tini -p SIGTERM -- /start.sh
