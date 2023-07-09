@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.27.0.3",
-  "release-notes": "* Changes to nginx.conf to allow larger Bitwarden file imports",
+  "version": "1.29.0",
+  "release-notes": "* Upgrade upstream Vaultwarden docker image to 1.29.0\n* Changes to nginx.conf to allow larger Bitwarden file imports",
   "license": "GPL-3.0",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
