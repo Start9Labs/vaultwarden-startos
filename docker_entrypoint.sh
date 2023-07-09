@@ -53,11 +53,12 @@ server {
     text/javascript
     text/plain
     text/xml;
-    listen 3443 ssl;
+    listen 3443 ssl http2;
     listen 8080;
     ssl_certificate /mnt/cert/main.cert.pem;
     ssl_certificate_key /mnt/cert/main.key.pem;
     server_name  localhost;
+    client_max_body_size 128M;
 
     location / {
         proxy_pass http://0.0.0.0:80;
