@@ -1,4 +1,4 @@
-FROM vaultwarden/server:1.27.0
+FROM vaultwarden/server:1.29.0
 
 
 RUN apt update && \

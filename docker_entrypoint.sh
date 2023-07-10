@@ -53,19 +53,34 @@ server {
     text/javascript
     text/plain
     text/xml;
-    listen 3443 ssl;
+    listen 3443 ssl http2;
     listen 8080;
     ssl_certificate /mnt/cert/main.cert.pem;
     ssl_certificate_key /mnt/cert/main.key.pem;
     server_name  localhost;
+    client_max_body_size 128M;
 
     location / {
+        proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_set_header X-Forwarded-Host $host;
+		set_real_ip_from 0.0.0.0/0;
+		proxy_redirect off;
         proxy_pass http://0.0.0.0:80;
+    }
+    location /notifications/hub {
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_pass http://0.0.0.0:80;
     }
 }
 '
 rm /etc/nginx/sites-enabled/default
 echo "$NGINX_CONF" > $CONF_FILE
+sed -i "s/TLSv1 TLSv1.1 //" /etc/nginx/nginx.conf
 
 nginx -g 'daemon off;' &
 exec  tini -p SIGTERM -- /start.sh

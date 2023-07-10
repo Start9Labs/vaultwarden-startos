@@ -1,9 +1,9 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.27.0.2",
-  "release-notes": "* Using gzip \n * Allow tls/https over onion \n * Set the password iterations to 2_000_000",
-  "license": "GPL-3.0",
+  "version": "1.29.0",
+  "release-notes": "* Upgrade upstream Vaultwarden docker image to 1.29.0\n* License change w/ new version\n* Changes to nginx.conf to allow larger Bitwarden file imports",
+  "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
   "support-site": "https://vaultwarden.discourse.group/",
