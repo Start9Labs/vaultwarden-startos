@@ -4,6 +4,7 @@ FROM vaultwarden/server:1.29.0
 RUN apt update && \
     apt install -y \
     tini \
+    argon2 \
     nginx-core; \
     apt clean; \
     rm -rf \
