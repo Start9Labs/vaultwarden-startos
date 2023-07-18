@@ -7,15 +7,15 @@ TS_FILES := $(shell find ./ -name \*.ts)
 all: verify
 
 verify: $(PKG_ID).s9pk
-	@start-sdk verify s9pk $(PKG_ID).s9pk
+	@embassy-sdk verify s9pk $(PKG_ID).s9pk
 	@echo " Done!"
 	@echo "   Filesize: $(shell du -h $(PKG_ID).s9pk) is ready"
 
 install:
-ifeq (,$(wildcard ~/.startos/config.yaml))
-	@echo; echo "You must define \"host: https://adjective-noun.local\" in ~/.startos/config.yaml config file first"; echo
+ifeq (,$(wildcard ~/.embassy/config.yaml))
+	@echo; echo "You must define \"host: https://adjective-noun.local\" in ~/.embassy/config.yaml config file first"; echo
 else
-	start-cli package install $(PKG_ID).s9pk
+	embassy-cli package install $(PKG_ID).s9pk
 endif
 
 clean:
@@ -26,13 +26,13 @@ clean:
 
 $(PKG_ID).s9pk: manifest.json LICENSE instructions.md icon.png scripts/embassy.js  docker-images/x86_64.tar docker-images/aarch64.tar
 ifeq ($(ARCH),aarch64)
-	@echo "start-sdk: Preparing aarch64 package ..."
+	@echo "embassy-sdk: Preparing aarch64 package ..."
 else ifeq ($(ARCH),x86_64)
-	@echo "start-sdk: Preparing x86_64 package ..."
+	@echo "embassy-sdk: Preparing x86_64 package ..."
 else
-	@echo "start-sdk: Preparing Universal Package ..."
+	@echo "embassy-sdk: Preparing Universal Package ..."
 endif
-	@start-sdk pack
+	@embassy-sdk pack
 
 docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh manifest.json
 ifeq ($(ARCH),x86_64)
