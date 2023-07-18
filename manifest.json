@@ -2,7 +2,7 @@
   "id": "vaultwarden",
   "title": "Vaultwarden",
   "version": "1.29.0.1",
-  "release-notes": "* Upgrade upstream Vaultwarden docker image to 1.29.0\n* License change w/ new version\n* Changes to nginx.conf to allow larger Bitwarden file imports\n*argon2 secure admin token upgrade",
+  "release-notes": "* Upgrade upstream Vaultwarden docker image to 1.29.0\n* License change w/ new version\n* Changes to nginx.conf to allow larger Bitwarden file imports\n* argon2 secure admin token upgrade",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
@@ -12,7 +12,7 @@
   "build": ["make"],
   "description": {
     "short": "Secure password management",
-    "long": "Vaultwarden is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. All data is stored in an encrypted vault on your server.\n"
+    "long": "Vaultwarden is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. All data is stored in an encrypted vault on your server."
   },
   "assets": {
     "license": "LICENSE",
