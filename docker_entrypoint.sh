@@ -1,7 +1,7 @@
 #!/bin/sh
 ADMIN_TOKEN=$(yq e '.admin-token' /data/start9/config.yaml)
 VW_ADMIN_TOKEN=$(echo -n "$ADMIN_TOKEN" | argon2 "$(openssl rand -base64 32)" -e -id -k 65540 -t 3 -p 4)
-echo "VAULTWARDEN_ADMIN_TOKEN=${WV_ADMIN_TOKEN}" >> /.env
+echo "ADMIN_TOKEN='${VW_ADMIN_TOKEN}'" >> /.env
 cat << EOF >> /.env
 PASSWORD_ITERATIONS=2000000
 EOF
