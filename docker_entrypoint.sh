@@ -27,14 +27,14 @@ data:
     value: "https://$LAN_ADDRESS/admin"
     description: "The URL for accessing your admin dashboard via your LAN."
     copyable: true
-    qr: true
+    qr: false
     masked: false
   "Tor Admin URL":
     type: string
     value: "https://$TOR_ADDRESS/admin"
     description: "The URL for accessing your admin dashboard via Tor."
     copyable: true
-    qr: true
+    qr: false
     masked: false
 EOF
 
