@@ -1,7 +1,7 @@
 import { compat, types as T } from "../deps.ts";
 
 export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
-  "tor-address": {
+  "vaultwarden-tor-address": {
     name: "Tor Address",
     description: "The Tor address for the Vaultwarden web interface.",
     type: "pointer",
