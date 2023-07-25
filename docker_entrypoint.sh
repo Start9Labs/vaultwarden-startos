@@ -2,9 +2,15 @@
 ADMIN_TOKEN=$(yq e '.admin-token' /data/start9/config.yaml)
 VW_ADMIN_TOKEN=$(echo -n "$ADMIN_TOKEN" | argon2 "$(openssl rand -base64 32)" -e -id -k 65540 -t 3 -p 4)
 echo "ADMIN_TOKEN='${VW_ADMIN_TOKEN}'" >> /.env
+#Ensure config.json's admin token gets upgraded if the old token exists in config.json:
+sed -i "s|$ADMIN_TOKEN|$VW_ADMIN_TOKEN|g" /data/config.json
+
 cat << EOF >> /.env
 PASSWORD_ITERATIONS=2000000
 EOF
+
+TOR_ADDRESS=$(yq e .vaultwarden-tor-address /data/start9/config.yaml)
+LAN_ADDRESS=$(yq e .vaultwarden-lan-address /data/start9/config.yaml)
 
 cat << EOF > /data/start9/stats.yaml
 version: 2
@@ -16,6 +22,20 @@ data:
     copyable: true
     qr: false
     masked: true
+  "Local Admin URL":
+    type: string
+    value: "https://$LAN_ADDRESS/admin"
+    description: "The URL for accessing your admin dashboard via your LAN."
+    copyable: true
+    qr: false
+    masked: false
+  "Tor Admin URL":
+    type: string
+    value: "https://$TOR_ADDRESS/admin"
+    description: "The URL for accessing your admin dashboard via Tor."
+    copyable: true
+    qr: false
+    masked: false
 EOF
 
 CONF_FILE="/etc/nginx/conf.d/default.conf"
