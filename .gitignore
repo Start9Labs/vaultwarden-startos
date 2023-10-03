@@ -1,7 +1,5 @@
-image.tar
-vaultwarden.s9pk
+*.s9pk
 scripts/*.js
 scripts/generated/manifest.ts
 .vscode/
 docker-images
-vaultwarden/
