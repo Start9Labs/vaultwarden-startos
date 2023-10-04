@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.29.0.4",
-  "release-notes": "* Upgrade upstream Vaultwarden docker image to 1.29.0\n* License change w/ new version\n* Changes to nginx.conf to allow larger Bitwarden file imports\n* Argon2 secure admin token upgrade\n* Add Admin URLs to Properties",
+  "version": "1.29.2",
+  "release-notes": "* Upgrade upstream image base to bookworm\n* Latest Web vault update\n* Standardized and optimized icon",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",

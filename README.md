@@ -31,6 +31,20 @@ After setting up your environment, build the `vaultwarden` package by running:
 make
 ```
 
+To build the `vaultwarden` package for a single platform, run:
+
+```
+# for amd64
+make x86
+```
+
+or
+
+```
+# for arm64
+make arm
+```
+
 ## Installing (on StartOS)
 
 Via the StartOS web-UI:
