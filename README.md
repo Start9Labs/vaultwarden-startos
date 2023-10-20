@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="icon.png" alt="Project Logo" width="21%">
+</p>
+
 # Wrapper for vaultwarden
 
 [Vaultwarden](https://github.com/dani-garcia/vaultwarden) is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. This repository creates the `s9pk` package that is installed to run `vaultwarden` on [StarOS](https://github.com/Start9Labs/start-os/).
@@ -9,10 +13,9 @@ Install the system dependencies below to build this project by following the ins
 - [docker](https://docs.docker.com/get-docker)
 - [docker-buildx](https://docs.docker.com/buildx/working-with-buildx/)
 - [jq](https://stedolan.github.io/jq/)
-- [start-sdk](https://github.com/Start9Labs/start-os/blob/master/backend/install-sdk.sh)
+- [start-sdk](https://github.com/Start9Labs/start-os/blob/sdk/backend/install-sdk.sh)
 - [deno](https://deno.land/#installation)
 - [make](https://www.gnu.org/software/make/)
-- [wget](https://command-not-found.com/wget)
 
 ## Cloning
 
