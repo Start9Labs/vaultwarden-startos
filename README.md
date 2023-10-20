@@ -2,7 +2,7 @@
   <img src="icon.png" alt="Project Logo" width="21%">
 </p>
 
-# Wrapper for vaultwarden
+# Wrapper for Vaultwarden
 
 [Vaultwarden](https://github.com/dani-garcia/vaultwarden) is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. This repository creates the `s9pk` package that is installed to run `vaultwarden` on [StarOS](https://github.com/Start9Labs/start-os/).
 
@@ -56,14 +56,14 @@ Go to System > Sideload Service and select the vaultwarden.s9pk file you built.
 
 Via CLI (SSH'd into your server):
 
-> :information_source: Change adjective-noun.local to your StartOS hostname
+> :information_source: Change server-name.local to your StartOS hostname
 
 Run the following commands to install:
 
 ```
 start-cli auth login
 # Enter your StartOS password
-start-cli --host https://adjective-noun.local package install vaultwarden.s9pk
+start-cli --host https://server-name.local package install vaultwarden.s9pk
 ```
 
 If you already have your `start-cli` config file setup with a default `host`,
