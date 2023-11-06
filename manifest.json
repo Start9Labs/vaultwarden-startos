@@ -1,7 +1,7 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.29.2",
+  "version": "1.30.0",
   "release-notes": "* Upgrade upstream image base to bookworm\n* Latest Web vault update\n* Standardized and optimized icon",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
