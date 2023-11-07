@@ -24,6 +24,14 @@ clean:
 	rm -f scripts/generated/manifest.ts
 	rm -f scripts/*.js
 
+arm:
+	@rm -f docker-images/x86_64.tar
+	@ARCH=aarch64 $(MAKE)
+
+x86:
+	@rm -f docker-images/aarch64.tar
+	@ARCH=x86_64 $(MAKE)
+
 $(PKG_ID).s9pk: manifest.json LICENSE instructions.md icon.png scripts/embassy.js  docker-images/x86_64.tar docker-images/aarch64.tar
 ifeq ($(ARCH),aarch64)
 	@echo "start-sdk: Preparing aarch64 package ..."
