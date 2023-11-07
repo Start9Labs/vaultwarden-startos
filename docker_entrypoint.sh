@@ -5,12 +5,13 @@ echo "ADMIN_TOKEN='${VW_ADMIN_TOKEN}'" >> /.env
 #Ensure config.json's admin token gets upgraded if the old token exists in config.json:
 sed -i "s|$ADMIN_TOKEN|$VW_ADMIN_TOKEN|g" /data/config.json
 
-cat << EOF >> /.env
-PASSWORD_ITERATIONS=2000000
-EOF
-
 TOR_ADDRESS=$(yq e .vaultwarden-tor-address /data/start9/config.yaml)
 LAN_ADDRESS=$(yq e .vaultwarden-lan-address /data/start9/config.yaml)
+
+cat << EOF >> /.env
+PASSWORD_ITERATIONS=2000000
+DOMAIN="https://$TOR_ADDRESS"
+EOF
 
 cat << EOF > /data/start9/stats.yaml
 version: 2
