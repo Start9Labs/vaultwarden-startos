@@ -2,7 +2,7 @@
   "id": "vaultwarden",
   "title": "Vaultwarden",
   "version": "1.30.0",
-  "release-notes": "* Added passkey support\n* Latest Web vault update\n* * Full list of upstream changes available [here](https://github.com/dani-garcia/vaultwarden/compare/1.29.2...1.30.0)",
+  "release-notes": "* Added passkey support\n* Latest Web vault update\n* Full list of upstream changes available [here](https://github.com/dani-garcia/vaultwarden/compare/1.29.2...1.30.0)",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-wrapper",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
