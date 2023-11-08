@@ -2,7 +2,7 @@
   <img src="icon.png" alt="Project Logo" width="21%">
 </p>
 
-# Wrapper for Vaultwarden
+# Vaultwarden for StartOS
 
 [Vaultwarden](https://github.com/dani-garcia/vaultwarden) is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. This repository creates the `s9pk` package that is installed to run `vaultwarden` on [StarOS](https://github.com/Start9Labs/start-os/).
 
@@ -22,8 +22,8 @@ Install the system dependencies below to build this project by following the ins
 Clone the project locally:
 
 ```
-git clone git@github.com:Start9Labs/vaultwarden-wrapper.git
-cd vaultwarden-wrapper
+git clone git@github.com:Start9Labs/vaultwarden-startos.git
+cd vaultwarden-startos
 ```
 
 ## Building
@@ -50,28 +50,17 @@ make arm
 
 ## Installing (on StartOS)
 
-Via the StartOS web-UI:
+Before installation, define `host: https://server-name.local` in your `~/.embassy/config.yaml` config file then run the following commands to determine successful install:
 
-Go to System > Sideload Service and select the vaultwarden.s9pk file you built.
-
-Via CLI (SSH'd into your server):
-
-> :information_source: Change server-name.local to your StartOS hostname
-
-Run the following commands to install:
+> :information_source: Change server-name.local to your Start9 server address
 
 ```
 start-cli auth login
-# Enter your StartOS password
-start-cli --host https://server-name.local package install vaultwarden.s9pk
-```
-
-If you already have your `start-cli` config file setup with a default `host`,
-you can install simply by running:
-
-```
+#Enter your StartOS password
 make install
 ```
+
+**Tip:** You can also install the `vaultwarden.s9pk` by sideloading it under the **StartOS > System > Sideload a Service** section.
 
 ### Verify Install
 
