@@ -1,4 +1,4 @@
-FROM vaultwarden/server:1.29.2
+FROM vaultwarden/server:1.30.0
 
 RUN apt update && \
     apt install -y \
