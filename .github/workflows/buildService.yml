@@ -24,8 +24,8 @@ jobs:
           git submodule update --init --recursive
           start-sdk init
           make
-          PACKAGE_ID=$(yq e ".id" manifest.yaml)
-          mv ${PACKAGE_ID}*s9pk ~/
+          PACKAGE_ID=$(yq e ".id" manifest.yaml 2>/dev/null || jq -r '.id' manifest.json 2>/dev/null)
+          mv ${PACKAGE_ID}*.s9pk ~/
         shell: bash
 
       - name: Upload .s9pk
