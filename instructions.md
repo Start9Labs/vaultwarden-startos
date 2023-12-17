@@ -13,5 +13,5 @@ You can use Vaultwarden simply by visitng your unique .local or .onion address i
 This portal enables you to configure environment settings, enable or disable new signups, edit users, edit organizations, and more. To use the admin portal:
 
 1. Copy your `Admin Token` from StartOS via Services > Vaultwarden > Properties.
-2. Navigate to your Vaultwarden addres with "/admin" suffixed. e.g. `https://<your_vaultwarden_address>/admin`
-3. Authenticate with you admin token copied in step 1.
+2. Navigate to your Vaultwarden address with "/admin" suffixed. e.g. `https://<your_vaultwarden_address>/admin`
+3. Authenticate with your admin token copied in step 1.
