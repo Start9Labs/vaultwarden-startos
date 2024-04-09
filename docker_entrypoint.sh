@@ -2,8 +2,6 @@
 ADMIN_TOKEN=$(yq e '.admin-token' /data/start9/config.yaml)
 VW_ADMIN_TOKEN=$(echo -n "$ADMIN_TOKEN" | argon2 "$(openssl rand -base64 32)" -e -id -k 65540 -t 3 -p 4)
 echo "ADMIN_TOKEN='${VW_ADMIN_TOKEN}'" >> /.env
-#Ensure config.json's admin token gets upgraded if the old token exists in config.json:
-sed -i "s|$ADMIN_TOKEN|$VW_ADMIN_TOKEN|g" /data/config.json
 
 TOR_ADDRESS=$(yq e .vaultwarden-tor-address /data/start9/config.yaml)
 LAN_ADDRESS=$(yq e .vaultwarden-lan-address /data/start9/config.yaml)
@@ -39,7 +37,7 @@ data:
     masked: false
 EOF
 
-CONF_FILE="/etc/nginx/conf.d/default.conf"
+CONF_FILE="/etc/nginx/http.d/default.conf"
 NGINX_CONF='
 server {
     ##
@@ -100,9 +98,8 @@ server {
     }
 }
 '
-rm /etc/nginx/sites-enabled/default
 echo "$NGINX_CONF" > $CONF_FILE
-sed -i "s/TLSv1 TLSv1.1 //" /etc/nginx/nginx.conf
+sed -i "s#ssl_protocols TLSv1.1#ssl_protocols#g" /etc/nginx/nginx.conf
 
 nginx -g 'daemon off;' &
 exec  tini -p SIGTERM -- /start.sh

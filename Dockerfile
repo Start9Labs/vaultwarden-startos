@@ -1,22 +1,14 @@
-FROM vaultwarden/server:1.30.1
+FROM vaultwarden/server:1.30.5-alpine
 
-RUN apt update && \
-    apt install -y \
+RUN apk update && \
+    apk add --no-cache \
     tini \
     argon2 \
-    nginx-core; \
-    apt clean; \
+    nginx \
+    yq; \
     rm -rf \
     /tmp/* \
-    /var/lib/apt/lists/* \
+    /var/cache/apk/* \
     /var/tmp/*
-RUN mkdir /run/nginx
-
-
-# arm64 or amd64
-ARG PLATFORM
-ENV YQ_VER v4.3.2
-RUN curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${PLATFORM} -o /usr/local/bin/yq \
-    && chmod a+x /usr/local/bin/yq
 
 COPY --chmod=755 ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh

@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.30.1",
-  "release-notes": "* This is a minor release to fix some issues with the Login with device feature\n* Full list of upstream changes available [here](https://github.com/dani-garcia/vaultwarden/compare/1.30.0...1.30.1)",
+  "version": "1.30.5",
+  "release-notes": "* New optimized Alpine 3.19 based build image, achieving approximately 67% decrease in package size!\n * Fixed attachment upload size check\n* Updated web-vault to v2024.1.2b\n* Full list of upstream changes available [here](https://github.com/dani-garcia/vaultwarden/compare/1.30.1...1.30.5)",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-startos",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
