@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.30.5",
-  "release-notes": "* New optimized Alpine 3.19 based build image, achieving approximately 67% decrease in package size!\n * Fixed attachment upload size check\n* Updated web-vault to v2024.1.2b\n* Full list of upstream changes available [here](https://github.com/dani-garcia/vaultwarden/compare/1.30.1...1.30.5)",
+  "version": "1.31.0",
+  "release-notes": "* Initial support for the beta releases of the new native mobile apps\n* Removed support for WebSocket traffic on port 3012, as it's been integrated on the main HTTP port for a few releases\n* Updated included web vault to 2024.5.1",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-startos",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
@@ -66,7 +66,6 @@
       "tor-config": {
         "port-mapping": {
           "80": "8080",
-          "3012": "3012",
           "443": "3443"
         }
       },
@@ -74,10 +73,6 @@
         "443": {
           "ssl": true,
           "internal": 8080
-        },
-        "3012": {
-          "ssl": false,
-          "internal": 3012
         }
       },
       "ui": true,
