@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.31.0",
-  "release-notes": "* Initial support for the beta releases of the new native mobile apps\n* Removed support for WebSocket traffic on port 3012, as it's been integrated on the main HTTP port for a few releases\n* Updated included web vault to 2024.5.1",
+  "version": "1.32.1",
+  "release-notes": "* Updated to the latest upstream code with notable changes:\n  - Fixed syncing and login issues with native mobile clients\n* Full change log available [here](https://github.com/dani-garcia/vaultwarden/releases/tag/1.32.1)",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-startos",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
