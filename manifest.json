@@ -79,6 +79,12 @@
       "protocols": ["tcp", "http"]
     }
   },
+  "hardware-requirements": {
+    "arch": [
+      "x86_64",
+      "aarch64"
+    ]
+  },
   "backup": {
     "create": {
       "type": "script"
@@ -91,13 +97,17 @@
     "from": {
       "*": {
         "type": "script",
-        "args": ["from"]
+        "args": [
+          "from"
+        ]
       }
     },
     "to": {
       "*": {
         "type": "script",
-        "args": ["to"]
+        "args": [
+          "to"
+        ]
       }
     }
   }
