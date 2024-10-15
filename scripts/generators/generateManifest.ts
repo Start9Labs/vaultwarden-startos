@@ -1,4 +1,4 @@
-import inJson from '../../manifest.json' assert { type: "json" }
+import inJson from '../../manifest.json' with { type: "json" };
 
 await Deno.writeTextFile("scripts/generated/manifest.ts", `
 /// GENERATED FILE

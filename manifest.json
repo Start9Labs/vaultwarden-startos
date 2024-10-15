@@ -1,14 +1,14 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.32.1",
-  "release-notes": "* Updated to the latest upstream code with notable changes:\n  - Fixed syncing and login issues with native mobile clients\n* Full change log available [here](https://github.com/dani-garcia/vaultwarden/releases/tag/1.32.1)",
+  "version": "1.32.2",
+  "release-notes": "* Updated to the latest upstream code with notable changes:\n  - Fixed collection management for managers\n  - Full change log available [here](https://github.com/dani-garcia/vaultwarden/releases/tag/1.32.2)\n* Update bundling process to use Deno emit module\n* Switched the donation link to Librepay",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-startos",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
   "support-site": "https://vaultwarden.discourse.group/",
   "marketing-site": "https://github.com/dani-garcia/vaultwarden/",
-  "donation-url": "https://www.paypal.com/paypalme/DaniGG",
+  "donation-url": "https://liberapay.com/dani-garcia",
   "build": ["make"],
   "description": {
     "short": "Secure password management",
