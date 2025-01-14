@@ -1,64 +1,33 @@
-PKG_VERSION := $(shell cat manifest.json | jq -r '.version')
-PKG_ID := $(shell cat manifest.json | jq -r '.id')
-TS_FILES := $(shell find ./ -name \*.ts)
+PACKAGE_ID := vaultwarden
 
-.DELETE_ON_ERROR:
+# Phony targets
+.PHONY: all clean install
 
-all: verify
+# Default target
+all: ${PACKAGE_ID}.s9pk
 
-verify: $(PKG_ID).s9pk
-	@start-sdk verify s9pk $(PKG_ID).s9pk
-	@echo " Done!"
-	@echo "   Filesize: $(shell du -h $(PKG_ID).s9pk) is ready"
+# Build targets
+${PACKAGE_ID}.s9pk: $(shell start-cli s9pk list-ingredients)
+	start-cli s9pk pack
 
-install:
-ifeq (,$(wildcard ~/.embassy/config.yaml))
-	@echo; echo "You must define \"host: https://server-name.local\" in ~/.embassy/config.yaml config file first"; echo
-else
-	start-cli package install $(PKG_ID).s9pk
-endif
+javascript/index.js: $(shell git ls-files startos) tsconfig.json node_modules package.json
+	npm run build
 
+node_modules: package.json package-lock.json
+	npm ci
+
+package-lock.json: package.json
+	npm i
+
+# Clean target
 clean:
-	rm -rf docker-images
-	rm -f  $(PKG_ID).s9pk
-	rm -f scripts/generated/manifest.ts
-	rm -f scripts/*.js
+	rm -rf ${PACKAGE_ID}.s9pk
+	rm -rf javascript
+	rm -rf node_modules
 
-arm:
-	@rm -f docker-images/x86_64.tar
-	@ARCH=aarch64 $(MAKE)
-
-x86:
-	@rm -f docker-images/aarch64.tar
-	@ARCH=x86_64 $(MAKE)
-
-$(PKG_ID).s9pk: manifest.json LICENSE instructions.md icon.png scripts/embassy.js  docker-images/x86_64.tar docker-images/aarch64.tar
-ifeq ($(ARCH),aarch64)
-	@echo "start-sdk: Preparing aarch64 package ..."
-else ifeq ($(ARCH),x86_64)
-	@echo "start-sdk: Preparing x86_64 package ..."
-else
-	@echo "start-sdk: Preparing Universal Package ..."
-endif
-	@start-sdk pack
-
-docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh manifest.json
-ifeq ($(ARCH),x86_64)
-else
-	mkdir -p docker-images
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --build-arg PLATFORM=arm64 --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/arm64/v8 -o type=docker,dest=docker-images/aarch64.tar -f Dockerfile .
-endif
-
-docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh manifest.json
-ifeq ($(ARCH),aarch64)
-else
-	mkdir -p docker-images
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --build-arg DB=sqlite --build-arg PLATFORM=amd64 --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/amd64 -o type=docker,dest=docker-images/x86_64.tar -f Dockerfile .
-endif
-
-scripts/embassy.js: $(TS_FILES) scripts/generated/manifest.ts
-	deno run --allow-read --allow-write --allow-env --allow-net scripts/bundle.ts
-
-scripts/generated/manifest.ts: manifest.json
-	mkdir -p scripts/generated
-	deno run --allow-write scripts/generators/generateManifest.ts
+# Install target
+install:
+	@if [ ! -f ~/.startos/config.yaml ]; then echo "You must define \"host: http://server-name.local\" in ~/.startos/config.yaml config file first."; exit 1; fi
+	@echo "\nInstalling to $$(grep -v '^#' ~/.startos/config.yaml | cut -d'/' -f3) ...\n"
+	@[ -f $(PACKAGE_ID).s9pk ] || ( $(MAKE) && echo "\nInstalling to $$(grep -v '^#' ~/.startos/config.yaml | cut -d'/' -f3) ...\n" )
+	@start-cli package install -s $(PACKAGE_ID).s9pk
