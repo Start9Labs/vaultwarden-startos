@@ -5,7 +5,7 @@ import { setInterfaces } from './interfaces'
 import { versions } from './versions'
 import { actions } from './actions'
 import { setAdminToken } from './actions/admin-token'
-import { getHttpInterfaceUrls } from './utils'
+import { getHttpInterfaceUrls, getHttpOnionUrl } from './utils'
 
 // **** Install ****
 const install = sdk.setupInstall(async ({ effects }) => {
@@ -13,11 +13,14 @@ const install = sdk.setupInstall(async ({ effects }) => {
 
   const urls = await getHttpInterfaceUrls(effects)
 
-  await sdk.store.setOwn(
-    effects,
-    sdk.StorePath.DOMAIN,
-    urls.find((u) => u.startsWith('http:') && u.includes('.onion')) || '',
-  )
+  await sdk.store.setOwn(effects, sdk.StorePath, {
+    ADMIN_TOKEN: '',
+    DOMAIN: getHttpOnionUrl(urls),
+    smtp: {
+      selection: 'disabled',
+      value: {},
+    },
+  })
 })
 
 // **** Uninstall ****

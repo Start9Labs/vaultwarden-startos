@@ -13,7 +13,6 @@ export const manifest = setupManifest({
     short: 'Secure password management',
     long: 'Vaultwarden is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. All data is stored in an encrypted vault on your server.',
   },
-  assets: [],
   volumes: ['main'],
   images: {
     vaultwarden: {

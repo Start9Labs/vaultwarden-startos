@@ -20,6 +20,10 @@ export const v1_32_7_1 = VersionInfo.of({
       await sdk.store.setOwn(effects, sdk.StorePath, {
         ADMIN_TOKEN: await hashToken(configYaml['admin-token']),
         DOMAIN: getHttpOnionUrl(urls),
+        smtp: {
+          selection: 'disabled',
+          value: {},
+        },
       })
 
       // remove old start9 dir
