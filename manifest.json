@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.32.7",
-  "release-notes": "* Updated to the latest upstream code with notable changes:\n  - This release contains a security fix for the following CVE [GHSA-g65h-982x-4m5m](https://github.com/dani-garcia/vaultwarden/security/advisories/GHSA-g65h-982x-4m5m).\n  - New extension design is now enabled by default.\n  - Full change log available [here](https://github.com/dani-garcia/vaultwarden/releases/tag/1.32.7)",
+  "version": "1.33.2",
+  "release-notes": "* Updated to the latest upstream code, with notable changes and 4 security fixes:\n    Individual release notes: [v1.33.0](https://github.com/dani-garcia/vaultwarden/releases/tag/1.33.0), [v1.33.1](https://github.com/dani-garcia/vaultwarden/releases/tag/1.33.1), [v1.33.2](https://github.com/dani-garcia/vaultwarden/releases/tag/1.33.2), Full detailed change log available [here](https://github.com/dani-garcia/vaultwarden/compare/1.32.7...1.33.2)",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-startos",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
