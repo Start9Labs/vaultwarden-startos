@@ -7,4 +7,10 @@ export type Store = {
   smtp: typeof sdk.inputSpecConstants.smtpInputSpec._TYPE
 }
 
+export const initStore: Store = {
+  ADMIN_TOKEN: '',
+  DOMAIN: '',
+  smtp: { selection: 'disabled', value: {} },
+}
+
 export const exposedStore = setupExposeStore<Store>(() => [])

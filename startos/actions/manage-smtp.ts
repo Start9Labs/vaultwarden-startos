@@ -13,7 +13,7 @@ export const manageSmtp = sdk.Action.withInput(
   // metadata
   async ({ effects }) => ({
     name: 'Configure SMTP',
-    description: 'Add SMTP credentials for sending emails',
+    description: 'Add SMTP credentials for sending emails.',
     warning: null,
     allowedStatuses: 'any',
     group: null,

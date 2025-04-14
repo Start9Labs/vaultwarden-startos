@@ -15,3 +15,7 @@ This portal enables you to configure environment settings, enable or disable new
 1. Copy your `Admin Token` from StartOS via Services > Vaultwarden > Properties.
 2. Navigate to your Vaultwarden address with "/admin" suffixed. e.g. `https://<your_vaultwarden_address>/admin`
 3. Authenticate with your admin token copied in step 1.
+
+### SMTP
+
+To set SMTP credentials for your Vaultwarden server, you must use the "Manage SMTP" Action in Vaultwarden on StartOS. _Do not_ use the admin portal; any credentials entered into the admin portal will be overwritten the next time Vaultwarden is started.
