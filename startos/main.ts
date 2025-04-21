@@ -52,9 +52,13 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    * Each daemon defines its own health check, which can optionally be exposed to the user.
    */
   return sdk.Daemons.of(effects, started, healthReceipts).addDaemon('primary', {
-    subcontainer: { imageId: 'vaultwarden' },
+    subcontainer: await sdk.SubContainer.of(
+      effects,
+      { imageId: 'vaultwarden' },
+      sdk.Mounts.of().addVolume('main', null, '/data', false),
+      'vaultwarden-sub',
+    ),
     command: ['start.sh'],
-    mounts: sdk.Mounts.of().addVolume('main', null, '/data', false),
     env: {
       PASSWORD_ITERATIONS: '2000000',
       DOMAIN,
