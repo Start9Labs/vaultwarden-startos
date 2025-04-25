@@ -3,6 +3,8 @@ INGREDIENTS := $(shell start-cli s9pk list-ingredients 2> /dev/null)
 
 .PHONY: all clean install check-deps check-init ingredients
 
+.DELETE_ON_ERROR:
+
 all: ${PACKAGE_ID}.s9pk
 	@echo " Done!"
 	@echo " Filesize:$(shell du -h $(PACKAGE_ID).s9pk) is ready"
