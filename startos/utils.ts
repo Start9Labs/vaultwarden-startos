@@ -1,6 +1,6 @@
 import { Effects } from '@start9labs/start-sdk/base/lib/Effects'
 import { utils } from '@start9labs/start-sdk'
-import * as argon2 from 'argon2'
+import { hash } from '@node-rs/argon2'
 import { sdk } from './sdk'
 
 export const uiPort = 80
@@ -27,7 +27,7 @@ export function createAdminToken(): string {
 }
 
 export function hashToken(token: string): Promise<string> {
-  return argon2.hash(token, {
+  return hash(token, {
     memoryCost: 65540,
     timeCost: 3,
     parallelism: 4,
