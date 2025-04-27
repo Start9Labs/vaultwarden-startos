@@ -98,7 +98,8 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     env: {
       PASSWORD_ITERATIONS: '2000000',
       DOMAIN: domainWithProtocol,
-      ADMIN_TOKEN,
+      // ADMIN_TOKEN: was generated with '12345678' pasword to check my sanity,
+      ADMIN_TOKEN: '$argon2id$v=19$m=65540,t=3,p=4$wM7HgtYBwXZpb5BrJjHo649hjd0Y0VegLkQv+o5bAOY$Ko1qmAE33zNoM0r5Pd5T5IP11ygYtM+AgsOk8gxMYGQ',
       ...smtpEnv,
     },
     ready: {
