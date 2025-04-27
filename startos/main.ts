@@ -1,6 +1,6 @@
 import { sdk } from './sdk'
 import { T } from '@start9labs/start-sdk'
-import { uiPort } from './utils'
+import { uiPort, getHttpInterfaceUrls, getHttpOnionUrl } from './utils'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
@@ -13,6 +13,42 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   const { DOMAIN, ADMIN_TOKEN, smtp } = await sdk.store
     .getOwn(effects, sdk.StorePath)
     .const()
+
+  // Get the HTTP interface URLs
+  const urls = await getHttpInterfaceUrls(effects)
+  console.info(`Available URLs: ${JSON.stringify(urls)}`)
+
+  // Use the first URL if DOMAIN is empty or not provided
+  let domainWithProtocol = DOMAIN
+  
+  if (!domainWithProtocol || domainWithProtocol.trim() === '') {
+    // If DOMAIN is empty, use the first URL from the HTTP interface
+    if (urls.length > 0) {
+      domainWithProtocol = urls[0]
+      console.info(`Using URL from HTTP interface: ${domainWithProtocol}`)
+    } else {
+      // Fallback to a default value if no URLs are available
+      domainWithProtocol = 'http://localhost'
+      console.info(`No URLs available, using default: ${domainWithProtocol}`)
+    }
+  } else {
+    // Ensure DOMAIN has a protocol
+    if (!domainWithProtocol.startsWith('http://') && !domainWithProtocol.startsWith('https://')) {
+      domainWithProtocol = `https://${domainWithProtocol}`
+      console.info(`Added protocol to DOMAIN: ${domainWithProtocol}`)
+    }
+  }
+
+  // Validate that the domain has a host
+  const url = new URL(domainWithProtocol)
+  if (!url.hostname || url.hostname === '') {
+    console.error(`Invalid domain: ${domainWithProtocol} - hostname is empty`)
+    // Use a fallback domain
+    domainWithProtocol = 'http://localhost'
+    console.info(`Using fallback domain: ${domainWithProtocol}`)
+  }
+
+  console.info(`Final DOMAIN value: ${domainWithProtocol}`)
 
   let smtpCredentials: T.SmtpValue | null = null
 
@@ -58,10 +94,10 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       sdk.Mounts.of().addVolume('main', null, '/data', false),
       'vaultwarden-sub',
     ),
-    command: ['start.sh'],
+    command: ['/start.sh'],
     env: {
       PASSWORD_ITERATIONS: '2000000',
-      DOMAIN,
+      DOMAIN: domainWithProtocol,
       ADMIN_TOKEN,
       ...smtpEnv,
     },
