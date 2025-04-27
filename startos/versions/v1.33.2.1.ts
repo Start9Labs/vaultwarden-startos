@@ -4,8 +4,8 @@ import { load } from 'js-yaml'
 import { getHttpInterfaceUrls, getHttpOnionUrl, hashToken } from '../utils'
 import { sdk } from '../sdk'
 
-export const v1_32_7_1 = VersionInfo.of({
-  version: '1.32.7:1',
+export const v1_33_2_1 = VersionInfo.of({
+  version: '1.33.2:1',
   releaseNotes: 'Revamped for StartOS 0.3.6',
   migrations: {
     up: async ({ effects }) => {
