@@ -1,5 +1,5 @@
 import { sdk } from '../sdk'
-import { createAdminToken, hashToken } from '../utils'
+import { createAdminToken, createSalt, hashToken } from '../utils'
 
 export const setAdminToken = sdk.Action.withoutInput(
   // id
@@ -27,11 +27,9 @@ export const setAdminToken = sdk.Action.withoutInput(
   async ({ effects }) => {
     const token = createAdminToken()
 
-    await sdk.store.setOwn(
-      effects,
-      sdk.StorePath.ADMIN_TOKEN,
-      await hashToken(token),
-    )
+    const hash = await hashToken(effects, token)
+
+    await sdk.store.setOwn(effects, sdk.StorePath.ADMIN_TOKEN, hash)
 
     return {
       version: '1',

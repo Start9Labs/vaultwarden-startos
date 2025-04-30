@@ -18,7 +18,7 @@ export const v1_33_2_1 = VersionInfo.of({
       ) as { 'admin-token': string }
 
       await sdk.store.setOwn(effects, sdk.StorePath, {
-        ADMIN_TOKEN: await hashToken(configYaml['admin-token']),
+        ADMIN_TOKEN: await hashToken(effects, configYaml['admin-token']),
         DOMAIN: getHttpOnionUrl(urls),
         smtp: {
           selection: 'disabled',

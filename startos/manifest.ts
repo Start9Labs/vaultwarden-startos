@@ -20,6 +20,13 @@ export const manifest = setupManifest({
         dockerTag: 'vaultwarden/server:1.33.2-alpine',
       },
     },
+    argon2: {
+      source: {
+        dockerBuild: {
+          dockerfile: './argon2.Dockerfile',
+        },
+      },
+    },
   },
   hardwareRequirements: {},
   alerts: {
