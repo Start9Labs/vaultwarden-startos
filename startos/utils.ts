@@ -20,7 +20,7 @@ export function getHttpOnionUrl(urls: string[]): string {
 
 export function createAdminToken(): string {
   return utils.getDefaultString({
-    charset: 'A-Z,a-z,0-9,+,/,=',
+    charset: 'A-Z,a-z,0-9',
     len: 32,
   })
 }
