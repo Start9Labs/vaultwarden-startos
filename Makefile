@@ -59,7 +59,14 @@ update-deps:
 		echo "Error: npx not found. Please install Node.js and npm."; \
 		exit 1; \
 	fi
-	@echo "Updating all dependencies to latest stable versions..."
-	@npx npm-check-updates -u
+	
+	@echo "Checking for and fixing security vulnerabilities..."
+	@npm audit fix
+	
+	@echo "Checking for minor/patch updates..."
+	@npx npm-check-updates -u --target minor
+	
+	@echo "Installing updated dependencies..."
 	@npm i
 	
+	@echo "Dependencies updated successfully (only minor/patch versions). Please review changes, check for issues, and run your tests to ensure compatibility."
