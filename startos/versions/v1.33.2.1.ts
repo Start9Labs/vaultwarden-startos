@@ -6,7 +6,7 @@ import { sdk } from '../sdk'
 
 export const v1_33_2_1 = VersionInfo.of({
   version: '1.33.2:1',
-  releaseNotes: 'Revamped for StartOS 0.3.6',
+  releaseNotes: 'Revamped for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {
       // get all URLs

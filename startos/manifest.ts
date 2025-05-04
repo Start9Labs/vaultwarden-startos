@@ -3,7 +3,7 @@ import { setupManifest } from '@start9labs/start-sdk'
 export const manifest = setupManifest({
   id: 'vaultwarden',
   title: 'Vaultwarden',
-  license: 'mit',
+  license: 'MIT',
   wrapperRepo: 'https://github.com/Start9Labs/vaultwarden-startos/',
   upstreamRepo: 'https://github.com/dani-garcia/vaultwarden/',
   supportSite: 'https://vaultwarden.discourse.group/',
