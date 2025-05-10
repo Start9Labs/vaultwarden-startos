@@ -1,14 +1,20 @@
 import { sdk } from './sdk'
-import { exposedStore, initStore } from './store'
 import { setDependencies } from './dependencies'
 import { setInterfaces } from './interfaces'
 import { versions } from './versions'
 import { actions } from './actions'
 import { setAdminToken } from './actions/admin-token'
 import { getHttpInterfaceUrls, getHttpOnionUrl } from './utils'
+import { store } from './file-models/store.json'
 
 // **** Pre Install ****
-const preInstall = sdk.setupPreInstall(async ({ effects }) => {})
+const preInstall = sdk.setupPreInstall(async ({ effects }) => {
+  await store.write(effects, {
+    ADMIN_TOKEN: '',
+    DOMAIN: '',
+    smtp: { selection: 'disabled', value: {} },
+  })
+})
 
 // **** Post Install ****
 const postInstall = sdk.setupPostInstall(async ({ effects }) => {
@@ -16,7 +22,7 @@ const postInstall = sdk.setupPostInstall(async ({ effects }) => {
 
   const urls = await getHttpInterfaceUrls(effects)
 
-  await sdk.store.setOwn(effects, sdk.StorePath.DOMAIN, getHttpOnionUrl(urls))
+  await store.merge(effects, { DOMAIN: getHttpOnionUrl(urls) })
 })
 
 // **** Uninstall ****
@@ -33,6 +39,4 @@ export const { packageInit, packageUninit, containerInit } = sdk.setupInit(
   setInterfaces,
   setDependencies,
   actions,
-  initStore,
-  exposedStore,
 )

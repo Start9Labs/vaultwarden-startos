@@ -1,3 +1,4 @@
+import { store } from '../file-models/store.json'
 import { sdk } from '../sdk'
 
 const { InputSpec } = sdk
@@ -25,10 +26,9 @@ export const manageSmtp = sdk.Action.withInput(
 
   // optionally pre-fill the input form
   async ({ effects }) => ({
-    smtp: await sdk.store.getOwn(effects, sdk.StorePath.smtp).const(),
+    smtp: (await store.read((s) => s.smtp).once()) || undefined,
   }),
 
   // the execution function
-  async ({ effects, input }) =>
-    sdk.store.setOwn(effects, sdk.StorePath.smtp, input.smtp),
+  async ({ effects, input }) => store.merge(effects, { smtp: input.smtp }),
 )

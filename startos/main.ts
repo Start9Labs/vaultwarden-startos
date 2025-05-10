@@ -1,6 +1,7 @@
 import { sdk } from './sdk'
 import { T } from '@start9labs/start-sdk'
 import { uiPort, getHttpInterfaceUrls, getHttpOnionUrl } from './utils'
+import { store } from './file-models/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
@@ -10,9 +11,11 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    */
   console.info('Starting Vaultwarden!')
 
-  const { DOMAIN, ADMIN_TOKEN, smtp } = await sdk.store
-    .getOwn(effects, sdk.StorePath)
-    .const()
+  const storeJson = await store.read().const(effects)
+  if (!storeJson) {
+    throw new Error('Store deos not exist')
+  }
+  const { DOMAIN, ADMIN_TOKEN, smtp } = storeJson
 
   // Get the HTTP interface URLs
   const urls = await getHttpInterfaceUrls(effects)
@@ -94,7 +97,12 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     subcontainer: await sdk.SubContainer.of(
       effects,
       { imageId: 'vaultwarden' },
-      sdk.Mounts.of().addVolume('main', null, '/data', false),
+      sdk.Mounts.of().mountVolume({
+        volumeId: 'main',
+        subpath: null,
+        mountpoint: '/data',
+        readonly: false,
+      }),
       'vaultwarden-sub',
     ),
     command: ['/start.sh'],

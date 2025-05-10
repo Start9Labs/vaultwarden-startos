@@ -2,7 +2,7 @@ import { VersionInfo, IMPOSSIBLE } from '@start9labs/start-sdk'
 import { readFile, rmdir } from 'fs/promises'
 import { load } from 'js-yaml'
 import { getHttpInterfaceUrls, getHttpOnionUrl, hashToken } from '../utils'
-import { sdk } from '../sdk'
+import { store } from '../file-models/store.json'
 
 export const v1_33_2_1 = VersionInfo.of({
   version: '1.33.2:1',
@@ -17,7 +17,7 @@ export const v1_33_2_1 = VersionInfo.of({
         await readFile('/data/start9/config.yaml', 'utf-8'),
       ) as { 'admin-token': string }
 
-      await sdk.store.setOwn(effects, sdk.StorePath, {
+      await store.write(effects, {
         ADMIN_TOKEN: await hashToken(effects, configYaml['admin-token']),
         DOMAIN: getHttpOnionUrl(urls),
         smtp: {
