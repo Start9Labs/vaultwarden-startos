@@ -1,14 +1,15 @@
 import { matches, FileHelper } from '@start9labs/start-sdk'
+import { sdk } from '../sdk'
 
 const { object, string, any } = matches
 
 const shape = object({
   ADMIN_TOKEN: string,
   DOMAIN: string,
-  smtp: object({
-    selection: any,
-    value: any,
-  }).onMismatch({ selection: 'disabled' as any, value: {} }),
+  smtp: sdk.inputSpecConstants.smtpInputSpec.validator.onMismatch({
+    selection: 'disabled',
+    value: {},
+  }),
 })
 
 export const store = FileHelper.json(
