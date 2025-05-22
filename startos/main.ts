@@ -1,7 +1,7 @@
 import { sdk } from './sdk'
 import { T } from '@start9labs/start-sdk'
-import { uiPort, getHttpInterfaceUrls, getHttpOnionUrl } from './utils'
-import { store } from './file-models/store.json'
+import { uiPort, getHttpInterfaceUrls } from './utils'
+import { store } from './fileModels/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**

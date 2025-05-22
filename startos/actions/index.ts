@@ -1,7 +1,7 @@
 import { sdk } from '../sdk'
 import { setAdminToken } from './admin-token'
-import { manageSmtp } from './manage-smtp'
-import { setPrimaryDomain } from './set-primary-url'
+import { manageSmtp } from './manageMmtp'
+import { setPrimaryDomain } from './setPrimaryUrl'
 
 export const actions = sdk.Actions.of()
   .addAction(setAdminToken)

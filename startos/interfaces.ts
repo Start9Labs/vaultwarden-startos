@@ -18,7 +18,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     schemeOverride: null,
     username: null,
     path: '',
-    search: {},
+    query: {},
   })
 
   // admin portal
@@ -31,7 +31,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     schemeOverride: null,
     username: null,
     path: '/admin',
-    search: {},
+    query: {},
   })
 
   const uiReceipt = await uiMultiOrigin.export([vault, admin])

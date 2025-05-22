@@ -1,4 +1,4 @@
-import { store } from '../file-models/store.json'
+import { store } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 import { getHttpInterfaceUrls, getHttpOnionUrl } from '../utils'
 
