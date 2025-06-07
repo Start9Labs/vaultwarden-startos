@@ -1,6 +1,6 @@
-import { store } from '../fileModels/store.json'
+import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
-import { createAdminToken, createSalt, hashToken } from '../utils'
+import { createAdminToken, hashToken } from '../utils'
 
 export const setAdminToken = sdk.Action.withoutInput(
   // id
@@ -8,7 +8,7 @@ export const setAdminToken = sdk.Action.withoutInput(
 
   // metadata
   async ({ effects }) => {
-    const existing = await store.read((s) => s.ADMIN_TOKEN).const(effects)
+    const existing = await storeJson.read((s) => s.ADMIN_TOKEN).const(effects)
 
     return {
       name: existing ? 'Update Admin Token' : 'Create Admin Token',
@@ -28,7 +28,7 @@ export const setAdminToken = sdk.Action.withoutInput(
 
     const hash = await hashToken(effects, token)
 
-    await store.merge(effects, { ADMIN_TOKEN: hash })
+    await storeJson.merge(effects, { ADMIN_TOKEN: hash })
 
     return {
       version: '1',

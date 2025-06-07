@@ -1,4 +1,4 @@
-import { store } from '../fileModels/store.json'
+import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 import { getHttpInterfaceUrls, getHttpOnionUrl } from '../utils'
 
@@ -42,9 +42,10 @@ export const setPrimaryDomain = sdk.Action.withInput(
 
   // optionally pre-fill the input form
   async ({ effects }) => ({
-    domain: (await store.read((s) => s.DOMAIN).once()) || undefined,
+    domain: (await storeJson.read((s) => s.DOMAIN).once()) || undefined,
   }),
 
   // the execution function
-  async ({ effects, input }) => store.merge(effects, { DOMAIN: input.domain }),
+  async ({ effects, input }) =>
+    storeJson.merge(effects, { DOMAIN: input.domain }),
 )

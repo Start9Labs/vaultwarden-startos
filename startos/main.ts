@@ -1,7 +1,7 @@
 import { sdk } from './sdk'
 import { T } from '@start9labs/start-sdk'
 import { uiPort, getHttpInterfaceUrls } from './utils'
-import { store } from './fileModels/store.json'
+import { storeJson } from './fileModels/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
@@ -11,11 +11,11 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    */
   console.info('Starting Vaultwarden!')
 
-  const storeJson = await store.read().const(effects)
-  if (!storeJson) {
+  const store = await storeJson.read().const(effects)
+  if (!store) {
     throw new Error('Store deos not exist')
   }
-  const { DOMAIN, ADMIN_TOKEN, smtp } = storeJson
+  const { DOMAIN, ADMIN_TOKEN, smtp } = store
 
   // Get the HTTP interface URLs
   const urls = await getHttpInterfaceUrls(effects)
@@ -105,12 +105,14 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       }),
       'vaultwarden-sub',
     ),
-    command: ['/start.sh'],
-    env: {
-      PASSWORD_ITERATIONS: '2000000',
-      DOMAIN: domainWithProtocol,
-      ADMIN_TOKEN,
-      ...smtpEnv,
+    exec: {
+      command: ['/start.sh'],
+      env: {
+        PASSWORD_ITERATIONS: '2000000',
+        DOMAIN: domainWithProtocol,
+        ADMIN_TOKEN,
+        ...smtpEnv,
+      },
     },
     ready: {
       display: 'Web Interface',

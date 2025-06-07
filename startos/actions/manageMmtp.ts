@@ -1,4 +1,4 @@
-import { store } from '../fileModels/store.json'
+import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
 const { InputSpec } = sdk
@@ -26,9 +26,9 @@ export const manageSmtp = sdk.Action.withInput(
 
   // optionally pre-fill the input form
   async ({ effects }) => ({
-    smtp: (await store.read((s) => s.smtp).once()) || undefined,
+    smtp: (await storeJson.read((s) => s.smtp).once()) || undefined,
   }),
 
   // the execution function
-  async ({ effects, input }) => store.merge(effects, { smtp: input.smtp }),
+  async ({ effects, input }) => storeJson.merge(effects, { smtp: input.smtp }),
 )

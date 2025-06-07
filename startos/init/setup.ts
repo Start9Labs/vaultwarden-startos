@@ -1,13 +1,21 @@
 import { setAdminToken } from '../actions/admin-token'
-import { store } from '../fileModels/store.json'
+import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 import { getHttpInterfaceUrls, getHttpOnionUrl } from '../utils'
 
-export const setup = sdk.setupOnInstall(async (effects) => {
-  const urls = await getHttpInterfaceUrls(effects)
-  await store.merge(effects, { DOMAIN: getHttpOnionUrl(urls) })
+export const setup = sdk.setupOnInit(async (effects) => {
+  const store = await storeJson
+    .read((s) => ({ DOMAIN: s.DOMAIN, ADMIN_TOKEN: s.ADMIN_TOKEN }))
+    .const(effects)
 
-  await sdk.action.createOwnTask(effects, setAdminToken, 'critical', {
-    reason: 'Create your Vaultwarden admin password/token',
-  })
+  if (!store?.DOMAIN) {
+    const urls = await getHttpInterfaceUrls(effects)
+    await storeJson.merge(effects, { DOMAIN: getHttpOnionUrl(urls) })
+  }
+
+  if (!store?.ADMIN_TOKEN) {
+    await sdk.action.createOwnTask(effects, setAdminToken, 'critical', {
+      reason: 'Create your Vaultwarden admin password/token',
+    })
+  }
 })
