@@ -1,15 +1,17 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.33.2",
-  "release-notes": "* Updated to the latest upstream code, with notable changes and 4 security fixes:\n    Individual release notes: [v1.33.0](https://github.com/dani-garcia/vaultwarden/releases/tag/1.33.0), [v1.33.1](https://github.com/dani-garcia/vaultwarden/releases/tag/1.33.1), [v1.33.2](https://github.com/dani-garcia/vaultwarden/releases/tag/1.33.2), Full detailed change log available [here](https://github.com/dani-garcia/vaultwarden/compare/1.32.7...1.33.2)",
+  "version": "1.34.1",
+  "release-notes": "* Updated to the latest upstream code.\n    Individual release notes: [v1.34.0](https://github.com/dani-garcia/vaultwarden/releases/tag/1.34.0), [v1.34.1](https://github.com/dani-garcia/vaultwarden/releases/tag/1.34.1), Full detailed change log available [here](https://github.com/dani-garcia/vaultwarden/compare/1.33.2...1.34.1)",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-startos",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
   "support-site": "https://vaultwarden.discourse.group/",
   "marketing-site": "https://github.com/dani-garcia/vaultwarden/",
   "donation-url": "https://liberapay.com/dani-garcia",
-  "build": ["make"],
+  "build": [
+    "make"
+  ],
   "description": {
     "short": "Secure password management",
     "long": "Vaultwarden is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. All data is stored in an encrypted vault on your server."
@@ -76,7 +78,10 @@
         }
       },
       "ui": true,
-      "protocols": ["tcp", "http"]
+      "protocols": [
+        "tcp",
+        "http"
+      ]
     }
   },
   "hardware-requirements": {

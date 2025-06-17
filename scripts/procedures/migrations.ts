@@ -3,7 +3,7 @@ import { manifest } from "../generated/manifest.ts";
 
 export const migration: T.ExpectedExports.migration = migrations.fromMapping(
   {
-    // 1.33.2 No migration needed
+    // 1.34.1 No migration needed
   },
   manifest.version
 );
