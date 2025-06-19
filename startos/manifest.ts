@@ -17,7 +17,7 @@ export const manifest = setupManifest({
   images: {
     vaultwarden: {
       source: {
-        dockerTag: 'vaultwarden/server:1.33.2-alpine',
+        dockerTag: 'vaultwarden/server:1.34.1-alpine',
       },
     },
     argon2: {
