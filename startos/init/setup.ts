@@ -10,7 +10,11 @@ export const setup = sdk.setupOnInit(async (effects) => {
 
   if (!store?.DOMAIN) {
     const urls = await getHttpInterfaceUrls(effects)
-    await storeJson.merge(effects, { DOMAIN: getHttpOnionUrl(urls) })
+    await storeJson.merge(
+      effects,
+      { DOMAIN: getHttpOnionUrl(urls) },
+      { allowWriteAfterConst: true },
+    )
   }
 
   if (!store?.ADMIN_TOKEN) {

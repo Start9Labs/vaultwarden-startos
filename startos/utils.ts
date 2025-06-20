@@ -4,14 +4,14 @@ import { sdk } from './sdk'
 
 export const uiPort = 80
 
-export async function getHttpInterfaceUrls(
+export async function getVaultInterfaceUrls(
   effects: T.Effects,
 ): Promise<string[]> {
-  const httpInterface = await sdk.serviceInterface
-    .getOwn(effects, 'http')
+  const vaultInterface = await sdk.serviceInterface
+    .getOwn(effects, 'vault')
     .const()
 
-  return httpInterface?.addressInfo?.urls || []
+  return vaultInterface?.addressInfo?.urls || []
 }
 
 export function getHttpOnionUrl(urls: string[]): string {
