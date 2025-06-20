@@ -1,12 +1,12 @@
 import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
-import { getHttpInterfaceUrls, getHttpOnionUrl } from '../utils'
+import { getVaultInterfaceUrls, getHttpOnionUrl } from '../utils'
 
 const { InputSpec, Value } = sdk
 
 export const inputSpec = InputSpec.of({
   domain: Value.dynamicSelect(async ({ effects }) => {
-    const urls = await getHttpInterfaceUrls(effects)
+    const urls = await getVaultInterfaceUrls(effects)
 
     return {
       name: 'Primary Domain',

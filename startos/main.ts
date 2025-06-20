@@ -1,6 +1,6 @@
 import { sdk } from './sdk'
 import { T } from '@start9labs/start-sdk'
-import { uiPort, getHttpInterfaceUrls } from './utils'
+import { uiPort, getVaultInterfaceUrls } from './utils'
 import { storeJson } from './fileModels/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
@@ -18,7 +18,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   const { DOMAIN, ADMIN_TOKEN, smtp } = store
 
   // Get the HTTP interface URLs
-  const urls = await getHttpInterfaceUrls(effects)
+  const urls = await getVaultInterfaceUrls(effects)
   console.info(`Available URLs: ${JSON.stringify(urls)}`)
 
   // Use the first URL if DOMAIN is empty or not provided

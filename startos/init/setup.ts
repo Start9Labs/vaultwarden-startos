@@ -1,7 +1,7 @@
 import { setAdminToken } from '../actions/admin-token'
 import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
-import { getHttpInterfaceUrls, getHttpOnionUrl } from '../utils'
+import { getVaultInterfaceUrls, getHttpOnionUrl } from '../utils'
 
 export const setup = sdk.setupOnInit(async (effects) => {
   const store = await storeJson
@@ -9,7 +9,7 @@ export const setup = sdk.setupOnInit(async (effects) => {
     .const(effects)
 
   if (!store?.DOMAIN) {
-    const urls = await getHttpInterfaceUrls(effects)
+    const urls = await getVaultInterfaceUrls(effects)
     await storeJson.merge(
       effects,
       { DOMAIN: getHttpOnionUrl(urls) },
