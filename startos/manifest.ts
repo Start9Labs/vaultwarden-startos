@@ -1,4 +1,5 @@
 import { setupManifest } from '@start9labs/start-sdk'
+import { current } from './install/versions'
 
 export const manifest = setupManifest({
   id: 'vaultwarden',
@@ -9,6 +10,8 @@ export const manifest = setupManifest({
   supportSite: 'https://vaultwarden.discourse.group/',
   marketingSite: 'https://github.com/dani-garcia/vaultwarden/',
   donationUrl: 'https://liberapay.com/dani-garcia/',
+  docsUrl:
+    'https://github.com/Start9Labs/vaultwarden-startos/blob/master/instructions.md',
   description: {
     short: 'Secure password management',
     long: 'Vaultwarden is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. All data is stored in an encrypted vault on your server.',
