@@ -16,7 +16,7 @@ export const manifest = setupManifest({
   marketingSite: 'https://github.com/dani-garcia/vaultwarden/',
   donationUrl: 'https://liberapay.com/dani-garcia/',
   docsUrl:
-    'https://github.com/Start9Labs/vaultwarden-startos/blob/master/instructions.md',
+    'https://github.com/Start9Labs/vaultwarden-startos/blob/update/040/docs/README.md',
   description: {
     short: 'Secure password management',
     long: 'Vaultwarden is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. All data is stored in an encrypted vault on your server.',
@@ -25,7 +25,7 @@ export const manifest = setupManifest({
   images: {
     vaultwarden: {
       source: {
-        dockerTag: 'vaultwarden/server:1.34.1-alpine',
+        dockerTag: 'vaultwarden/server:1.34.3-alpine',
       },
       arch: architectures
     } as SDKImageInputSpec,
