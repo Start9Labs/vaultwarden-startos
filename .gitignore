@@ -4,3 +4,5 @@ scripts/generated/manifest.ts
 .vscode/
 docker-images
 .DS_Store
+node_modules
+javascript
