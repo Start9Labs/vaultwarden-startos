@@ -9,7 +9,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    *
    * In this section, we fetch any resources or run any desired preliminary commands.
    */
-  console.info('Starting Vaultwarden!')
+  console.info('[i] Starting Vaultwarden!')
 
   const store = await storeJson.read().const(effects)
   if (!store) {
