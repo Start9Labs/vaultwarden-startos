@@ -11,7 +11,7 @@ export async function getVaultInterfaceUrls(
     .getOwn(effects, 'vault')
     .const()
 
-  return vaultInterface?.addressInfo?.urls || []
+  return vaultInterface?.addressInfo?.format() || []
 }
 
 export function getHttpOnionUrl(urls: string[]): string {

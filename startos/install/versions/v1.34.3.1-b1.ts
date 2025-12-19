@@ -3,18 +3,17 @@ import { readFile, rm } from 'fs/promises'
 import { load } from 'js-yaml'
 import { storeJson } from '../../fileModels/store.json'
 
-export const v1_34_1_1 = VersionInfo.of({
-  version: '1.34.1:1',
+export const v1_34_3_1_b1 = VersionInfo.of({
+  version: '1.34.3:1-beta.1',
   releaseNotes: 'Revamped for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {
       // get old config.yaml
-      const configYaml = load(
-        await readFile(
-          '/media/startos/volumes/main/start9/config.yaml',
-          'utf-8',
-        ),
-      ) as { 'admin-token'?: string } | undefined
+      const configYaml: { 'admin-token'?: string } | undefined = await readFile(
+        '/media/startos/volumes/main/start9/config.yaml',
+        'utf-8',
+      )
+        .then(load, () => undefined) as { 'admin-token'?: string } | undefined
 
       await storeJson.write(effects, {
         ADMIN_TOKEN: configYaml?.['admin-token'] || '',
