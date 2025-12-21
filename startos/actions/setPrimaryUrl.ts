@@ -1,6 +1,6 @@
 import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
-import { getVaultInterfaceUrls, getHttpOnionUrl } from '../utils'
+import { getVaultInterfaceUrls } from '../utils'
 
 const { InputSpec, Value } = sdk
 
@@ -17,7 +17,7 @@ export const inputSpec = InputSpec.of({
         }),
         {} as Record<string, string>,
       ),
-      default: getHttpOnionUrl(urls),
+      default: '',
     }
   }),
 })

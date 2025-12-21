@@ -1,18 +1,19 @@
 import { setAdminToken } from '../actions/admin-token'
 import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
-import { getVaultInterfaceUrls, getHttpOnionUrl } from '../utils'
+import { getVaultInterfaceUrls } from '../utils'
 
 export const setup = sdk.setupOnInit(async (effects) => {
-  const store = await storeJson
-    .read((s) => ({ DOMAIN: s.DOMAIN, ADMIN_TOKEN: s.ADMIN_TOKEN }))
-    .const(effects)
+  const urls = await getVaultInterfaceUrls(effects)
 
-  if (!store?.DOMAIN) {
-    const urls = await getVaultInterfaceUrls(effects)
+  const store = await storeJson.read().const(effects)
+
+  if (!store?.DOMAIN || !urls.includes(store.DOMAIN)) {
     await storeJson.merge(
       effects,
-      { DOMAIN: getHttpOnionUrl(urls) },
+      {
+        DOMAIN: urls.find((u) => u.includes('.local')),
+      },
       { allowWriteAfterConst: true },
     )
   }
