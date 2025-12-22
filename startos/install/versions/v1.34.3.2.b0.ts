@@ -1,6 +1,5 @@
-import { VersionInfo, IMPOSSIBLE } from '@start9labs/start-sdk'
+import { VersionInfo, IMPOSSIBLE, YAML } from '@start9labs/start-sdk'
 import { readFile, rm } from 'fs/promises'
-import { load } from 'js-yaml'
 import { storeJson } from '../../fileModels/store.json'
 
 export const v1_34_3_2_b0 = VersionInfo.of({
@@ -9,11 +8,10 @@ export const v1_34_3_2_b0 = VersionInfo.of({
   migrations: {
     up: async ({ effects }) => {
       // get old config.yaml
-      const configYaml: { 'admin-token'?: string } | undefined =
-        (await readFile(
-          '/media/startos/volumes/main/start9/config.yaml',
-          'utf-8',
-        ).then(load, () => undefined)) as { 'admin-token'?: string } | undefined
+      const configYaml: { 'admin-token'?: string } | undefined = await readFile(
+        '/media/startos/volumes/main/start9/config.yaml',
+        'utf-8',
+      ).then(YAML.parse, () => undefined)
 
       if (configYaml) {
         await storeJson.write(effects, {
