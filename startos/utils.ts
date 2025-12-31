@@ -6,9 +6,9 @@ export const uiPort = 80
 export async function getVaultInterfaceUrls(
   effects: T.Effects,
 ): Promise<string[]> {
-  const vaultInterface = await sdk.serviceInterface
-    .getOwn(effects, 'vault')
+  const urls = await sdk.serviceInterface
+    .getOwn(effects, 'vault', (i) => i?.addressInfo?.nonLocal.format())
     .const()
 
-  return vaultInterface?.addressInfo?.nonLocal.format() || []
+  return urls || []
 }

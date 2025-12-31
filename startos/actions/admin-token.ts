@@ -1,7 +1,7 @@
 import { T, utils } from '@start9labs/start-sdk'
-import { storeJson } from '../fileModels/store.json'
 import * as crypto from 'crypto'
 import { sdk } from '../sdk'
+import { configJson } from '../fileModels/config.json'
 
 export const setAdminToken = sdk.Action.withoutInput(
   // id
@@ -9,7 +9,7 @@ export const setAdminToken = sdk.Action.withoutInput(
 
   // metadata
   async ({ effects }) => {
-    const existing = await storeJson.read((s) => s.ADMIN_TOKEN).const(effects)
+    const existing = await configJson.read((s) => s.admin_token).const(effects)
 
     return {
       name: existing ? 'Update Admin Token' : 'Create Admin Token',
@@ -32,7 +32,7 @@ export const setAdminToken = sdk.Action.withoutInput(
 
     const hash = await hashToken(effects, token)
 
-    await storeJson.merge(effects, { ADMIN_TOKEN: hash })
+    await configJson.merge(effects, { admin_token: hash })
 
     return {
       version: '1',

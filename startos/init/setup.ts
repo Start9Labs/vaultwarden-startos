@@ -1,24 +1,24 @@
 import { setAdminToken } from '../actions/admin-token'
-import { storeJson } from '../fileModels/store.json'
+import { configJson } from '../fileModels/config.json'
 import { sdk } from '../sdk'
 import { getVaultInterfaceUrls } from '../utils'
 
 export const setup = sdk.setupOnInit(async (effects) => {
   const urls = await getVaultInterfaceUrls(effects)
 
-  const store = await storeJson.read().const(effects)
+  const config = await configJson.read().const(effects)
 
-  if (!store?.DOMAIN || !urls.includes(store.DOMAIN)) {
-    await storeJson.merge(
+  if (!config?.domain || !urls.includes(config.domain)) {
+    await configJson.merge(
       effects,
       {
-        DOMAIN: urls.find((u) => u.includes('.local')),
+        domain: urls.find((u) => u.includes('.local')),
       },
       { allowWriteAfterConst: true },
     )
   }
 
-  if (!store?.ADMIN_TOKEN) {
+  if (!config?.admin_token) {
     await sdk.action.createOwnTask(effects, setAdminToken, 'critical', {
       reason: 'Create your Vaultwarden admin password/token',
     })

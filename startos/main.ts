@@ -1,7 +1,6 @@
 import { sdk } from './sdk'
-import { T } from '@start9labs/start-sdk'
 import { uiPort } from './utils'
-import { storeJson } from './fileModels/store.json'
+import { configJson } from './fileModels/config.json'
 
 export const main = sdk.setupMain(async ({ effects }) => {
   /**
@@ -9,35 +8,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
    *
    * In this section, we fetch any resources or run any desired preliminary commands.
    */
-  console.info('[i] Starting Vaultwarden!')
+  console.info('Starting Vaultwarden!')
 
-  const store = await storeJson.read().const(effects)
-  if (!store) {
+  const config = await configJson.read().const(effects)
+  if (!config) {
     throw new Error('Store deos not exist')
-  }
-  const { DOMAIN, ADMIN_TOKEN, smtp } = store
-
-  let smtpCredentials: T.SmtpValue | null = null
-
-  if (smtp.selection === 'system') {
-    smtpCredentials = await sdk.getSystemSmtp(effects).const()
-    if (smtpCredentials && smtp.value.customFrom)
-      smtpCredentials.from = smtp.value.customFrom
-  } else if (smtp.selection === 'custom') {
-    smtpCredentials = smtp.value
-  }
-
-  let smtpEnv = {} as SMTP_ENV
-  if (smtpCredentials) {
-    smtpEnv = {
-      SMTP_HOST: smtpCredentials.server,
-      SMTP_FROM: smtpCredentials.from,
-      SMTP_PORT: String(smtpCredentials.port),
-      SMTP_SECURITY: 'starttls',
-      SMTP_USERNAME: smtpCredentials.login,
-    }
-    if (smtpCredentials.password)
-      smtpEnv.SMTP_PASSWORD = smtpCredentials.password
   }
 
   /**
@@ -61,12 +36,6 @@ export const main = sdk.setupMain(async ({ effects }) => {
     ),
     exec: {
       command: sdk.useEntrypoint(),
-      env: {
-        PASSWORD_ITERATIONS: '2000000',
-        DOMAIN,
-        ADMIN_TOKEN,
-        ...smtpEnv,
-      },
     },
     ready: {
       display: 'Web Interface',
@@ -79,12 +48,3 @@ export const main = sdk.setupMain(async ({ effects }) => {
     requires: [],
   })
 })
-
-type SMTP_ENV = {
-  SMTP_HOST: string
-  SMTP_FROM: string
-  SMTP_PORT: string
-  SMTP_SECURITY: 'starttls'
-  SMTP_USERNAME: string
-  SMTP_PASSWORD?: string
-}

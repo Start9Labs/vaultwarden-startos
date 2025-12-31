@@ -1,4 +1,4 @@
-import { storeJson } from '../fileModels/store.json'
+import { configJson } from '../fileModels/config.json'
 import { sdk } from '../sdk'
 import { getVaultInterfaceUrls } from '../utils'
 
@@ -42,10 +42,10 @@ export const setPrimaryDomain = sdk.Action.withInput(
 
   // optionally pre-fill the input form
   async ({ effects }) => ({
-    domain: (await storeJson.read((s) => s.DOMAIN).once()) || undefined,
+    domain: (await configJson.read((c) => c.domain).once()) || undefined,
   }),
 
   // the execution function
   async ({ effects, input }) =>
-    storeJson.merge(effects, { DOMAIN: input.domain }),
+    configJson.merge(effects, { domain: input.domain }),
 )

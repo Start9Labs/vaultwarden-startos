@@ -1,9 +1,9 @@
 import { VersionInfo, IMPOSSIBLE, YAML } from '@start9labs/start-sdk'
 import { readFile, rm } from 'fs/promises'
-import { storeJson } from '../../fileModels/store.json'
+import { configJson } from '../../fileModels/config.json'
 
-export const v1_34_3_2_b0 = VersionInfo.of({
-  version: '1.34.3:2-beta.0',
+export const v1_34_3_2_b1 = VersionInfo.of({
+  version: '1.34.3:2-beta.1',
   releaseNotes: 'Revamped for StartOS 0.4.0',
   migrations: {
     up: async ({ effects }) => {
@@ -14,13 +14,10 @@ export const v1_34_3_2_b0 = VersionInfo.of({
       ).then(YAML.parse, () => undefined)
 
       if (configYaml) {
-        await storeJson.write(effects, {
-          ADMIN_TOKEN: configYaml['admin-token'] || '',
-          DOMAIN: '',
-          smtp: {
-            selection: 'disabled',
-            value: {},
-          },
+        await configJson.merge(effects, {
+          admin_token: configYaml['admin-token'] || '',
+          domain: '',
+          smtp_security: 'starttls',
         })
 
         // remove old start9 dir
