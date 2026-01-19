@@ -10,8 +10,6 @@ export const versionGraph = VersionGraph.of({
   other,
   preInstall: async (effects) => {
     await configJson.write(effects, {
-      domain: '',
-      admin_token: '',
       signups_allowed: true,
       smtp_security: 'starttls',
     })

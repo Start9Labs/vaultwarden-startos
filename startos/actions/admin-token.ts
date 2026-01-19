@@ -9,7 +9,7 @@ export const setAdminToken = sdk.Action.withoutInput(
 
   // metadata
   async ({ effects }) => {
-    const existing = await configJson.read((s) => s.admin_token).const(effects)
+    const existing = await configJson.read((c) => c.admin_token).const(effects)
 
     return {
       name: existing ? 'Update Admin Token' : 'Create Admin Token',

@@ -20,7 +20,7 @@ export const setup = sdk.setupOnInit(async (effects) => {
 
   if (!config?.admin_token) {
     await sdk.action.createOwnTask(effects, setAdminToken, 'critical', {
-      reason: 'Create your Vaultwarden admin password/token',
+      reason: 'Create your Vaultwarden admin portal token',
     })
   }
 })

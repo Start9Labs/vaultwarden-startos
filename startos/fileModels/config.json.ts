@@ -3,8 +3,8 @@ import { matches, FileHelper } from '@start9labs/start-sdk'
 const { object, string, literal, natural, boolean } = matches
 
 const shape = object({
-  domain: string,
-  admin_token: string,
+  domain: string.optional(),
+  admin_token: string.optional(),
   signups_allowed: boolean.onMismatch(false),
   smtp_host: string.optional(),
   smtp_security: literal('starttls').onMismatch('starttls'),
