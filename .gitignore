@@ -1,8 +1,8 @@
 *.s9pk
-scripts/*.js
-scripts/generated/manifest.ts
+startos/*.js
+node_modules/
+.DS_Store
 .vscode/
 docker-images
-.DS_Store
-node_modules
 javascript
+ncc-cache
