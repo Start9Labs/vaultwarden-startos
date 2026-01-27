@@ -6,7 +6,7 @@ Vaultwarden is a _self-hosted_ password manager, which means your passwords phys
 
 ## Connecting to Your Vaultwarden Server
 
-You can use Vaultwarden simply by visitng your unique .local or .onion address in the browser. You can also use a variety of Bitwarden clients, including browsers extensions, desktop apps, and mobile apps. For a complete list of options and detailed instructions, see the [docs](https://docs.start9.com/latest/user-manual/service-guides/vaultwarden).
+You can use Vaultwarden simply by visitng your unique .local or .onion address in the browser. You can also use a variety of Bitwarden clients, including browsers extensions, desktop apps, and mobile apps. For a complete list of options and detailed instructions, see the [docs](https://docs.start9.com/latest/service-guides/vaultwarden).
 
 ## Using The Admin Portal
 
