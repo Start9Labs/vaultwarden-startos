@@ -1,4 +1,5 @@
 import { setupManifest } from '@start9labs/start-sdk'
+import i18n from './i18n'
 
 export const manifest = setupManifest({
   id: 'vaultwarden',
@@ -11,16 +12,14 @@ export const manifest = setupManifest({
   donationUrl: 'https://liberapay.com/dani-garcia/',
   docsUrl:
     'https://github.com/Start9Labs/vaultwarden-startos/blob/update/040/docs/README.md',
-  description: {
-    short: 'Secure password management',
-    long: 'Vaultwarden is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. All data is stored in an encrypted vault on your server.',
-  },
+  description: i18n.description,
   volumes: ['main'],
   images: {
     vaultwarden: {
       source: {
-        dockerTag: 'vaultwarden/server:1.34.3-alpine',
+        dockerTag: 'vaultwarden/server:1.35.2-alpine',
       },
+      arch: ['x86_64', 'aarch64'],
     },
     argon2: {
       source: {
@@ -28,16 +27,8 @@ export const manifest = setupManifest({
           dockerfile: './argon2.Dockerfile',
         },
       },
+      arch: ['x86_64', 'aarch64'],
     },
-  },
-  hardwareRequirements: {},
-  alerts: {
-    install: null,
-    update: null,
-    uninstall: null,
-    restore: null,
-    start: null,
-    stop: null,
   },
   dependencies: {},
 })

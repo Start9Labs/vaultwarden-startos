@@ -2,6 +2,7 @@ import { setAdminToken } from '../actions/admin-token'
 import { configJson } from '../fileModels/config.json'
 import { sdk } from '../sdk'
 import { getVaultInterfaceUrls } from '../utils'
+import { i18n } from '../i18n'
 
 export const setup = sdk.setupOnInit(async (effects) => {
   const urls = await getVaultInterfaceUrls(effects)
@@ -20,7 +21,7 @@ export const setup = sdk.setupOnInit(async (effects) => {
 
   if (!config?.admin_token) {
     await sdk.action.createOwnTask(effects, setAdminToken, 'critical', {
-      reason: 'Create your Vaultwarden admin portal token',
+      reason: i18n('Create your Vaultwarden admin portal token'),
     })
   }
 })

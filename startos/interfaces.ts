@@ -1,5 +1,6 @@
 import { sdk } from './sdk'
 import { uiPort } from './utils'
+import { i18n } from './i18n'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   const uiMulti = sdk.MultiHost.of(effects, 'main')
@@ -9,10 +10,11 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   // web vault
   const vault = sdk.createInterface(effects, {
-    name: 'Web Vault',
+    name: i18n('Web Vault'),
     id: 'vault',
-    description:
+    description: i18n(
       'Primary user interface for interacting with Vaultwarden in a web browser',
+    ),
     type: 'ui',
     masked: false,
     schemeOverride: null,
@@ -23,9 +25,9 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
 
   // admin portal
   const admin = sdk.createInterface(effects, {
-    name: 'Admin Portal',
+    name: i18n('Admin Portal'),
     id: 'admin',
-    description: 'User interface for administrator operations.',
+    description: i18n('User interface for administrator operations.'),
     type: 'ui',
     masked: false,
     schemeOverride: null,

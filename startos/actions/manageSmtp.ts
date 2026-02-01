@@ -1,6 +1,7 @@
 import { configJson } from '../fileModels/config.json'
 import { systemSmtpJson } from '../fileModels/systemSmtp.json'
 import { sdk } from '../sdk'
+import { i18n } from '../i18n'
 
 const { InputSpec } = sdk
 
@@ -14,8 +15,8 @@ export const manageSmtp = sdk.Action.withInput(
 
   // metadata
   async ({ effects }) => ({
-    name: 'Configure SMTP',
-    description: 'Add SMTP credentials for sending emails.',
+    name: i18n('Configure SMTP'),
+    description: i18n('Add SMTP credentials for sending emails.'),
     warning: null,
     allowedStatuses: 'any',
     group: null,

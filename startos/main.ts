@@ -1,6 +1,7 @@
 import { sdk } from './sdk'
 import { uiPort } from './utils'
 import { configJson } from './fileModels/config.json'
+import { i18n } from './i18n'
 
 export const main = sdk.setupMain(async ({ effects }) => {
   /**
@@ -8,11 +9,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
    *
    * In this section, we fetch any resources or run any desired preliminary commands.
    */
-  console.info('Starting Vaultwarden!')
+  console.info(i18n('Starting Vaultwarden!'))
 
   const config = await configJson.read().const(effects)
   if (!config) {
-    throw new Error('Store deos not exist')
+    throw new Error(i18n('Store deos not exist'))
   }
 
   /**
@@ -38,11 +39,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
       command: sdk.useEntrypoint(),
     },
     ready: {
-      display: 'Web Interface',
+      display: i18n('Web Interface'),
       fn: () =>
         sdk.healthCheck.checkPortListening(effects, uiPort, {
-          successMessage: 'The web interface is ready',
-          errorMessage: 'The web interface is not ready',
+          successMessage: i18n('The web interface is ready'),
+          errorMessage: i18n('The web interface is not ready'),
         }),
     },
     requires: [],

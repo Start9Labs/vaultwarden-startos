@@ -1,10 +1,11 @@
 import { VersionInfo, IMPOSSIBLE, YAML } from '@start9labs/start-sdk'
 import { readFile, rm } from 'fs/promises'
 import { configJson } from '../../fileModels/config.json'
+import i18n from '../../manifest/i18n'
 
-export const v1_34_3_2_b1 = VersionInfo.of({
-  version: '1.34.3:2-beta.1',
-  releaseNotes: 'Revamped for StartOS 0.4.0',
+export const v1_35_2_0_b0 = VersionInfo.of({
+  version: '1.35.2:0-beta.0',
+  releaseNotes: i18n.releaseNotes.v1_35_2_0_b0,
   migrations: {
     up: async ({ effects }) => {
       // get old config.yaml

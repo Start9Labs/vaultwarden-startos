@@ -2,6 +2,7 @@ import { T, utils } from '@start9labs/start-sdk'
 import * as crypto from 'crypto'
 import { sdk } from '../sdk'
 import { configJson } from '../fileModels/config.json'
+import { i18n } from '../i18n'
 
 export const setAdminToken = sdk.Action.withoutInput(
   // id
@@ -12,10 +13,10 @@ export const setAdminToken = sdk.Action.withoutInput(
     const existing = await configJson.read((c) => c.admin_token).const(effects)
 
     return {
-      name: existing ? 'Update Admin Token' : 'Create Admin Token',
+      name: existing ? i18n('Update Admin Token') : i18n('Create Admin Token'),
       description: existing
-        ? 'Create your admin token in order to access the admin portal'
-        : 'Update your admin token',
+        ? i18n('Create your admin token in order to access the admin portal')
+        : i18n('Update your admin token'),
       warning: null,
       allowedStatuses: 'any',
       group: null,
@@ -36,8 +37,8 @@ export const setAdminToken = sdk.Action.withoutInput(
 
     return {
       version: '1',
-      title: 'Your Admin Token',
-      message: 'Save this token to a secure location.',
+      title: i18n('Your Admin Token'),
+      message: i18n('Save this token to a secure location.'),
       result: {
         value: token,
         copyable: true,
