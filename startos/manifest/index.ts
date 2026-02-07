@@ -10,8 +10,7 @@ export const manifest = setupManifest({
   supportSite: 'https://vaultwarden.discourse.group/',
   marketingSite: 'https://github.com/dani-garcia/vaultwarden/',
   donationUrl: 'https://liberapay.com/dani-garcia/',
-  docsUrl:
-    'https://github.com/Start9Labs/vaultwarden-startos/blob/update/040/docs/README.md',
+  docsUrl: 'https://github.com/dani-garcia/vaultwarden/wiki',
   description: i18n.description,
   volumes: ['main'],
   images: {
