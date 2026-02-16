@@ -14,13 +14,6 @@ EOF
 cat << EOF > /data/start9/stats.yaml
 version: 2
 data:
-  "Admin Token":
-    type: string
-    value: "$ADMIN_TOKEN"
-    description: "Authentication token for logging into your admin dashboard"
-    copyable: true
-    qr: false
-    masked: true
   "Local Server URL":
     type: string
     value: "https://$LAN_ADDRESS"
@@ -35,6 +28,13 @@ data:
     copyable: true
     qr: false
     masked: false
+  "Admin Token":
+    type: string
+    value: "$ADMIN_TOKEN"
+    description: "Authentication token for logging into your admin dashboard"
+    copyable: true
+    qr: false
+    masked: true
   "Local Admin URL":
     type: string
     value: "https://$LAN_ADDRESS/admin"
