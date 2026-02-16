@@ -17,21 +17,35 @@ data:
   "Admin Token":
     type: string
     value: "$ADMIN_TOKEN"
-    description: "Authentication token for logging into your admin dashboard."
+    description: "Authentication token for logging into your admin dashboard"
     copyable: true
     qr: false
     masked: true
+  "Local Server URL":
+    type: string
+    value: "https://$LAN_ADDRESS"
+    description: "The URL for accessing your Vaultwarden server via your LAN"
+    copyable: true
+    qr: false
+    masked: false
+  "Tor Server URL":
+    type: string
+    value: "https://$TOR_ADDRESS"
+    description: "The URL for accessing your Vaultwarden server via Tor"
+    copyable: true
+    qr: false
+    masked: false
   "Local Admin URL":
     type: string
     value: "https://$LAN_ADDRESS/admin"
-    description: "The URL for accessing your admin dashboard via your LAN."
+    description: "The URL for accessing your admin dashboard via your LAN"
     copyable: true
     qr: false
     masked: false
   "Tor Admin URL":
     type: string
     value: "https://$TOR_ADDRESS/admin"
-    description: "The URL for accessing your admin dashboard via Tor."
+    description: "The URL for accessing your admin dashboard via Tor"
     copyable: true
     qr: false
     masked: false
