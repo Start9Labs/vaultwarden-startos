@@ -64,7 +64,7 @@
   "interfaces": {
     "main": {
       "name": "Web Interface/Bitwarden Protocol",
-      "description": "Do not use the URL below.  Instead, look in Vaultwarden's Properties section for your server addresses.",
+      "description": "Do not use the Tor Address below.  Instead, look in Vaultwarden's Properties section for your Tor server URL.",
       "tor-config": {
         "port-mapping": {
           "80": "8080",
