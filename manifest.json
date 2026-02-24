@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.35.3",
-  "release-notes": "* Updated to the latest upstream code containing a security fix for large orgs:\n    Release notes: [v1.35.3](https://github.com/dani-garcia/vaultwarden/releases/tag/1.35.3)",
+  "version": "1.35.4",
+  "release-notes": "* Updated to the latest upstream code containing security fixes:\n    Release notes: [v1.35.3](https://github.com/dani-garcia/vaultwarden/releases/tag/1.35.3)\n    Release notes: [v1.35.4](https://github.com/dani-garcia/vaultwarden/releases/tag/1.35.4)",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-startos",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
