@@ -4,6 +4,7 @@ import { setInterfaces } from '../interfaces'
 import { versionGraph } from '../install/versionGraph'
 import { actions } from '../actions'
 import { restoreInit } from '../backups'
+import { seedFiles } from './seedFiles'
 import { setup } from './setup'
 import { watchSystemSmtp } from './watchSystemSmtp'
 
@@ -13,6 +14,7 @@ export const init = sdk.setupInit(
   setInterfaces,
   setDependencies,
   actions,
+  seedFiles,
   setup,
   watchSystemSmtp,
 )

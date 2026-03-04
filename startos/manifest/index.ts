@@ -5,18 +5,17 @@ export const manifest = setupManifest({
   id: 'vaultwarden',
   title: 'Vaultwarden',
   license: 'MIT',
-  wrapperRepo: 'https://github.com/Start9Labs/vaultwarden-startos/',
+  packageRepo: 'https://github.com/Start9Labs/vaultwarden-startos/tree/update/040',
   upstreamRepo: 'https://github.com/dani-garcia/vaultwarden/',
-  supportSite: 'https://vaultwarden.discourse.group/',
-  marketingSite: 'https://github.com/dani-garcia/vaultwarden/',
+  marketingUrl: 'https://github.com/dani-garcia/vaultwarden/',
   donationUrl: 'https://liberapay.com/dani-garcia/',
-  docsUrl: 'https://github.com/dani-garcia/vaultwarden/wiki',
+  docsUrls: ['https://github.com/dani-garcia/vaultwarden/wiki', 'https://bitwarden.com/help/'],
   description: i18n.description,
   volumes: ['main'],
   images: {
     vaultwarden: {
       source: {
-        dockerTag: 'vaultwarden/server:1.35.2-alpine',
+        dockerTag: 'vaultwarden/server:1.35.4-alpine',
       },
       arch: ['x86_64', 'aarch64'],
     },

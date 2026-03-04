@@ -34,7 +34,7 @@ export const manageSmtp = sdk.Action.withInput(
       return {
         smtp: {
           selection: 'system' as const,
-          value: { customFrom: smtp.customFrom || undefined },
+          value: { customFrom: smtp.customFrom },
         },
       }
     }
@@ -42,17 +42,24 @@ export const manageSmtp = sdk.Action.withInput(
     const config = await configJson.read().once()
 
     if (config?.smtp_host) {
-      const { smtp_host, smtp_port, smtp_from, smtp_username, smtp_password } =
-        config
       return {
         smtp: {
           selection: 'custom' as const,
           value: {
-            server: smtp_host,
-            port: smtp_port,
-            from: smtp_from,
-            login: smtp_username,
-            password: smtp_password,
+            provider: {
+              selection: 'other' as const,
+              value: {
+                host: config.smtp_host,
+                port: config.smtp_port ?? 587,
+                from: config.smtp_from ?? '',
+                username: config.smtp_username ?? '',
+                password: config.smtp_password ?? null,
+                security:
+                  config.smtp_security === 'force_tls'
+                    ? ('tls' as const)
+                    : ('starttls' as const),
+              },
+            },
           },
         },
       }
@@ -69,13 +76,15 @@ export const manageSmtp = sdk.Action.withInput(
         customFrom: input.smtp.value.customFrom,
       })
     } else if (input.smtp.selection === 'custom') {
-      const { server, port, from, login, password } = input.smtp.value
+      const { host, port, from, username, password, security } =
+        input.smtp.value.provider.value
       await configJson.merge(effects, {
-        smtp_host: server,
+        smtp_host: host,
         smtp_port: port,
         smtp_from: from,
-        smtp_username: login,
+        smtp_username: username,
         smtp_password: password || undefined,
+        smtp_security: security === 'tls' ? 'force_tls' : 'starttls',
       })
     } else {
       await configJson.merge(effects, {

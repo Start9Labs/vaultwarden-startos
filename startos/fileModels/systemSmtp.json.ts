@@ -1,11 +1,9 @@
-import { matches, FileHelper } from '@start9labs/start-sdk'
+import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
 
-const { object, string, boolean } = matches
-
-const shape = object({
-  enabled: boolean,
-  customFrom: string.nullable(),
+const shape = z.object({
+  enabled: z.boolean().catch(false),
+  customFrom: z.string().nullable().catch(null),
 })
 
 export const systemSmtpJson = FileHelper.json(

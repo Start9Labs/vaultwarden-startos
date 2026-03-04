@@ -1,19 +1,17 @@
-import { matches, FileHelper } from '@start9labs/start-sdk'
+import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
 
-const { object, string, literal, natural, boolean } = matches
-
-const shape = object({
-  domain: string.optional(),
-  admin_token: string.optional(),
-  signups_allowed: boolean.onMismatch(false),
-  smtp_host: string.optional(),
-  smtp_security: literal('starttls').onMismatch('starttls'),
-  smtp_port: natural.optional().onMismatch(undefined),
-  smtp_from: string.optional().onMismatch(undefined),
-  smtp_from_name: string.optional().onMismatch(undefined),
-  smtp_username: string.optional().onMismatch(undefined),
-  smtp_password: string.optional().onMismatch(undefined),
+const shape = z.object({
+  domain: z.string().optional().catch(undefined),
+  admin_token: z.string().optional().catch(undefined),
+  signups_allowed: z.boolean().catch(false),
+  smtp_host: z.string().optional().catch(undefined),
+  smtp_security: z.enum(['starttls', 'force_tls']).catch('starttls'),
+  smtp_port: z.number().int().nonnegative().optional().catch(undefined),
+  smtp_from: z.string().optional().catch(undefined),
+  smtp_from_name: z.string().optional().catch(undefined),
+  smtp_username: z.string().optional().catch(undefined),
+  smtp_password: z.string().optional().catch(undefined),
 })
 
 export const configJson = FileHelper.json(

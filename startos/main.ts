@@ -1,7 +1,7 @@
-import { sdk } from './sdk'
-import { uiPort } from './utils'
 import { configJson } from './fileModels/config.json'
 import { i18n } from './i18n'
+import { sdk } from './sdk'
+import { uiPort } from './utils'
 
 export const main = sdk.setupMain(async ({ effects }) => {
   /**
@@ -12,9 +12,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   console.info(i18n('Starting Vaultwarden!'))
 
   const config = await configJson.read().const(effects)
-  if (!config) {
-    throw new Error(i18n('Store deos not exist'))
-  }
+  if (!config) throw new Error('No config.json')
 
   /**
    * ======================== Daemons ========================
