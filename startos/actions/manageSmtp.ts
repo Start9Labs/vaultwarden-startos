@@ -42,6 +42,7 @@ export const manageSmtp = sdk.Action.withInput(
     const config = await configJson.read().once()
 
     if (config?.smtp_host) {
+      const isTls = config.smtp_security === 'force_tls'
       return {
         smtp: {
           selection: 'custom' as const,
@@ -50,14 +51,23 @@ export const manageSmtp = sdk.Action.withInput(
               selection: 'other' as const,
               value: {
                 host: config.smtp_host,
-                port: config.smtp_port ?? 587,
                 from: config.smtp_from ?? '',
                 username: config.smtp_username ?? '',
                 password: config.smtp_password ?? null,
-                security:
-                  config.smtp_security === 'force_tls'
-                    ? ('tls' as const)
-                    : ('starttls' as const),
+                security: isTls
+                  ? {
+                      selection: 'tls' as const,
+                      value: { port: String(config.smtp_port ?? 465) },
+                    }
+                  : {
+                      selection: 'starttls' as const,
+                      value: {
+                        port: String(config.smtp_port ?? 587) as
+                          | '587'
+                          | '25'
+                          | '2525',
+                      },
+                    },
               },
             },
           },
@@ -76,15 +86,16 @@ export const manageSmtp = sdk.Action.withInput(
         customFrom: input.smtp.value.customFrom,
       })
     } else if (input.smtp.selection === 'custom') {
-      const { host, port, from, username, password, security } =
+      const { host, from, username, password, security } =
         input.smtp.value.provider.value
       await configJson.merge(effects, {
         smtp_host: host,
-        smtp_port: port,
+        smtp_port: Number(security.value.port),
         smtp_from: from,
         smtp_username: username,
         smtp_password: password || undefined,
-        smtp_security: security === 'tls' ? 'force_tls' : 'starttls',
+        smtp_security:
+          security.selection === 'tls' ? 'force_tls' : 'starttls',
       })
     } else {
       await configJson.merge(effects, {
