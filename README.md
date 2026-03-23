@@ -151,3 +151,52 @@ Configure clients with your Vaultwarden URL (Settings → Self-hosted → Server
 ---
 
 ## Quick Reference (YAML)
+
+```yaml
+package_id: vaultwarden
+containers:
+  - name: vaultwarden
+    image: vaultwarden/server (alpine variant)
+  - name: argon2
+    image: custom dockerBuild (admin token hashing)
+
+architectures: [x86_64, aarch64]
+
+volumes:
+  main:
+    backup: true
+    mountpoint: /data
+    contains: encrypted vault database, config, attachments
+
+interfaces:
+  vault:
+    type: ui
+    port: 80
+    path: /
+  admin:
+    type: ui
+    port: 80
+    path: /admin
+
+actions:
+  - toggle-signups (enabled, any)
+  - set-admin-token (enabled, any)
+  - set-primary-domain (enabled, any)
+  - manage-smtp (enabled, any)
+
+dependencies: []
+
+health_checks:
+  - name: Web Interface
+    method: port_listening
+    port: 80
+
+backup_volumes:
+  - main
+
+startos_managed_config:
+  - admin token (argon2 hashed)
+  - signups (enable/disable)
+  - primary domain
+  - smtp (disabled/system/custom)
+```

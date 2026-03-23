@@ -1,3 +1,4 @@
+import { smtpPrefill } from '@start9labs/start-sdk'
 import { configJson } from '../fileModels/config.json'
 import { systemSmtpJson } from '../fileModels/systemSmtp.json'
 import { sdk } from '../sdk'
@@ -32,10 +33,10 @@ export const manageSmtp = sdk.Action.withInput(
 
     if (smtp?.enabled) {
       return {
-        smtp: {
-          selection: 'system' as const,
+        smtp: smtpPrefill({
+          selection: 'system',
           value: { customFrom: smtp.customFrom },
-        },
+        }),
       }
     }
 
@@ -44,38 +45,30 @@ export const manageSmtp = sdk.Action.withInput(
     if (config?.smtp_host) {
       const isTls = config.smtp_security === 'force_tls'
       return {
-        smtp: {
-          selection: 'custom' as const,
+        smtp: smtpPrefill({
+          selection: 'custom',
           value: {
             provider: {
-              selection: 'other' as const,
+              selection: 'other',
               value: {
                 host: config.smtp_host,
                 from: config.smtp_from ?? '',
                 username: config.smtp_username ?? '',
                 password: config.smtp_password ?? null,
-                security: isTls
-                  ? {
-                      selection: 'tls' as const,
-                      value: { port: String(config.smtp_port ?? 465) },
-                    }
-                  : {
-                      selection: 'starttls' as const,
-                      value: {
-                        port: String(config.smtp_port ?? 587) as
-                          | '587'
-                          | '25'
-                          | '2525',
-                      },
-                    },
+                security: {
+                  selection: isTls ? 'tls' : 'starttls',
+                  value: {
+                    port: String(config.smtp_port ?? (isTls ? 465 : 587)),
+                  },
+                },
               },
             },
           },
-        },
+        }),
       }
     }
 
-    return { smtp: { selection: 'disabled' as const, value: {} } }
+    return { smtp: smtpPrefill({ selection: 'disabled', value: {} }) }
   },
 
   // the execution function
