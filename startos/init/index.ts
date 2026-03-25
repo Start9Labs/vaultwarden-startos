@@ -5,16 +5,18 @@ import { versionGraph } from '../versions'
 import { actions } from '../actions'
 import { restoreInit } from '../backups'
 import { seedFiles } from './seedFiles'
+import { taskToggleSignups } from './taskToggleSignups'
 import { setup } from './setup'
 import { watchSystemSmtp } from './watchSystemSmtp'
 
 export const init = sdk.setupInit(
   restoreInit,
   versionGraph,
+  seedFiles,
   setInterfaces,
   setDependencies,
   actions,
-  seedFiles,
+  taskToggleSignups,
   setup,
   watchSystemSmtp,
 )
