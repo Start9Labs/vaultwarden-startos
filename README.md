@@ -1,69 +1,202 @@
 <p align="center">
-  <img src="icon.png" alt="Project Logo" width="21%">
+  <img src="icon.svg" alt="Vaultwarden Logo" width="21%">
 </p>
 
 # Vaultwarden for StartOS
 
-[Vaultwarden](https://github.com/dani-garcia/vaultwarden) is a lightweight and secure password manager for storing and auto-filling sensitive information such as usernames and passwords, credit cards, identities, and notes. It is an alternative implementation of the Bitwarden server API written in Rust and compatible with upstream Bitwarden clients. This repository creates the `s9pk` package that is installed to run `Vaultwarden` on [StarOS](https://github.com/Start9Labs/start-os/).
+This repository packages [Vaultwarden](https://github.com/dani-garcia/vaultwarden) for StartOS. This document describes what makes this package different from a default Vaultwarden deployment.
+
+For general Vaultwarden usage and features, see the [upstream documentation](https://github.com/dani-garcia/vaultwarden/wiki).
+
+## How This Differs from Upstream
+
+This package provides a managed Vaultwarden instance with admin token generation using Argon2 hashing, signup control, SMTP configuration (including StartOS system SMTP integration), and automatic primary domain selection.
+
+## Container Runtime
+
+This package runs **2 containers**:
+
+| Container   | Image                | Purpose                 |
+| ----------- | -------------------- | ----------------------- |
+| vaultwarden | `vaultwarden/server` | Password manager server |
+| argon2      | Custom build         | Admin token hashing     |
+
+The argon2 container is used only during admin token generation for secure password hashing.
+
+## Volumes
+
+| Volume | Contents                                      | Backed Up |
+| ------ | --------------------------------------------- | --------- |
+| `main` | Encrypted vault database, config, attachments | Yes       |
+
+Mounted at `/data` inside the container.
+
+**Critical:** This volume contains all your passwords and sensitive data. Ensure backups are secure and tested.
+
+## Install Flow
+
+On startup:
+
+1. Auto-selects `.local` domain as primary if not configured
+2. Creates task to generate admin token if none exists
+
+## Configuration Management
+
+### Auto-Configured Settings
+
+| Setting        | Value              | Purpose               |
+| -------------- | ------------------ | --------------------- |
+| Primary domain | First `.local` URL | For links and invites |
+
+### User-Configurable Settings
+
+All configuration is done through Actions (see below).
+
+## Network Interfaces
+
+| Interface    | Type | Port | Path     | Description             |
+| ------------ | ---- | ---- | -------- | ----------------------- |
+| Web Vault    | ui   | 80   | `/`      | Main user interface     |
+| Admin Portal | ui   | 80   | `/admin` | Administrator interface |
+
+Both interfaces share the same origin. The Admin Portal requires an admin token to access.
+
+## Actions
+
+### Toggle Signups
+
+Enable or disable new user registrations.
+
+- **Dynamic name**: Shows "Enable Signups" or "Disable Signups" based on current state
+- **Warning**: Displayed when enabling signups (security risk)
+- **Default**: Signups disabled
+
+### Create/Update Admin Token
+
+Generate a secure admin token for accessing the Admin Portal.
+
+- **Dynamic name**: "Create Admin Token" or "Update Admin Token"
+- Uses Argon2id hashing (k=65540, t=3, p=4) via dedicated container
+- Returns plaintext token (save it securely!)
+- Hash stored in config
+
+**Required on install** - created as critical task.
+
+### Set Primary Domain
+
+Select which Vaultwarden URL serves as the primary domain for links and email invites.
+
+- Dynamically lists available URLs (LAN, Tor, custom domains)
+- Required for email functionality
+
+### Configure SMTP
+
+Set up email sending for invitations and notifications.
+
+**Options:**
+
+- **System SMTP**: Use StartOS system-wide SMTP settings (if configured)
+- **Custom**: Enter your own SMTP server details
+- **Disabled**: No email functionality
+
+System SMTP option allows optional custom "From" address override.
 
 ## Dependencies
 
-Install the system dependencies below to build this project by following the instructions in the provided links. You can also find detailed steps to setup your environment in the service packaging [documentation](https://github.com/Start9Labs/service-pipeline#development-environment).
+None. Vaultwarden on StartOS is standalone.
 
-- [docker](https://docs.docker.com/get-docker)
-- [docker-buildx](https://docs.docker.com/buildx/working-with-buildx/)
-- [jq](https://stedolan.github.io/jq/)
-- [start-sdk](https://github.com/Start9Labs/start-os/blob/sdk/backend/install-sdk.sh)
-- [deno](https://deno.land/#installation)
-- [make](https://www.gnu.org/software/make/)
+## Backups
 
-## Cloning
+All data is backed up:
 
-Clone the project locally:
+- `main` volume - encrypted vault database, attachments, configuration
 
+**Important:** Your vault data is encrypted with your master password. StartOS cannot recover data if you lose your master password.
+
+## Health Checks
+
+| Check         | Method         | Success Condition |
+| ------------- | -------------- | ----------------- |
+| Web Interface | Port listening | Port 80 responds  |
+
+## Client Compatibility
+
+Vaultwarden is compatible with all official Bitwarden clients:
+
+- Browser extensions (Chrome, Firefox, Safari, Edge)
+- Desktop apps (Windows, macOS, Linux)
+- Mobile apps (iOS, Android)
+- CLI tool
+
+Configure clients with your Vaultwarden URL (Settings → Self-hosted → Server URL).
+
+## Limitations
+
+1. **No push notifications**: Requires Bitwarden's proprietary push relay
+2. **No Bitwarden Send storage limits**: Enforced by client, not server
+3. **Admin token required**: Must generate token to access admin portal
+
+## What's Unchanged
+
+- Full Bitwarden API compatibility
+- Encrypted vault storage
+- Password, card, identity, and note storage
+- Secure password generator
+- TOTP authenticator
+- Organization support
+- Emergency access
+- Folder organization
+- Browser auto-fill
+
+---
+
+## Quick Reference (YAML)
+
+```yaml
+package_id: vaultwarden
+containers:
+  - name: vaultwarden
+    image: vaultwarden/server (alpine variant)
+  - name: argon2
+    image: custom dockerBuild (admin token hashing)
+
+architectures: [x86_64, aarch64]
+
+volumes:
+  main:
+    backup: true
+    mountpoint: /data
+    contains: encrypted vault database, config, attachments
+
+interfaces:
+  vault:
+    type: ui
+    port: 80
+    path: /
+  admin:
+    type: ui
+    port: 80
+    path: /admin
+
+actions:
+  - toggle-signups (enabled, any)
+  - set-admin-token (enabled, any)
+  - set-primary-domain (enabled, any)
+  - manage-smtp (enabled, any)
+
+dependencies: []
+
+health_checks:
+  - name: Web Interface
+    method: port_listening
+    port: 80
+
+backup_volumes:
+  - main
+
+startos_managed_config:
+  - admin token (argon2 hashed)
+  - signups (enable/disable)
+  - primary domain
+  - smtp (disabled/system/custom)
 ```
-git clone git@github.com:Start9Labs/vaultwarden-startos.git
-cd vaultwarden-startos
-```
-
-## Building
-
-After setting up your environment, build the `vaultwarden` package by running:
-
-```
-make
-```
-
-To build the `vaultwarden` package for a single platform, run:
-
-```
-# for amd64
-make x86
-```
-
-or
-
-```
-# for arm64
-make arm
-```
-
-## Installing (on StartOS)
-
-Before installation, define `host: https://server-name.local` in your `~/.embassy/config.yaml` config file then run the following commands to determine successful install:
-
-> :information_source: Change server-name.local to your Start9 server address
-
-```
-start-cli auth login
-#Enter your StartOS password
-make install
-```
-
-**Tip:** You can also install the `vaultwarden.s9pk` by sideloading it under the **StartOS > System > Sideload a Service** section.
-
-### Verify Install
-
-Via the StartOS web-UI, select Services > **Vaultwarden**, configure and start the service. Then, verify its interfaces are accessible.
-
-**Done!**
