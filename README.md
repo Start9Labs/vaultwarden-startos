@@ -2,141 +2,157 @@
   <img src="icon.svg" alt="Vaultwarden Logo" width="21%">
 </p>
 
-# Vaultwarden for StartOS
+# Vaultwarden on StartOS
 
-This repository packages [Vaultwarden](https://github.com/dani-garcia/vaultwarden) for StartOS. This document describes what makes this package different from a default Vaultwarden deployment.
+> **Upstream docs:** <https://github.com/dani-garcia/vaultwarden/wiki>
+>
+> Everything not listed in this document should behave the same as upstream
+> Vaultwarden. If a feature, setting, or behavior is not mentioned here, the
+> upstream documentation is accurate and fully applicable.
 
-For general Vaultwarden usage and features, see the [upstream documentation](https://github.com/dani-garcia/vaultwarden/wiki).
+[Vaultwarden](https://github.com/dani-garcia/vaultwarden) is a lightweight, self-hosted Bitwarden-compatible password manager written in Rust. This package provides a managed instance with admin token generation, signup control, SMTP configuration, and automatic primary domain selection.
 
-## How This Differs from Upstream
+---
 
-This package provides a managed Vaultwarden instance with admin token generation using Argon2 hashing, signup control, SMTP configuration (including StartOS system SMTP integration), and automatic primary domain selection.
+## Table of Contents
 
-## Container Runtime
+- [Image and Container Runtime](#image-and-container-runtime)
+- [Volume and Data Layout](#volume-and-data-layout)
+- [Installation and First-Run Flow](#installation-and-first-run-flow)
+- [Configuration Management](#configuration-management)
+- [Network Access and Interfaces](#network-access-and-interfaces)
+- [Actions (StartOS UI)](#actions-startos-ui)
+- [Backups and Restore](#backups-and-restore)
+- [Health Checks](#health-checks)
+- [Dependencies](#dependencies)
+- [Limitations and Differences](#limitations-and-differences)
+- [What Is Unchanged from Upstream](#what-is-unchanged-from-upstream)
+- [Contributing](#contributing)
+- [Quick Reference for AI Consumers](#quick-reference-for-ai-consumers)
+
+---
+
+## Image and Container Runtime
 
 This package runs **2 containers**:
 
-| Container   | Image                | Purpose                 |
-| ----------- | -------------------- | ----------------------- |
-| vaultwarden | `vaultwarden/server` | Password manager server |
-| argon2      | Custom build         | Admin token hashing     |
+| Container | Image | Purpose |
+|-----------|-------|---------|
+| vaultwarden | `vaultwarden/server` (Alpine variant) | Password manager server |
+| argon2 | Custom `dockerBuild` | Admin token Argon2id hashing (used only during token generation) |
 
-The argon2 container is used only during admin token generation for secure password hashing.
+- **Architectures:** x86_64, aarch64
+- **Entrypoint:** Default upstream entrypoint for the vaultwarden container
 
-## Volumes
+## Volume and Data Layout
 
-| Volume | Contents                                      | Backed Up |
-| ------ | --------------------------------------------- | --------- |
-| `main` | Encrypted vault database, config, attachments | Yes       |
-
-Mounted at `/data` inside the container.
+| Volume | Mount Point | Contents |
+|--------|-------------|---------|
+| `main` | `/data` | Encrypted vault database (SQLite), config, attachments, `store.json` |
 
 **Critical:** This volume contains all your passwords and sensitive data. Ensure backups are secure and tested.
 
-## Install Flow
+## Installation and First-Run Flow
 
-On startup:
+On first install:
 
-1. Auto-selects `.local` domain as primary if not configured
-2. Creates task to generate admin token if none exists
+1. `config.json` and `store.json` are seeded with defaults
+2. Auto-selects a `.local` domain as primary if not configured
+3. A **critical task** is created prompting the user to run the **Create Admin Token** action
+4. On update, an **important task** is created for the **Toggle Signups** action to confirm signup state
+
+No upstream setup wizard — admin token and primary domain are configured via StartOS actions.
 
 ## Configuration Management
 
-### Auto-Configured Settings
+| StartOS-Managed (via actions) | Upstream-Managed |
+|-------------------------------|------------------|
+| Admin token (Argon2id hashed) | All vault data, user accounts, organizations |
+| Signups enabled/disabled | User settings within the web vault |
+| Primary domain (for links and invites) | |
+| SMTP (disabled / system / custom) | |
 
-| Setting        | Value              | Purpose               |
-| -------------- | ------------------ | --------------------- |
-| Primary domain | First `.local` URL | For links and invites |
+## Network Access and Interfaces
 
-### User-Configurable Settings
+| Interface | ID | Type | Port | Path | Description |
+|-----------|----|------|------|------|-------------|
+| Web Vault | `vault` | ui | 80 | `/` | Primary user interface |
+| Admin Portal | `admin` | ui | 80 | `/admin` | Administrator interface (requires admin token) |
 
-All configuration is done through Actions (see below).
+Both interfaces share the same origin.
 
-## Network Interfaces
+## Actions (StartOS UI)
 
-| Interface    | Type | Port | Path     | Description             |
-| ------------ | ---- | ---- | -------- | ----------------------- |
-| Web Vault    | ui   | 80   | `/`      | Main user interface     |
-| Admin Portal | ui   | 80   | `/admin` | Administrator interface |
+### Toggle Signups (`toggle-signups`)
 
-Both interfaces share the same origin. The Admin Portal requires an admin token to access.
+| Property | Value |
+|----------|-------|
+| **Name** | Enable Signups / Disable Signups (dynamic based on current state) |
+| **Purpose** | Toggle new user registration on or off |
+| **Visibility** | Enabled |
+| **Availability** | Any (running or stopped) |
+| **Inputs** | None |
+| **Outputs** | Signups state toggled in `config.json` |
 
-## Actions
+### Create/Update Admin Token (`set-admin-token`)
 
-### Toggle Signups
+| Property | Value |
+|----------|-------|
+| **Name** | Create Admin Token / Update Admin Token (dynamic) |
+| **Purpose** | Generate a secure admin token for the Admin Portal |
+| **Visibility** | Enabled |
+| **Availability** | Any (running or stopped) |
+| **Inputs** | None |
+| **Outputs** | 32-character random token (masked, copyable). Argon2id hash stored in config. |
 
-Enable or disable new user registrations.
+Created as a **critical task** on first install.
 
-- **Dynamic name**: Shows "Enable Signups" or "Disable Signups" based on current state
-- **Warning**: Displayed when enabling signups (security risk)
-- **Default**: Signups disabled
+### Set Primary Domain (`set-primary-domain`)
 
-### Create/Update Admin Token
+| Property | Value |
+|----------|-------|
+| **Name** | Set Primary Domain |
+| **Purpose** | Choose which URL serves as the primary domain for links and email invites |
+| **Visibility** | Enabled |
+| **Availability** | Any (running or stopped) |
+| **Inputs** | Primary Domain (dynamic select from available interface URLs) |
+| **Outputs** | Domain saved to `config.json` |
 
-Generate a secure admin token for accessing the Admin Portal.
+### Configure SMTP (`manage-smtp`)
 
-- **Dynamic name**: "Create Admin Token" or "Update Admin Token"
-- Uses Argon2id hashing (k=65540, t=3, p=4) via dedicated container
-- Returns plaintext token (save it securely!)
-- Hash stored in config
+| Property | Value |
+|----------|-------|
+| **Name** | Configure SMTP |
+| **Purpose** | Set up email sending for invitations and notifications |
+| **Visibility** | Enabled |
+| **Availability** | Any (running or stopped) |
+| **Inputs** | SMTP configuration: Disabled, System (uses StartOS system SMTP, with optional custom "From" address), or Custom (host, port, from, username, password, security) |
+| **Outputs** | SMTP settings saved to config |
 
-**Required on install** - created as critical task.
+## Backups and Restore
 
-### Set Primary Domain
-
-Select which Vaultwarden URL serves as the primary domain for links and email invites.
-
-- Dynamically lists available URLs (LAN, Tor, custom domains)
-- Required for email functionality
-
-### Configure SMTP
-
-Set up email sending for invitations and notifications.
-
-**Options:**
-
-- **System SMTP**: Use StartOS system-wide SMTP settings (if configured)
-- **Custom**: Enter your own SMTP server details
-- **Disabled**: No email functionality
-
-System SMTP option allows optional custom "From" address override.
-
-## Dependencies
-
-None. Vaultwarden on StartOS is standalone.
-
-## Backups
-
-All data is backed up:
-
-- `main` volume - encrypted vault database, attachments, configuration
-
-**Important:** Your vault data is encrypted with your master password. StartOS cannot recover data if you lose your master password.
+- **Backed up:** `main` volume (encrypted vault database, attachments, configuration)
+- **Restore behavior:** Volume restored in place; all vault data, users, and settings are preserved
+- **Important:** Your vault data is encrypted with your master password. StartOS cannot recover data if you lose your master password.
 
 ## Health Checks
 
-| Check         | Method         | Success Condition |
-| ------------- | -------------- | ----------------- |
-| Web Interface | Port listening | Port 80 responds  |
+| Check | Daemon | Method | Success Condition |
+|-------|--------|--------|-------------------|
+| Web Interface | primary | Port listening (80) | Port 80 responds |
 
-## Client Compatibility
+## Dependencies
 
-Vaultwarden is compatible with all official Bitwarden clients:
+None.
 
-- Browser extensions (Chrome, Firefox, Safari, Edge)
-- Desktop apps (Windows, macOS, Linux)
-- Mobile apps (iOS, Android)
-- CLI tool
+## Limitations and Differences
 
-Configure clients with your Vaultwarden URL (Settings → Self-hosted → Server URL).
+1. **No push notifications** — requires Bitwarden's proprietary push relay
+2. **Admin token required** — must generate a token via action to access the admin portal
+3. **SQLite database** — uses embedded SQLite rather than an external database
+4. **No Bitwarden Send storage limits enforced server-side** — enforced by client only
 
-## Limitations
-
-1. **No push notifications**: Requires Bitwarden's proprietary push relay
-2. **No Bitwarden Send storage limits**: Enforced by client, not server
-3. **Admin token required**: Must generate token to access admin portal
-
-## What's Unchanged
+## What Is Unchanged from Upstream
 
 - Full Bitwarden API compatibility
 - Encrypted vault storage
@@ -147,56 +163,29 @@ Configure clients with your Vaultwarden URL (Settings → Self-hosted → Server
 - Emergency access
 - Folder organization
 - Browser auto-fill
+- All official Bitwarden client compatibility (browser extensions, desktop, mobile, CLI)
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development workflow.
 
 ---
 
-## Quick Reference (YAML)
+## Quick Reference for AI Consumers
 
 ```yaml
 package_id: vaultwarden
-containers:
-  - name: vaultwarden
-    image: vaultwarden/server (alpine variant)
-  - name: argon2
-    image: custom dockerBuild (admin token hashing)
-
+image: vaultwarden/server (Alpine), argon2 (custom dockerBuild)
 architectures: [x86_64, aarch64]
-
 volumes:
-  main:
-    backup: true
-    mountpoint: /data
-    contains: encrypted vault database, config, attachments
-
-interfaces:
-  vault:
-    type: ui
-    port: 80
-    path: /
-  admin:
-    type: ui
-    port: 80
-    path: /admin
-
+  main: /data
+ports:
+  vault: 80
+dependencies: none
+startos_managed_env_vars: []
 actions:
-  - toggle-signups (enabled, any)
-  - set-admin-token (enabled, any)
-  - set-primary-domain (enabled, any)
-  - manage-smtp (enabled, any)
-
-dependencies: []
-
-health_checks:
-  - name: Web Interface
-    method: port_listening
-    port: 80
-
-backup_volumes:
-  - main
-
-startos_managed_config:
-  - admin token (argon2 hashed)
-  - signups (enable/disable)
-  - primary domain
-  - smtp (disabled/system/custom)
+  - toggle-signups
+  - set-admin-token
+  - set-primary-domain
+  - manage-smtp
 ```
