@@ -5,7 +5,7 @@ export const manifest = setupManifest({
   id: 'vaultwarden',
   title: 'Vaultwarden',
   license: 'MIT',
-  packageRepo: 'https://github.com/Start9Labs/vaultwarden-startos/tree/update/040',
+  packageRepo: 'https://github.com/Start9Labs/vaultwarden-startos',
   upstreamRepo: 'https://github.com/dani-garcia/vaultwarden/',
   marketingUrl: 'https://github.com/dani-garcia/vaultwarden/',
   donationUrl: 'https://liberapay.com/dani-garcia/',
