@@ -74,10 +74,22 @@ export const manageSmtp = sdk.Action.withInput(
   // the execution function
   async ({ effects, input }) => {
     if (input.smtp.selection === 'system') {
+      const systemSmtp = await sdk.getSystemSmtp(effects).const()
       await systemSmtpJson.merge(effects, {
         enabled: true,
         customFrom: input.smtp.value.customFrom,
       })
+      if (systemSmtp) {
+        await configJson.merge(effects, {
+          smtp_host: systemSmtp.host,
+          smtp_port: systemSmtp.port,
+          smtp_from: input.smtp.value.customFrom || systemSmtp.from,
+          smtp_username: systemSmtp.username,
+          smtp_password: systemSmtp.password ?? undefined,
+          smtp_security:
+            systemSmtp.security === 'tls' ? 'force_tls' : 'starttls',
+        })
+      }
     } else if (input.smtp.selection === 'custom') {
       const { host, from, username, password, security } =
         input.smtp.value.provider.value

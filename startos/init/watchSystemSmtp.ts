@@ -7,6 +7,13 @@ export const watchSystemSmtp = sdk.setupOnInit(async (effects) => {
   const systemSmtp = await sdk.getSystemSmtp(effects).const()
 
   if (systemSmtpSettings?.enabled && systemSmtp) {
-    await configJson.merge(effects, {})
+    await configJson.merge(effects, {
+      smtp_host: systemSmtp.host,
+      smtp_port: systemSmtp.port,
+      smtp_from: systemSmtpSettings.customFrom || systemSmtp.from,
+      smtp_username: systemSmtp.username,
+      smtp_password: systemSmtp.password ?? undefined,
+      smtp_security: systemSmtp.security === 'tls' ? 'force_tls' : 'starttls',
+    })
   }
 })
