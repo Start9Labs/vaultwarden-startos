@@ -1,4 +1,6 @@
-import { VersionInfo, IMPOSSIBLE } from '@start9labs/start-sdk'
+import { VersionInfo, IMPOSSIBLE, YAML } from '@start9labs/start-sdk'
+import { readFile, rm } from 'fs/promises'
+import { configJson } from '../fileModels/config.json'
 
 export const v_1_35_7_2 = VersionInfo.of({
   version: '1.35.7:2',
@@ -10,7 +12,26 @@ export const v_1_35_7_2 = VersionInfo.of({
     fr_FR: 'Mises à jour internes (start-sdk 1.3.3)',
   },
   migrations: {
-    up: async ({ effects }) => {},
+    up: async ({ effects }) => {
+      // get old config.yaml
+      const configYaml: { 'admin-token'?: string } | undefined = await readFile(
+        '/media/startos/volumes/main/start9/config.yaml',
+        'utf-8',
+      ).then(YAML.parse, () => undefined)
+
+      if (configYaml) {
+        await configJson.merge(effects, {
+          admin_token: configYaml['admin-token'] || '',
+          domain: '',
+          smtp_security: 'starttls',
+        })
+
+        // remove old start9 dir
+        await rm('/media/startos/volumes/main/start9', {
+          recursive: true,
+        }).catch(console.error)
+      }
+    },
     down: IMPOSSIBLE,
   },
 })
