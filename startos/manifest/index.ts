@@ -9,7 +9,6 @@ export const manifest = setupManifest({
   upstreamRepo: 'https://github.com/dani-garcia/vaultwarden/',
   marketingUrl: 'https://github.com/dani-garcia/vaultwarden/',
   donationUrl: 'https://liberapay.com/dani-garcia/',
-  docsUrls: ['https://github.com/dani-garcia/vaultwarden/wiki', 'https://bitwarden.com/help/'],
   description: i18n.description,
   volumes: ['main'],
   images: {
