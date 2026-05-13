@@ -162,6 +162,7 @@ None.
 - Organization support
 - Emergency access
 - Folder organization
+- Item archiving
 - Browser auto-fill
 - All official Bitwarden client compatibility (browser extensions, desktop, mobile, CLI)
 
