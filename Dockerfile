@@ -1,4 +1,4 @@
-FROM vaultwarden/server:1.35.4-alpine
+FROM vaultwarden/server:1.36.0-alpine
 
 RUN apk update && \
     apk add --no-cache \
