@@ -9,13 +9,12 @@ export const manifest = setupManifest({
   upstreamRepo: 'https://github.com/dani-garcia/vaultwarden/',
   marketingUrl: 'https://github.com/dani-garcia/vaultwarden/',
   donationUrl: 'https://liberapay.com/dani-garcia/',
-  docsUrls: ['https://github.com/dani-garcia/vaultwarden/wiki', 'https://bitwarden.com/help/'],
   description: i18n.description,
   volumes: ['main'],
   images: {
     vaultwarden: {
       source: {
-        dockerTag: 'vaultwarden/server:1.35.7-alpine',
+        dockerTag: 'vaultwarden/server:1.36.0-alpine',
       },
       arch: ['x86_64', 'aarch64'],
     },
