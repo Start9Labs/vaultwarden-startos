@@ -2,7 +2,7 @@ import { VersionInfo, IMPOSSIBLE, YAML } from '@start9labs/start-sdk'
 import { readFile, rm } from 'fs/promises'
 import { configJson } from '../fileModels/config.json'
 
-export const v_1_36_0_1 = VersionInfo.of({
+export const current = VersionInfo.of({
   version: '1.36.0:1',
   releaseNotes: {
     en_US: `**Bumps**
