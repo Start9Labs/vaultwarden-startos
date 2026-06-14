@@ -1,8 +1,8 @@
 {
   "id": "vaultwarden",
   "title": "Vaultwarden",
-  "version": "1.36.0",
-  "release-notes": "* Updated to the latest upstream code containing security fixes:\n    Release notes: [v1.36.0](https://github.com/dani-garcia/vaultwarden/releases/tag/1.36.0)",
+  "version": "1.36.0.1",
+  "release-notes": "* Removed the retired `extension-refresh` experimental client feature flag. Vaultwarden 1.36.0 dropped this flag from its supported list, so its presence (injected by the package as an environment variable) made every admin-panel configuration save fail with an \"Unrecognized experimental client feature flags\" error. Updating clears the flag.",
   "license": "AGPLv3",
   "wrapper-repo": "https://github.com/Start9Labs/vaultwarden-startos",
   "upstream-repo": "https://github.com/dani-garcia/vaultwarden",
