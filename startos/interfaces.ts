@@ -1,9 +1,9 @@
 import { sdk } from './sdk'
-import { uiPort } from './utils'
+import { mainHostId, uiPort, vaultInterfaceId } from './utils'
 import { i18n } from './i18n'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
-  const uiMulti = sdk.MultiHost.of(effects, 'main')
+  const uiMulti = sdk.MultiHost.of(effects, mainHostId)
   const uiMultiOrigin = await uiMulti.bindPort(uiPort, {
     protocol: 'http',
   })
@@ -11,7 +11,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   // web vault
   const vault = sdk.createInterface(effects, {
     name: i18n('Web Vault'),
-    id: 'vault',
+    id: vaultInterfaceId,
     description: i18n(
       'Primary user interface for interacting with Vaultwarden in a web browser',
     ),
