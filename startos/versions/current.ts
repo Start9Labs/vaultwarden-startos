@@ -3,7 +3,7 @@ import { readFile, rm } from 'fs/promises'
 import { configJson } from '../fileModels/config.json'
 
 export const current = VersionInfo.of({
-  version: '1.36.0:2',
+  version: '1.36.0:3',
   releaseNotes: {
     en_US: 'Internal updates (start-sdk 2.0.x)',
     es_ES: 'Actualizaciones internas (start-sdk 2.0.x)',
