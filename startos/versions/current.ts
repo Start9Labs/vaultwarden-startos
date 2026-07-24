@@ -1,7 +1,7 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '1.36.0:5',
+  version: '1.36.0:6',
   releaseNotes: {
     en_US: `This release migrates the package to start-sdk 2.0 (requires StartOS 0.4.0-beta.10 or later). Vaultwarden itself is unchanged (1.36.0).`,
     es_ES: `Esta versión migra el paquete a start-sdk 2.0 (requiere StartOS 0.4.0-beta.10 o posterior). Vaultwarden no cambia (1.36.0).`,
