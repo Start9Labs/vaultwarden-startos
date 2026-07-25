@@ -1,7 +1,7 @@
 import { VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '1.37.0:1',
+  version: '1.37.0:2',
   releaseNotes: {
     en_US: `**Required update for Bitwarden clients 2026.7.0 and later.** The 2026.7.0 Bitwarden clients (browser extension, desktop, and mobile) changed what they expect from the server API. Against Vaultwarden 1.36.0 they log in successfully but the vault never loads — the item list sits on grey placeholders indefinitely. Vaultwarden 1.37.0 restores compatibility.
 
