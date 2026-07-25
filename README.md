@@ -48,7 +48,7 @@ This package runs **2 containers**:
 
 | Volume | Mount Point | Contents |
 |--------|-------------|---------|
-| `main` | `/data` | Encrypted vault database (SQLite), config, attachments, `store.json` |
+| `main` | `/data` | Encrypted vault database (SQLite), `config.json`, `systemSmtp.json`, attachments |
 
 **Critical:** This volume contains all your passwords and sensitive data. Ensure backups are secure and tested.
 
@@ -56,7 +56,7 @@ This package runs **2 containers**:
 
 On first install:
 
-1. `config.json` and `store.json` are seeded with defaults
+1. `config.json` and `systemSmtp.json` are seeded with defaults
 2. Auto-selects a `.local` domain as primary if not configured
 3. A **critical task** is created prompting the user to run the **Create Admin Token** action
 4. On update, an **important task** is created for the **Toggle Signups** action to confirm signup state
@@ -71,6 +71,29 @@ No upstream setup wizard — admin token and primary domain are configured via S
 | Signups enabled/disabled | User settings within the web vault |
 | Primary domain (for links and invites) | |
 | SMTP (disabled / system / custom) | |
+
+### Client IP header
+
+`config.json` pins `ip_header` to `X-Forwarded-For`.
+
+Vaultwarden defaults this setting to `X-Real-IP`, which StartOS never sends. The OS
+reverse proxy removes the client-supplied `X-Forwarded-For`, `X-Forwarded-Proto`, and
+`X-Forwarded-User` headers — exactly those three, not the whole `X-Forwarded-*` family —
+then sets `X-Forwarded-For` itself, a single address rather than a list, for any binding
+declared with `protocol: 'http'`. Left at the upstream default, Vaultwarden falls back to
+the socket peer, so every request appears to come from the container gateway: per-client
+rate limiting collapses into one shared bucket and new-device-login notifications become
+meaningless.
+
+Any other `X-Forwarded-*` header reaches the service exactly as the client sent it, so
+don't treat the rest of the family as sanitized.
+
+Vaultwarden 1.37.0 additionally gates the header on `ip_header_trusted_proxies`, which
+defaults to `local` and trusts any non-global source address. The gateway qualifies, so
+no further setting is needed.
+
+The field is defaulted rather than written explicitly, so a user who changes it in the
+admin portal keeps their value.
 
 ## Network Access and Interfaces
 
@@ -167,7 +190,7 @@ None.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development workflow.
+See [AGENTS.md](AGENTS.md) for build instructions and development workflow.
 
 ---
 

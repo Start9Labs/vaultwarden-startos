@@ -3,6 +3,7 @@ import { sdk } from '../sdk'
 
 const shape = z.object({
   domain: z.string().optional().catch(undefined),
+  ip_header: z.string().catch('X-Forwarded-For'),
   admin_token: z.string().optional().catch(undefined),
   signups_allowed: z.boolean().catch(false),
   smtp_host: z.string().optional().catch(undefined),
