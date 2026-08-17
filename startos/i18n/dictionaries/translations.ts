@@ -105,7 +105,7 @@ export default {
     16: 'Activer les inscriptions',
     17: 'Les inscriptions sont actuellement activées. Exécutez cette action pour interdire les nouvelles inscriptions.',
     18: 'Les inscriptions sont actuellement désactivées. Exécutez cette action pour autoriser les nouvelles inscriptions.',
-    19: "Toute personne possédant votre URL Vaultwarden pourra créer un compte sur votre serveur, ce qui représente un risque de sécurité. Soyez prudent !",
+    19: 'Toute personne possédant votre URL Vaultwarden pourra créer un compte sur votre serveur, ce qui représente un risque de sécurité. Soyez prudent !',
     20: 'Configurer SMTP',
     21: "Ajouter des identifiants SMTP pour l'envoi d'e-mails.",
     22: 'Domaine principal',

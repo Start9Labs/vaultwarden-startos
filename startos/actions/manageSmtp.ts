@@ -99,8 +99,7 @@ export const manageSmtp = sdk.Action.withInput(
         smtp_from: from,
         smtp_username: username,
         smtp_password: password || undefined,
-        smtp_security:
-          security.selection === 'tls' ? 'force_tls' : 'starttls',
+        smtp_security: security.selection === 'tls' ? 'force_tls' : 'starttls',
       })
     } else {
       await configJson.merge(effects, {

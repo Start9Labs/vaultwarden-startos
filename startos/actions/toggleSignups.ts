@@ -15,11 +15,17 @@ export const toggleSignups = sdk.Action.withoutInput(
     return {
       name: allowed ? i18n('Disable Signups') : i18n('Enable Signups'),
       description: allowed
-        ? i18n('Signups are currently enabled. Run this action to prohibit new signups.')
-        : i18n('Signups are currently disabled. Run this action to permit new signups.'),
+        ? i18n(
+            'Signups are currently enabled. Run this action to prohibit new signups.',
+          )
+        : i18n(
+            'Signups are currently disabled. Run this action to permit new signups.',
+          ),
       warning: allowed
         ? null
-        : i18n('Anyone with your Vaultwarden URL will be able to create an account on your server, which represents a security risk. Be careful!'),
+        : i18n(
+            'Anyone with your Vaultwarden URL will be able to create an account on your server, which represents a security risk. Be careful!',
+          ),
       allowedStatuses: 'any',
       group: null,
       visibility: 'enabled',
