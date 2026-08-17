@@ -6,13 +6,13 @@ Develop it inside a StartOS packaging workspace created by `start-cli s9pk init-
 which provides the packaging guide and agent context one level up. If you're reading this in a
 bare clone with no workspace, the full guide is at <https://docs.start9.com/packaging>.
 
-Work this package's `TODO.md` from top to bottom. Keep `README.md` (architecture, for developers and LLMs) and `instructions.md` (end-user docs) in sync with your changes.
+Work this package's `TODO.md` from top to bottom. Keep `README.md` (technical reference for an AI support or administering agent) and `instructions.md` (end-user docs) in sync with your changes.
 
 ## This repo
 
-- **Package id is `vaultwarden`.** Two `ui` interfaces both bind on the single `main` host — `vault` (the web vault) and `admin` (the admin portal at `/admin`); look them up by their interface id after fetching that host with `sdk.host.getOwn`.
-- **The admin token is argon2-hashed** in a temporary `argon2` subcontainer built from `argon2.Dockerfile`, not stored in plaintext.
-
-## Inspecting a running install
-
-To run a command inside the service's container (read its generated config, grep app logs), use `start-cli package attach vaultwarden -n vaultwarden-sub -- <cmd>`. Select the subcontainer by **name** with `-n` (the name passed to `SubContainer.of` in `main.ts` — here `vaultwarden-sub`) or by image with `-i`. Note: `-s/--subcontainer` matches the internal **Guid**, not the name, so passing a name to `-s` fails with "no matching subcontainers".
+- **Only the Argon2 hash of the admin token is ever written.** The `argon2` image exists solely to produce it; don't "simplify" by storing the token itself, and don't drop the image without replacing the hashing path.
+- **`config.json` is Vaultwarden's own file, shared with its admin portal.** The model must stay loose so a setting changed in the portal survives the package's next write. Adding a key to the shape is a decision to own it against the portal.
+- **The admin-token task is checked on every init, not just install.** Losing the token has no recovery path, so re-raising is the only way back to the admin portal.
+- **`systemSmtp.json` exists so the system-SMTP choice keeps tracking.** Init re-reads StartOS's SMTP settings and rewrites the `smtp_*` keys each start; collapsing this into a one-time copy into `config.json` silently freezes the credentials.
+- **`domain` re-picks silently when it stops being published** — no task. Note the cost before changing that: the domain is the WebAuthn origin, so a change invalidates registered passkeys.
+- **`ip_header` is set to match StartOS's reverse proxy**, not left to the app's default; without it rate limiting and logs attribute every request to the proxy.
