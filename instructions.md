@@ -20,6 +20,7 @@ After install, Vaultwarden posts a **critical task** to create your admin token.
 3. Open the **Web Vault** interface and create your first user account.
 4. Open the **Admin Portal** interface, paste your admin token to sign in, and verify the server is healthy.
 5. Vaultwarden also posts an **important task** asking you to confirm the signup setting. After your account exists, run the **Disable Signups** action so strangers with your URL can't register on your server.
+6. A third **important task** asks you to choose the **primary domain**. Choose it before you register a passkey or security key for two-step login, since those are tied to it.
 
 ## Using Vaultwarden
 
@@ -31,5 +32,5 @@ Install a Bitwarden client (browser extension, desktop, mobile, or CLI). In the 
 
 - **Disable Signups / Enable Signups** — toggles whether new accounts can be created on your server. The label flips to reflect the current state. After creating your own account, leave signups disabled unless you're actively inviting new users.
 - **Create Admin Token / Update Admin Token** — generates (or regenerates) the token that gates the Admin Portal. Run **Update Admin Token** to rotate the token or recover if you've lost it.
-- **Set Primary Domain** — picks which of your Vaultwarden URLs is treated as the primary one when Vaultwarden builds links for password-reset emails, organization invites, and similar messages. Use this when you've added a public clearnet domain and want emails to link to it instead of the default `.local` address.
+- **Set Primary Domain** — picks which of your Vaultwarden URLs is treated as the primary one when Vaultwarden builds links for password-reset emails, organization invites, and similar messages, and which one **Open UI** opens. Use this when you've added a public clearnet domain and want emails to link to it instead of the default `.local` address. Passkeys and security keys are tied to this domain, so after changing it, register them again. If the chosen address stops being available, Vaultwarden uses its `.local` address until it returns, and a task asks you to choose again.
 - **Configure SMTP** — sets up outbound email for invitations, password-reset emails, and admin notifications. You can choose **Disabled**, **System** (reuse StartOS's system SMTP, optionally with a custom From address), or **Custom** (supply host, port, username, password, security mode, From address).

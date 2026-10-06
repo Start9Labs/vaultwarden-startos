@@ -9,7 +9,7 @@
 > upstream documentation is accurate and fully applicable — see the
 > Documentation section of `instructions.md` for links.
 
-[Vaultwarden](https://github.com/dani-garcia/vaultwarden/) is a Bitwarden-compatible password-manager server that the official Bitwarden clients talk to unmodified. This package generates the admin token as an Argon2 hash rather than storing it in the clear, keeps the primary domain pointed at an address you actually publish, and opens signups only long enough for you to make your account.
+[Vaultwarden](https://github.com/dani-garcia/vaultwarden/) is a Bitwarden-compatible password-manager server that the official Bitwarden clients talk to unmodified. This package generates the admin token as an Argon2 hash rather than storing it in the clear, keeps the primary domain on an address you actually publish, and opens signups only long enough for you to make your account.
 
 - **Upstream repo:** <https://github.com/dani-garcia/vaultwarden/>
 - **Wrapper repo:** <https://github.com/Start9Labs/vaultwarden-startos>
@@ -62,24 +62,27 @@ The database is the vault: every account, every organisation, and every encrypte
 
 ## File Models
 
-Two models. One is Vaultwarden's own file, and one is a small store the package keeps beside it.
+Three models. One is Vaultwarden's own file, and two are small stores the package keeps beside it.
 
-| File              | Format | Modelled                | Written by                             |
-| ----------------- | ------ | ----------------------- | -------------------------------------- |
-| `config.json`     | JSON   | Yes — `FileHelper.json` | Install, every init, and every action  |
-| `systemSmtp.json` | JSON   | Yes — `FileHelper.json` | Install, and the Configure SMTP action |
+| File              | Format | Modelled                | Written by                                     |
+| ----------------- | ------ | ----------------------- | ---------------------------------------------- |
+| `config.json`     | JSON   | Yes — `FileHelper.json` | Install, every init, and every action          |
+| `systemSmtp.json` | JSON   | Yes — `FileHelper.json` | Install, and the Configure SMTP action         |
+| `store.json`      | JSON   | Yes — `FileHelper.json` | Set Primary Domain, and the 1.37.3:1 migration |
 
 **`config.json` is Vaultwarden's, not the package's.** It is the same file Vaultwarden's own admin portal writes, so a setting changed in the portal and a setting changed by an action land in the same place. Only the keys below are modelled; anything else the portal writes is left untouched, because the model parses loosely.
 
 | Key               | Set by                                     | Notes                                                                                                                         |
 | ----------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | `admin_token`     | The token action                           | Stored as an Argon2 hash, never as the token itself                                                                           |
-| `domain`          | Init, then Set Primary Domain              | The address Vaultwarden builds links from                                                                                     |
+| `domain`          | Init, from the primary-domain choice       | The address Vaultwarden builds links from                                                                                     |
 | `signups_allowed` | Install, then the toggle action            | Seeded **on**, so you can create the first account                                                                            |
 | `ip_header`       | Enforced                                   | Set to the header StartOS's reverse proxy actually sends, so rate limiting and logs see the real client rather than the proxy |
 | `smtp_*`          | Configure SMTP, or the system-SMTP watcher | Absent entirely when email is off                                                                                             |
 
-**`domain` re-picks itself.** On every init, if the stored value is missing or is no longer one of the addresses the vault interface publishes, the package silently replaces it with the `.local` address. No task is raised.
+**`domain` follows the choice in `store.json`, and is rewritten on every init.** The user's choice is `store.json`'s `primaryUrl`, set by Set Primary Domain. Init writes `domain` from it, at the hostname's current port and scheme. While that hostname is not one of the vault interface's addresses, init writes the `.local` address instead and raises the primary-domain task; the choice itself is kept, and `domain` returns to it when the address does. A `domain` edited in the admin portal is overwritten at the next init.
+
+`store.json` also holds `reattachTorOnions`, set by the 1.37.3:1 migration on a server carried over from StartOS 0.3.5 and cleared once its Tor address has moved (see Network Access).
 
 `systemSmtp.json` records only whether you chose StartOS's system SMTP and any custom From address. That indirection matters: with it enabled, init re-reads the system's SMTP settings on every start and rewrites the `smtp_*` keys, so changing the server's mail configuration propagates here without touching this package.
 
@@ -96,17 +99,22 @@ Two interfaces on the same binding and the same port — the vault, and Vaultwar
 | Web Vault    | `vault` | ui   | 80   | `/`      | The primary interface, in a browser |
 | Admin Portal | `admin` | ui   | 80   | `/admin` | Administrator operations            |
 
+**Open UI opens the primary domain** — both interfaces nominate it — falling back to StartOS's usual choice when it is not one of their addresses.
+
+**A server carried over from StartOS 0.3.5** had its vault on internal ports 8080 and 3443. The 1.37.3:1 migration retires both. Once Tor 0.4.9.13:1 or later is installed, init moves that version's `.onion` address onto the vault binding on port 80, keeping the hostname, through Tor's `setupOnionReattachment`; until then `store.json`'s `reattachTorOnions` stays `true`.
+
 Neither is masked. **The admin portal is reachable at any address the vault is**, protected by the admin token and nothing else — so publishing the vault publishes the portal. That is why the token is `critical` and why it is a 32-character generated value rather than something you choose.
 
 ## Installation and First-Run Flow
 
-Install seeds the config, picks the `.local` address as the domain, and raises two tasks. No account exists yet and no credential is shown until you run the token task.
+Install seeds the config, uses the `.local` address as the domain, and raises three tasks. No account exists yet and no credential is shown until you run the token task.
 
 The order that works:
 
 1. **Create the admin token** (`critical`). It is shown once, and only the Argon2 hash is kept — there is no way to recover it, only to replace it.
 2. **Create your account** in the web vault. Vaultwarden has no bootstrap user; the first signup is yours.
 3. **Disable signups** (`important`). Until you do, anyone who can reach a published address can create an account on your server.
+4. **Set the primary domain** (`important`) — before registering a passkey or security key, since those are bound to it.
 
 Email is optional and off at install. Without SMTP, Vaultwarden cannot send invitations, email-verification, or the emergency-access flows, and two-factor by email is unavailable.
 
@@ -120,14 +128,14 @@ One action whose name flips depending on whether a token already exists.
 
 - **What it changes:** `admin_token` in `config.json`, written as an Argon2 hash produced by the `argon2` container.
 - **Cost:** seconds, then a restart.
-- **Repeat safety:** safe to re-run; each run generates a fresh token and invalidates the previous one.
+- **Repeat safety:** safe to re-run; each run generates a fresh token and invalidates the previous one. Running it with a token set asks for confirmation first.
 - **Outputs:** the token, masked and copyable, shown once. **It is not recoverable** — the hash is one-way, so a lost token means running this action again.
 
 ### Set Primary Domain
 
-Chooses which published address Vaultwarden treats as its domain.
+Chooses which published address Vaultwarden treats as its domain. Built by `sdk.setupPrimaryUrl`; the select pre-selects the `.local` address.
 
-- **What it changes:** `domain` in `config.json`.
+- **What it changes:** `primaryUrl` in `store.json`, which init writes to `domain` in `config.json`.
 - **Cost:** seconds, then a restart.
 - **Repeat safety:** idempotent, but not consequence-free once in use — the domain is baked into invitation links, emergency-access links, and WebAuthn credentials. **Changing it invalidates registered WebAuthn/passkey two-factor devices**, which are bound to the origin they were registered at.
 
@@ -137,7 +145,7 @@ One action whose name, description, and warning flip with the current state.
 
 - **What it changes:** `signups_allowed` in `config.json`.
 - **Cost:** seconds, then a restart.
-- **Repeat safety:** it is a toggle — running it twice returns to where you started.
+- **Repeat safety:** it is a toggle — running it twice returns to where you started. Both directions ask for confirmation.
 - **Existing accounts are unaffected**; this governs only whether new ones can be created. Invitations sent from the admin portal work either way.
 
 ### Configure SMTP
@@ -151,12 +159,13 @@ Sets up outbound email.
 
 ## Tasks
 
-Two tasks, and one of them can come back.
+Three tasks, and two of them can come back.
 
-| Task               | Severity    | Raised when                    | Cleared when    |
-| ------------------ | ----------- | ------------------------------ | --------------- |
-| Create Admin Token | `critical`  | Whenever no admin token is set | The action runs |
-| Disable Signups    | `important` | At install                     | The action runs |
+| Task               | Severity    | Raised when                                                         | Cleared when                                         |
+| ------------------ | ----------- | ------------------------------------------------------------------- | ---------------------------------------------------- |
+| Create Admin Token | `critical`  | Whenever no admin token is set                                      | The action runs                                      |
+| Disable Signups    | `important` | At install                                                          | The action runs                                      |
+| Set Primary Domain | `important` | While no domain is chosen, or the chosen one is not a vault address | A vault address is chosen, or the chosen one returns |
 
 The token task is **not install-only**: init checks on every start, so clearing the token by hand brings it back. `critical` because without a token the admin portal is unreachable, and the portal is the only route to user management, organisation cleanup, and diagnostics.
 
@@ -178,7 +187,7 @@ The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No du
 
 - **Included:** the vault database with every account and encrypted entry, attachments, the RSA signing keys, and both config files — including the hashed admin token and any SMTP password.
 - **Restore:** complete, and clients stay logged in because the signing keys come back with everything else.
-- **Check the domain after a restore.** If the restored server publishes different addresses, init silently re-picks the `.local` one, and any passkey two-factor registered against the old origin stops working.
+- **Check the domain after a restore.** If the restored server publishes different addresses, init uses the `.local` one and raises the primary-domain task; any passkey two-factor registered against the old origin stops working until that address returns or the key is registered again.
 
 **This backup is as sensitive as the vault it contains.** Entries stay encrypted under each user's master password, but the admin-token hash, the signing keys, and the SMTP credentials are all in it.
 
@@ -187,7 +196,7 @@ The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No du
 1. **The admin token is stored hashed and shown once.** There is no recovery — only replacement.
 2. **Signups are open at install** and stay open until you run the action. There is no bootstrap admin, so the window is deliberate.
 3. **The admin portal shares the vault's addresses**, at `/admin`. It cannot be published separately or restricted to a different address.
-4. **The domain is silently re-picked** when the stored one stops being published; there is no prompt.
+4. **While the chosen domain is not published, Vaultwarden runs on the `.local` address** and a task asks for another choice.
 5. **Changing the domain invalidates passkey and WebAuthn second factors**, which are bound to their original origin.
 6. **Settings changed in the admin portal are not all modelled here**, so the package will not preserve or re-assert them — but it will not strip them either.
 7. **No riscv64 build.** x86_64 and aarch64 only.
@@ -210,6 +219,7 @@ volumes:
 file_models:
   - /data/config.json # Vaultwarden's own; also written by its admin portal
   - /data/systemSmtp.json
+  - /data/store.json # primaryUrl choice; reattachTorOnions flag
 startos_managed_env_vars: [] # Vaultwarden is configured by config.json, not env
 dependencies: []
 interfaces:
@@ -223,6 +233,7 @@ actions:
 tasks:
   - { action: set-admin-token, severity: critical } # re-raises whenever unset
   - { action: toggle-signups, severity: important }
+  - { action: set-primary-domain, severity: important } # while unset or unpublished
 health_checks:
   - primary # displayed "Web Interface"
 ```

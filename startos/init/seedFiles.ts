@@ -1,8 +1,10 @@
 import { sdk } from '../sdk'
 import { configJson } from '../fileModels/config.json'
+import { storeJson } from '../fileModels/store.json'
 import { systemSmtpJson } from '../fileModels/systemSmtp.json'
 
 export const seedFiles = sdk.setupOnInit(async (effects, kind) => {
+  await storeJson.merge(effects, {})
   await systemSmtpJson.merge(effects, {})
 
   if (kind === 'install') {

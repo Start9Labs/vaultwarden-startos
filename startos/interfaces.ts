@@ -1,12 +1,14 @@
 import { sdk } from './sdk'
 import { mainHostId, uiPort, vaultInterfaceId } from './utils'
 import { i18n } from './i18n'
+import { primaryUrl } from './primaryUrl'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   const uiMulti = sdk.MultiHost.of(effects, mainHostId)
   const uiMultiOrigin = await uiMulti.bindPort(uiPort, {
     protocol: 'http',
   })
+  const preferredLauncherAddress = await primaryUrl.bestUsable(effects).const()
 
   // web vault
   const vault = sdk.createInterface(effects, {
@@ -21,6 +23,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     username: null,
     path: '',
     query: {},
+    preferredLauncherAddress,
   })
 
   // admin portal
@@ -34,6 +37,7 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     username: null,
     path: '/admin',
     query: {},
+    preferredLauncherAddress,
   })
 
   const uiReceipt = await uiMultiOrigin.export([vault, admin])
