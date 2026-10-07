@@ -1,7 +1,7 @@
 import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
 
-const shape = z.object({
+const shape = z.looseObject({
   domain: z.string().optional().catch(undefined),
   ip_header: z.string().catch('X-Forwarded-For'),
   admin_token: z.string().optional().catch(undefined),

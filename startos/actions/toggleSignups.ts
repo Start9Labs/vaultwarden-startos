@@ -22,7 +22,9 @@ export const toggleSignups = sdk.Action.withoutInput(
             'Signups are currently disabled. Run this action to permit new signups.',
           ),
       warning: allowed
-        ? null
+        ? i18n(
+            'New accounts can no longer be created. Existing accounts are unaffected, and invitations from the Admin Portal still work.',
+          )
         : i18n(
             'Anyone with your Vaultwarden URL will be able to create an account on your server, which represents a security risk. Be careful!',
           ),

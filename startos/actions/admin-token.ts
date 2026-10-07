@@ -15,9 +15,13 @@ export const setAdminToken = sdk.Action.withoutInput(
     return {
       name: existing ? i18n('Update Admin Token') : i18n('Create Admin Token'),
       description: existing
-        ? i18n('Create your admin token in order to access the admin portal')
-        : i18n('Update your admin token'),
-      warning: null,
+        ? i18n('Generate a new token for the Admin Portal, shown once.')
+        : i18n('Create your admin token in order to access the admin portal'),
+      warning: existing
+        ? i18n(
+            'Replaces the current admin token. The old token stops working, and the new one is shown only once.',
+          )
+        : null,
       allowedStatuses: 'any',
       group: null,
       visibility: 'enabled',
