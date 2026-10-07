@@ -80,7 +80,7 @@ Three models. One is Vaultwarden's own file, and two are small stores the packag
 | `ip_header`       | Enforced                                   | Set to the header StartOS's reverse proxy actually sends, so rate limiting and logs see the real client rather than the proxy |
 | `smtp_*`          | Configure SMTP, or the system-SMTP watcher | Absent entirely when email is off                                                                                             |
 
-**`domain` follows the choice in `store.json`, and is rewritten on every init.** The user's choice is `store.json`'s `primaryUrl`, set by Set Primary Domain. Init writes `domain` from it, at the hostname's current port and scheme. While that hostname is not one of the vault interface's addresses, init writes the `.local` address instead and raises the primary-domain task; the choice itself is kept, and `domain` returns to it when the address does. A `domain` edited in the admin portal is overwritten at the next init.
+**`domain` follows the choice in `store.json`, and is rewritten on every init.** The user's choice is `store.json`'s `primaryUrl`, set by Set Primary Domain. Init writes `domain` from it, at the hostname's current port and scheme. While that hostname is not one of the vault interface's addresses, init writes the preferred address instead — a public domain (HTTPS first), else `.local`, else any other address — and raises the primary-domain task; with no address at all it keeps the stored one. The choice itself is kept, and `domain` returns to it when the address does. A `domain` edited in the admin portal is overwritten at the next init.
 
 `store.json` also holds `reattachTorOnions`, set by the 1.37.3:1 migration on a server carried over from StartOS 0.3.5 and cleared once its Tor address has moved (see Network Access).
 
@@ -107,7 +107,7 @@ Neither is masked. **The admin portal is reachable at any address the vault is**
 
 ## Installation and First-Run Flow
 
-Install seeds the config, uses the `.local` address as the domain, and raises three tasks. No account exists yet and no credential is shown until you run the token task.
+Install seeds the config, uses the preferred address (normally `.local`) as the domain, and raises three tasks. No account exists yet and no credential is shown until you run the token task.
 
 The order that works:
 
@@ -133,7 +133,7 @@ One action whose name flips depending on whether a token already exists.
 
 ### Set Primary Domain
 
-Chooses which published address Vaultwarden treats as its domain. Built by `sdk.setupPrimaryUrl`; the select pre-selects the `.local` address.
+Chooses which published address Vaultwarden treats as its domain. Built by `sdk.setupPrimaryUrl`; the select pre-selects the preferred address.
 
 - **What it changes:** `primaryUrl` in `store.json`, which init writes to `domain` in `config.json`.
 - **Cost:** seconds, then a restart.
@@ -187,7 +187,7 @@ The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No du
 
 - **Included:** the vault database with every account and encrypted entry, attachments, the RSA signing keys, and both config files — including the hashed admin token and any SMTP password.
 - **Restore:** complete, and clients stay logged in because the signing keys come back with everything else.
-- **Check the domain after a restore.** If the restored server publishes different addresses, init uses the `.local` one and raises the primary-domain task; any passkey two-factor registered against the old origin stops working until that address returns or the key is registered again.
+- **Check the domain after a restore.** If the restored server publishes different addresses, init uses the preferred address and raises the primary-domain task; any passkey two-factor registered against the old origin stops working until that address returns or the key is registered again.
 
 **This backup is as sensitive as the vault it contains.** Entries stay encrypted under each user's master password, but the admin-token hash, the signing keys, and the SMTP credentials are all in it.
 
@@ -196,7 +196,7 @@ The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No du
 1. **The admin token is stored hashed and shown once.** There is no recovery — only replacement.
 2. **Signups are open at install** and stay open until you run the action. There is no bootstrap admin, so the window is deliberate.
 3. **The admin portal shares the vault's addresses**, at `/admin`. It cannot be published separately or restricted to a different address.
-4. **While the chosen domain is not published, Vaultwarden runs on the `.local` address** and a task asks for another choice.
+4. **While the chosen domain is not published, Vaultwarden runs on the preferred address** (a public domain, else `.local`) and a task asks for another choice. Passkeys registered on the chosen domain do not work there.
 5. **Changing the domain invalidates passkey and WebAuthn second factors**, which are bound to their original origin.
 6. **Settings changed in the admin portal are not all modelled here**, so the package will not preserve or re-assert them — but it will not strip them either.
 7. **No riscv64 build.** x86_64 and aarch64 only.
