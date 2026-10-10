@@ -34,6 +34,8 @@ verified, tried, and decided belongs in the commit message and the PR body.
 
 ## This repo
 
+- **`npm run check` runs TypeScript only.** Package builds remain a separate step.
+
 - **Only the Argon2 hash of the admin token is ever written.** The `argon2` image exists solely to produce it; don't "simplify" by storing the token itself, and don't drop the image without replacing the hashing path.
 - **`config.json` is Vaultwarden's own file, shared with its admin portal.** The model must stay loose so a setting changed in the portal survives the package's next write. Adding a key to the shape is a decision to own it against the portal.
 - **`systemSmtp.json` exists so the system-SMTP choice keeps tracking.** Init re-reads StartOS's SMTP settings and rewrites the `smtp_*` keys each start; collapsing this into a one-time copy into `config.json` silently freezes the credentials.

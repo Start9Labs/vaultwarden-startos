@@ -3,6 +3,7 @@ import { configJson } from '../fileModels/config.json'
 import { systemSmtpJson } from '../fileModels/systemSmtp.json'
 import { sdk } from '../sdk'
 import { i18n } from '../i18n'
+import { smtpConfig } from '../utils'
 
 const { InputSpec } = sdk
 
@@ -73,42 +74,34 @@ export const manageSmtp = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
+    await systemSmtpJson.merge(effects, {
+      enabled: input.smtp.selection === 'system',
+      customFrom:
+        input.smtp.selection === 'system' ? input.smtp.value.customFrom : null,
+    })
+
     if (input.smtp.selection === 'system') {
       const systemSmtp = await sdk.getSystemSmtp(effects).const()
-      await systemSmtpJson.merge(effects, {
-        enabled: true,
-        customFrom: input.smtp.value.customFrom,
-      })
-      if (systemSmtp) {
-        await configJson.merge(effects, {
-          smtp_host: systemSmtp.host,
-          smtp_port: systemSmtp.port,
-          smtp_from: input.smtp.value.customFrom || systemSmtp.from,
-          smtp_username: systemSmtp.username,
-          smtp_password: systemSmtp.password ?? undefined,
-          smtp_security:
-            systemSmtp.security === 'tls' ? 'force_tls' : 'starttls',
-        })
-      }
+      await configJson.merge(
+        effects,
+        smtpConfig(systemSmtp, input.smtp.value.customFrom),
+      )
     } else if (input.smtp.selection === 'custom') {
       const { host, from, username, password, security } =
         input.smtp.value.provider.value
-      await configJson.merge(effects, {
-        smtp_host: host,
-        smtp_port: Number(security.value.port),
-        smtp_from: from,
-        smtp_username: username,
-        smtp_password: password || undefined,
-        smtp_security: security.selection === 'tls' ? 'force_tls' : 'starttls',
-      })
+      await configJson.merge(
+        effects,
+        smtpConfig({
+          host,
+          port: Number(security.value.port),
+          from,
+          username,
+          password: password || undefined,
+          security: security.selection,
+        }),
+      )
     } else {
-      await configJson.merge(effects, {
-        smtp_host: undefined,
-        smtp_port: undefined,
-        smtp_from: undefined,
-        smtp_username: undefined,
-        smtp_password: undefined,
-      })
+      await configJson.merge(effects, smtpConfig(null))
     }
   },
 )

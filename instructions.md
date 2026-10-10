@@ -28,9 +28,17 @@ After install, Vaultwarden posts a **critical task** to create your admin token.
 
 Install a Bitwarden client (browser extension, desktop, mobile, or CLI). In the client's settings, set the server URL to your Web Vault URL — then log in with the account you created.
 
+### Before upgrading
+
+Read the [upstream upgrade notes](https://github.com/dani-garcia/vaultwarden/releases) and keep a backup of your vault. Use current Bitwarden clients; older CLI clients may no longer be able to receive Sends.
+
+If you do not fully trust your organization's administrators, rotate the organization API key after updating in **Admin Console → Settings → Rotate API key**. Administrators could previously view it.
+
+If you put another reverse proxy in front of StartOS, include it in Vaultwarden's `IP_HEADER_TRUSTED_PROXIES` setting so rate limiting and logs identify the client correctly. If you enabled experimental client features, remove obsolete flags named in the upstream upgrade notes before saving admin settings.
+
 ### Actions
 
 - **Disable Signups / Enable Signups** — toggles whether new accounts can be created on your server. The label flips to reflect the current state. After creating your own account, leave signups disabled unless you're actively inviting new users.
 - **Create Admin Token / Update Admin Token** — generates (or regenerates) the token that gates the Admin Portal. Run **Update Admin Token** to rotate the token or recover if you've lost it.
 - **Set Primary Domain** — picks which of your Vaultwarden URLs is treated as the primary one when Vaultwarden builds links for password-reset emails, organization invites, and similar messages, and which one **Open UI** opens. Use this when you want emails to link to a particular address. Passkeys and security keys are tied to this domain, so after changing it, register them again. If the chosen address stops being available, Vaultwarden uses a public domain if you have one, otherwise its `.local` address, until it returns — passkeys registered on the chosen domain don't work there, and a task asks you to choose again.
-- **Configure SMTP** — sets up outbound email for invitations, password-reset emails, and admin notifications. You can choose **Disabled**, **System** (reuse StartOS's system SMTP, optionally with a custom From address), or **Custom** (supply host, port, username, password, security mode, From address).
+- **Configure SMTP** — sets up outbound email for invitations, password-reset emails, and admin notifications. You can choose **Disabled**, **System** (reuse StartOS's system SMTP, optionally with a custom From address), or **Custom** (supply host, port, username, password, security mode, From address). Choosing **Custom** or **Disabled** stops tracking system SMTP and keeps that choice after restart. In **System** mode, removing StartOS's SMTP settings stops email sending until you configure them again.
