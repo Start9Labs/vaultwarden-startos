@@ -7,7 +7,10 @@ export const uiPort = 80
 export const mainHostId = 'main'
 export const vaultInterfaceId = 'vault'
 
-export function smtpConfig(smtp: T.SmtpValue | null, customFrom?: string | null) {
+export function smtpConfig(
+  smtp: T.SmtpValue | null,
+  customFrom?: string | null,
+) {
   return {
     smtp_host: smtp?.host,
     smtp_port: smtp?.port,
