@@ -56,7 +56,7 @@ One volume, holding everything.
 
 | Volume | Mount Point | Purpose                                                                             |
 | ------ | ----------- | ----------------------------------------------------------------------------------- |
-| `main` | `/data`     | The SQLite vault database, attachments, RSA keys, icon cache, and both config files |
+| `main` | `/data`     | The SQLite vault database, attachments, RSA keys, icon cache, and all three config files |
 
 The database is the vault: every account, every organisation, and every encrypted entry. The RSA keypair beside it is what signs the auth tokens, so losing it logs every client out.
 
@@ -68,7 +68,7 @@ Three models. One is Vaultwarden's own file, and two are small stores the packag
 | ----------------- | ------ | ----------------------- | ---------------------------------------------- |
 | `config.json`     | JSON   | Yes — `FileHelper.json` | Install, every init, and every action          |
 | `systemSmtp.json` | JSON   | Yes — `FileHelper.json` | Install, and the Configure SMTP action         |
-| `store.json`      | JSON   | Yes — `FileHelper.json` | Set Primary Domain, and the 1.37.3:1 migration |
+| `store.json`      | JSON   | Yes — `FileHelper.json` | Set Primary Domain, and the legacy-network migration |
 
 **`config.json` is Vaultwarden's, not the package's.** It is the same file Vaultwarden's own admin portal writes, so a setting changed in the portal and a setting changed by an action land in the same place. Only the keys below are modelled; anything else the portal writes is left untouched, because the model parses loosely.
 
@@ -77,14 +77,14 @@ Three models. One is Vaultwarden's own file, and two are small stores the packag
 | `admin_token`     | The token action                           | Stored as an Argon2 hash, never as the token itself                                                                           |
 | `domain`          | Init, from the primary-domain choice       | The address Vaultwarden builds links from                                                                                     |
 | `signups_allowed` | Install, then the toggle action            | Seeded **on**, so you can create the first account                                                                            |
-| `ip_header`       | Enforced                                   | Set to the header StartOS's reverse proxy actually sends, so rate limiting and logs see the real client rather than the proxy |
+| `ip_header`       | Model default                              | Defaults to `X-Forwarded-For`; an admin-portal override survives package writes |
 | `smtp_*`          | Configure SMTP, or the system-SMTP watcher | Absent entirely when email is off                                                                                             |
 
 **`domain` follows the choice in `store.json`, and is rewritten on every init.** The user's choice is `store.json`'s `primaryUrl`, set by Set Primary Domain. Init writes `domain` from it, at the hostname's current port and scheme. While that hostname is not one of the vault interface's addresses, init writes the preferred address instead — a public domain (HTTPS first), else `.local`, else any other address — and raises the primary-domain task; with no address at all it keeps the stored one. The choice itself is kept, and `domain` returns to it when the address does. A `domain` edited in the admin portal is overwritten at the next init.
 
-`store.json` also holds `reattachTorOnions`, set by the 1.37.3:1 migration on a server carried over from StartOS 0.3.5 and cleared once its Tor address has moved (see Network Access).
+`store.json` also holds `reattachTorOnions`, set by the legacy-network migration and cleared once its Tor address has moved (see Network Access).
 
-`systemSmtp.json` records only whether you chose StartOS's system SMTP and any custom From address. That indirection matters: with it enabled, init re-reads the system's SMTP settings on every start and rewrites the `smtp_*` keys, so changing the server's mail configuration propagates here without touching this package.
+`systemSmtp.json` records only whether you chose StartOS's system SMTP and any custom From address. With it enabled, init re-reads the system's SMTP settings and rewrites the `smtp_*` keys; removing the system settings clears the saved SMTP credentials. Choosing custom SMTP or disabling email turns this tracking off, so init cannot overwrite that choice. The action and watcher share one mapping from SMTP settings to Vaultwarden's keys.
 
 ## Dependencies
 
@@ -101,7 +101,9 @@ Two interfaces on the same binding and the same port — the vault, and Vaultwar
 
 **Open UI opens the primary domain** — both interfaces nominate it — falling back to StartOS's usual choice when it is not one of their addresses.
 
-**A server carried over from StartOS 0.3.5** had its vault on internal ports 8080 and 3443. The 1.37.3:1 migration retires both. Once Tor 0.4.9.13:1 or later is installed, init moves that version's `.onion` address onto the vault binding on port 80, keeping the hostname, through Tor's `setupOnionReattachment`; until then `store.json`'s `reattachTorOnions` stays `true`.
+**A server carried over from the legacy StartOS package** had its vault on internal ports 8080 and 3443. The legacy-network migration retires both. Once a Tor package supporting service-initiated onion reattachment is installed, init moves the old `.onion` address onto the vault binding on port 80, keeping the hostname, through Tor's `setupOnionReattachment`; until then `store.json`'s `reattachTorOnions` stays `true`.
+
+Vaultwarden reads `X-Forwarded-For` through StartOS's reverse proxy. Upstream's default `ip_header_trusted_proxies` trusts non-global addresses and selects the rightmost untrusted address in a proxy chain. The package does not own that setting: an additional public proxy must be included in the trusted-proxy configuration to avoid logging and rate-limiting its address as the client.
 
 Neither is masked. **The admin portal is reachable at any address the vault is**, protected by the admin token and nothing else — so publishing the vault publishes the portal. That is why the token is `critical` and why it is a 32-character generated value rather than something you choose.
 
@@ -155,7 +157,7 @@ Sets up outbound email.
 - **What it changes:** `systemSmtp.json`, and the `smtp_*` keys in `config.json`.
 - **Cost:** seconds, then a restart.
 - **Repeat safety:** idempotent; the form is pre-filled from whichever source is currently in use.
-- **Three choices:** StartOS's system SMTP, your own server, or disabled. Choosing the system option is the one that keeps tracking — the settings are re-read on every start rather than copied once.
+- **Three choices:** StartOS's system SMTP, your own server, or disabled. System mode keeps tracking StartOS settings, including their removal; custom and disabled modes clear the tracking flag. Selecting system mode without configured system SMTP clears any prior SMTP credentials.
 
 ## Tasks
 
@@ -173,19 +175,19 @@ Signups are `important` rather than `critical` because the service is fully func
 
 ## Health Checks
 
-One check, on the only daemon.
+One check, on the only daemon. Upstream runs its SQLite migrations before opening the listener; the package does not duplicate them.
 
 | Check     | Displayed       | Method               |
 | --------- | --------------- | -------------------- |
 | `primary` | "Web Interface" | Port 80 is listening |
 
-Vaultwarden binds quickly, so a failure here means the process did not start — most often a value in `config.json` it rejects, which it names in the service logs. A running service whose clients cannot sync is a different problem, and usually the domain: the Bitwarden apps validate the origin they were configured with.
+A failure here means the listener is not open — inspect the service logs for startup, database-migration, or config-validation errors. Obsolete experimental client feature flags can also prevent the admin portal from saving settings; the package's loose model leaves unowned settings for the administrator to correct. A running service whose clients cannot sync is a different problem, and usually the domain: the Bitwarden apps validate the origin they were configured with.
 
 ## Backups and Restore
 
 The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No dump step and nothing excluded.
 
-- **Included:** the vault database with every account and encrypted entry, attachments, the RSA signing keys, and both config files — including the hashed admin token and any SMTP password.
+- **Included:** the vault database with every account and encrypted entry, attachments, the RSA signing keys, and all three config files — including the hashed admin token and any SMTP password.
 - **Restore:** complete, and clients stay logged in because the signing keys come back with everything else.
 - **Check the domain after a restore.** If the restored server publishes different addresses, init uses the preferred address and raises the primary-domain task; any passkey two-factor registered against the old origin stops working until that address returns or the key is registered again.
 

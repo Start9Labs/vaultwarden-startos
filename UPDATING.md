@@ -7,13 +7,14 @@ Vaultwarden ships as the upstream `vaultwarden/server` Alpine image. A small hel
 - **Vaultwarden** — https://github.com/dani-garcia/vaultwarden
 
   ```
-  gh release view -R dani-garcia/vaultwarden --json tagName -q .tagName
+  gh api --paginate 'repos/dani-garcia/vaultwarden/tags?per_page=100' --jq '.[].name' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V
   ```
 
-  Cross-check that the matching `<version>-alpine` tag has been published on Docker Hub (the package consumes the image, not the source release):
+  Select the highest stable tag, then confirm that the exact `<version>-alpine` image has been published on Docker Hub for both `amd64` and `arm64` (the package consumes the image, not the source release). If it is unavailable, try the next stable tag:
 
   ```
-  curl -fsSL "https://hub.docker.com/v2/repositories/vaultwarden/server/tags?page_size=20&ordering=last_updated" | jq -r '.results[].name'
+  version=<version>
+  curl -fsSL "https://hub.docker.com/v2/repositories/vaultwarden/server/tags/${version}-alpine" | jq '{name, images: [.images[] | {architecture, os, status}]}'
   ```
 
   Pin lives in `startos/manifest/index.ts` as `images.vaultwarden.source.dockerTag`.
