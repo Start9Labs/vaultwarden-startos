@@ -21,4 +21,4 @@ Vaultwarden ships as the upstream `vaultwarden/server` Alpine image. A small hel
 
 ## Applying the bump
 
-- **Vaultwarden** — in `startos/manifest/index.ts`, set `images.vaultwarden.source.dockerTag` to `vaultwarden/server:<new version>-alpine`.
+- **Vaultwarden** — in `startos/manifest/index.ts`, set the `IMAGE` build arg of `images.vaultwarden.source.dockerBuild` to `vaultwarden/server:<new version>-alpine`.
