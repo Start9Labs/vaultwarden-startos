@@ -35,11 +35,11 @@
 
 ## Image and Container Runtime
 
-Two images: upstream's, unmodified, and a four-line Alpine build that exists to run one command.
+Two images: upstream's, with its CA store upgraded by the root `Dockerfile` (a temporary layer that comes out once upstream ships an image built on a fixed store), and a four-line Alpine build that exists to run one command.
 
 | Property      | Value                                                   |
 | ------------- | ------------------------------------------------------- |
-| Images        | `vaultwarden/server` (alpine), plus `argon2.Dockerfile` |
+| Images        | `vaultwarden/server` (alpine) + `Dockerfile`, plus `argon2.Dockerfile` |
 | Architectures | x86_64, aarch64                                         |
 | Entrypoint    | Upstream's                                              |
 
@@ -209,7 +209,7 @@ The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No du
 
 ```yaml
 package_id: vaultwarden
-image: vaultwarden/server # alpine; plus a local argon2.Dockerfile build
+image: vaultwarden/server # alpine, CA store upgraded by Dockerfile; plus a local argon2.Dockerfile build
 architectures:
   - x86_64
   - aarch64
