@@ -37,4 +37,4 @@ Install a Bitwarden client (browser extension, desktop, mobile, or CLI). In the 
 
 ### Outbound traffic
 
-If you publish Vaultwarden through StartTunnel to keep your home IP private, also select that tunnel on Vaultwarden's **Outbound Traffic** tab. Vaultwarden fetches the website icons shown beside your logins itself, so otherwise each of those websites sees your home IP. If you use the tunnel for another reason, such as a port your router can't forward, there is nothing to change.
+If you publish Vaultwarden through StartTunnel to keep your home IP private, send Vaultwarden's outbound traffic through that tunnel too. Vaultwarden fetches the website icons shown beside your logins itself, so otherwise each of those websites sees your home IP. If you use the tunnel for another reason, such as a port your router can't forward, there is nothing to change.
