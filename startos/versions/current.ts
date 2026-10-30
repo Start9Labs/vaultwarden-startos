@@ -1,17 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '1.37.4:2',
+  version: '1.37.4:3',
   releaseNotes: {
     en_US:
-      'Stops trusting certificates from a compromised certificate authority (eMudhra).',
+      'The instructions cover keeping your home IP private when you publish Vaultwarden through StartTunnel.',
     es_ES:
-      'Deja de confiar en los certificados de una autoridad de certificación comprometida (eMudhra).',
+      'Las instrucciones explican cómo mantener privada tu IP doméstica cuando publicas Vaultwarden a través de StartTunnel.',
     de_DE:
-      'Vertraut Zertifikaten einer kompromittierten Zertifizierungsstelle (eMudhra) nicht mehr.',
+      'Die Anleitung erklärt, wie Ihre Heim-IP-Adresse privat bleibt, wenn Sie Vaultwarden über StartTunnel veröffentlichen.',
     pl_PL:
-      'Przestaje ufać certyfikatom przejętego urzędu certyfikacji (eMudhra).',
-    fr_FR: `Ne fait plus confiance aux certificats d'une autorité de certification compromise (eMudhra).`,
+      'Instrukcje wyjaśniają, jak zachować prywatność domowego adresu IP, gdy publikujesz Vaultwarden przez StartTunnel.',
+    fr_FR:
+      'Les instructions expliquent comment garder votre IP personnelle privée lorsque vous publiez Vaultwarden via StartTunnel.',
   },
   migrations: {
     up: async () => {},
