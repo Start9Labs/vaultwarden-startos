@@ -35,11 +35,11 @@
 
 ## Image and Container Runtime
 
-Two images: upstream's, with its CA store upgraded by the root `Dockerfile` (a temporary layer that comes out once upstream ships an image built on a fixed store), and a four-line Alpine build that exists to run one command.
+Two images: upstream's unmodified Alpine image, and a four-line Alpine build that exists to run one command.
 
 | Property      | Value                                                   |
 | ------------- | ------------------------------------------------------- |
-| Images        | `vaultwarden/server` (alpine) + `Dockerfile`, plus `argon2.Dockerfile` |
+| Images        | `vaultwarden/server` (alpine), plus `argon2.Dockerfile` |
 | Architectures | x86_64, aarch64                                         |
 | Entrypoint    | Upstream's                                              |
 
@@ -183,6 +183,8 @@ One check, on the only daemon. Upstream runs its SQLite migrations before openin
 
 A failure here means the listener is not open — inspect the service logs for startup, database-migration, or config-validation errors. Obsolete experimental client feature flags can also prevent the admin portal from saving settings; the package's loose model leaves unowned settings for the administrator to correct. A running service whose clients cannot sync is a different problem, and usually the domain: the Bitwarden apps validate the origin they were configured with.
 
+**A listening port does not prove the config was loaded.** If the logs report `Failed to load configuration`, Vaultwarden ignores the entire `config.json` and uses defaults, including allowing signups and disabling the admin portal. Check for invalid JSON or out-of-range numeric values, correct the file, and restart. Settings that parse but fail validation instead prevent startup.
+
 ## Backups and Restore
 
 The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No dump step and nothing excluded.
@@ -209,7 +211,7 @@ The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No du
 
 ```yaml
 package_id: vaultwarden
-image: vaultwarden/server # alpine, CA store upgraded by Dockerfile; plus a local argon2.Dockerfile build
+image: vaultwarden/server # alpine; plus a local argon2.Dockerfile build
 architectures:
   - x86_64
   - aarch64

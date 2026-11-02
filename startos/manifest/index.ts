@@ -14,9 +14,7 @@ export const manifest = setupManifest({
   images: {
     vaultwarden: {
       source: {
-        dockerBuild: {
-          buildArgs: { IMAGE: 'vaultwarden/server:1.37.4-alpine' },
-        },
+        dockerTag: 'vaultwarden/server:1.37.5-alpine',
       },
       arch: ['x86_64', 'aarch64'],
     },
