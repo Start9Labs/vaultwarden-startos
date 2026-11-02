@@ -24,7 +24,7 @@ export const current = VersionInfo.of({
 - Behebt zwei Sicherheitsprobleme mittleren Schweregrads bei Website-Symbolen und beim Notfallzugriff. Eine zeitnahe Aktualisierung wird empfohlen.
 - Aktualisiert den Web-Tresor auf 2026.10.1 und stellt die Kompatibilität mit neueren Clients für Zwei-Faktor-Anmeldeeinstellungen und die Kontoübernahme per Notfallzugriff wieder her.
 
-**Vor dem Update:** prüfe angepasste Zahlenwerte und Cron-Einstellungen anhand der Upstream-Upgrade-Hinweise. Mehrere numerische Optionen lehnen nun negative oder außerhalb des Wertebereichs liegende Werte ab; Ratenlimits und Datenbank-Zeitlimits müssen positiv sein. Eine nicht lesbare Konfigurationsdatei wird vollständig ignoriert, einschließlich Registrierungsbeschränkungen und Admin-Token; andere ungültige Einstellungen verhindern den Start. Korrigiere angepasste Werte vor dem Update und prüfe danach die Startprotokolle.
+**Vor dem Update:** Prüfen Sie angepasste Zahlenwerte und Cron-Einstellungen anhand der Upstream-Upgrade-Hinweise. Mehrere numerische Optionen lehnen nun negative oder außerhalb des Wertebereichs liegende Werte ab; Ratenlimits und Datenbank-Zeitlimits müssen positiv sein. Eine nicht lesbare Konfigurationsdatei wird vollständig ignoriert, einschließlich Registrierungsbeschränkungen und Admin-Token; andere ungültige Einstellungen verhindern den Start. Korrigieren Sie angepasste Werte vor dem Update und prüfen Sie danach die Startprotokolle.
 
 [Vollständige Upstream-Versions- und Upgrade-Hinweise](https://github.com/dani-garcia/vaultwarden/releases/tag/1.37.5)`,
     pl_PL: `Zaktualizowano Vaultwarden do 1.37.5.
