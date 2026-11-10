@@ -4,24 +4,34 @@ import { sdk } from '../sdk'
 import { configJson } from '../fileModels/config.json'
 import { i18n } from '../i18n'
 
-export const setAdminToken = sdk.Action.withoutInput(
+export const toggleAdminPortal = sdk.Action.withoutInput(
   // id
-  'set-admin-token',
+  'toggle-admin-portal',
 
   // metadata
   async ({ effects }) => {
-    const existing = await configJson.read((c) => c.admin_token).const(effects)
+    const enabled = !!(await configJson
+      .read((c) => c.admin_token)
+      .const(effects))
 
     return {
-      name: existing ? i18n('Update Admin Token') : i18n('Create Admin Token'),
-      description: existing
-        ? i18n('Generate a new token for the Admin Portal, shown once.')
-        : i18n('Create your admin token in order to access the admin portal'),
-      warning: existing
+      name: enabled
+        ? i18n('Disable Admin Portal')
+        : i18n('Enable Admin Portal'),
+      description: enabled
         ? i18n(
-            'Replaces the current admin token. The old token stops working, and the new one is shown only once.',
+            'The Admin Portal is on. Run this action to turn it off and delete its token.',
           )
-        : null,
+        : i18n(
+            'The Admin Portal is off. Run this action to turn it on and generate its token, shown once.',
+          ),
+      warning: enabled
+        ? i18n(
+            'The current admin token stops working. While the portal is off, users can be invited only by turning it back on.',
+          )
+        : i18n(
+            'The Admin Portal will be reachable at every address the Web Vault is, protected only by its token.',
+          ),
       allowedStatuses: 'any',
       group: null,
       visibility: 'enabled',
@@ -30,30 +40,60 @@ export const setAdminToken = sdk.Action.withoutInput(
 
   // the execution function
   async ({ effects }) => {
-    const token = utils.getDefaultString({
-      charset: 'A-Z,a-z,0-9',
-      len: 32,
-    })
-
-    const hash = await hashToken(effects, token)
-
-    await configJson.merge(effects, { admin_token: hash })
-
-    return {
-      version: '1',
-      title: i18n('Your Admin Token'),
-      message: i18n('Save this token to a secure location.'),
-      result: {
-        value: token,
-        copyable: true,
-        masked: true,
-        qr: false,
-        launchable: false,
-        type: 'single',
-      },
+    if (await configJson.read((c) => c.admin_token).once()) {
+      await configJson.merge(effects, { admin_token: '' })
+      return null
     }
+    return issueAdminToken(effects)
   },
 )
+
+export const rotateAdminToken = sdk.Action.withoutInput(
+  // id
+  'rotate-admin-token',
+
+  // metadata
+  async ({ effects }) => ({
+    name: i18n('Rotate Admin Token'),
+    description: i18n('Generate a new token for the Admin Portal, shown once.'),
+    warning: i18n(
+      'Replaces the current admin token. The old token stops working, and the new one is shown only once.',
+    ),
+    allowedStatuses: 'any',
+    group: null,
+    visibility: (await configJson.read((c) => c.admin_token).const(effects))
+      ? 'enabled'
+      : 'hidden',
+  }),
+
+  // the execution function
+  async ({ effects }) => issueAdminToken(effects),
+)
+
+async function issueAdminToken(effects: T.Effects) {
+  const token = utils.getDefaultString({
+    charset: 'A-Z,a-z,0-9',
+    len: 32,
+  })
+
+  await configJson.merge(effects, {
+    admin_token: await hashToken(effects, token),
+  })
+
+  return {
+    version: '1' as const,
+    title: i18n('Your Admin Token'),
+    message: i18n('Save this token to a secure location.'),
+    result: {
+      value: token,
+      copyable: true,
+      masked: true,
+      qr: false,
+      launchable: false,
+      type: 'single' as const,
+    },
+  }
+}
 
 export async function hashToken(effects: T.Effects, token: string) {
   const salt = crypto.randomBytes(32).toString('base64')
