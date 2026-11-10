@@ -2,6 +2,7 @@ import { sdk } from './sdk'
 import { mainHostId, uiPort, vaultInterfaceId } from './utils'
 import { i18n } from './i18n'
 import { primaryUrl } from './primaryUrl'
+import { configJson } from './fileModels/config.json'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   const uiMulti = sdk.MultiHost.of(effects, mainHostId)
@@ -40,7 +41,9 @@ export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
     preferredLauncherAddress,
   })
 
-  const uiReceipt = await uiMultiOrigin.export([vault, admin])
+  const adminEnabled = !!(await configJson
+    .read((c) => c.admin_token)
+    .const(effects))
 
-  return [uiReceipt]
+  return [await uiMultiOrigin.export(adminEnabled ? [vault, admin] : [vault])]
 })
