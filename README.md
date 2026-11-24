@@ -137,7 +137,7 @@ One action whose name, description, and warning flip with whether `admin_token` 
 
 Hidden while the portal is off.
 
-- **What it changes:** replaces `admin_token` with the hash of a fresh token; the old one stops working. An admin session already signed in is a JWT that does not depend on the token, so it lasts until `admin_session_lifetime` (upstream default 20 minutes) runs out.
+- **What it changes:** replaces `admin_token` with the hash of a fresh token; the old one stops working. Existing admin-session JWTs do not depend on the token and remain usable until their expiry (`admin_session_lifetime`, about 20 minutes by default). They can still change settings, including the admin token; rotation alone does not remove an attacker with an active session.
 - **Cost:** seconds, then a restart.
 - **Repeat safety:** safe to re-run; each run invalidates the previous token, and asks for confirmation first.
 - **Outputs:** the new token, masked and copyable, shown once. This is also the recovery for a lost token.
@@ -157,7 +157,7 @@ One action whose name, description, and warning flip with the current state.
 - **What it changes:** `signups_allowed` in `config.json`.
 - **Cost:** seconds, then a restart.
 - **Repeat safety:** it is a toggle — running it twice returns to where you started. Both directions ask for confirmation.
-- **Existing accounts are unaffected**; this governs only open registration. `invitations_allowed` stays at upstream's default (on), so invitations still create accounts: from the admin portal, and from any user inviting to an organization (open to every user unless `org_creation_users` restricts it) or for emergency access. Turning it off in the admin portal's General settings stops org and emergency-access invitations; admin-portal invitations ignore it.
+- **Existing accounts are unaffected**; this governs only open registration. `invitations_allowed` is not changed (upstream defaults it on), so invitations still create accounts: from the admin portal, and from any user inviting to an organization (open to every user unless `org_creation_users` restricts it) or for emergency access. Turning it off in the admin portal's General settings blocks new-user invitations from organizations and emergency access; existing invitations remain redeemable, and admin-portal invitations ignore it.
 - **Without SMTP, an invitation is claimed by whoever registers its email address first.** Vaultwarden then records the invitation instead of mailing a token, and registration checks only the address.
 
 ### Configure SMTP

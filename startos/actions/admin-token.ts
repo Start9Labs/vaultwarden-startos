@@ -57,7 +57,7 @@ export const rotateAdminToken = sdk.Action.withoutInput(
     name: i18n('Rotate Admin Token'),
     description: i18n('Generate a new token for the Admin Portal, shown once.'),
     warning: i18n(
-      'Replaces the current admin token. The old token stops working, and the new one is shown only once. An Admin Portal session that is already signed in stays signed in for up to 20 minutes.',
+      'Replaces the current admin token. The old token stops working, and the new one is shown only once. Already signed-in Admin Portal sessions are not revoked; they can still change settings, including the admin token, until they expire (about 20 minutes by default).',
     ),
     allowedStatuses: 'any',
     group: null,
