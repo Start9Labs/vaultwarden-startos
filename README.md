@@ -48,7 +48,7 @@ Two images: upstream's unmodified Alpine image, and a four-line Alpine build tha
 | `vaultwarden-sub` | The `primary` daemon — the one to `attach` to |
 | `argon2`          | Temporary; hashes the admin token, then exits |
 
-**The second image is only there so the admin token never has to be stored in the clear.** Vaultwarden accepts an Argon2 PHC string in place of a plaintext admin token, and the alpine build provides the `argon2` binary to produce one. It runs for a second or two when a token action is invoked, or at init when `admin_token` holds a plaintext token (one carried over from the legacy package, or typed into the admin portal), and holds no mounts at all.
+**The second image is only there so the admin token never has to be stored in the clear.** Vaultwarden accepts an Argon2 PHC string in place of a plaintext admin token, and the alpine build provides the `argon2` binary to produce one. It runs for a second or two when a token action is invoked, or at init when `admin_token` holds a plaintext token, and holds no mounts at all.
 
 ## Volume and Data Layout
 
