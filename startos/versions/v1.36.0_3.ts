@@ -1,6 +1,7 @@
 import { VersionInfo, IMPOSSIBLE, YAML } from '@start9labs/start-sdk'
 import { readFile, rm } from 'fs/promises'
 import { configJson } from '../fileModels/config.json'
+import { hashToken } from '../utils'
 
 export const v_1_36_0_3 = VersionInfo.of({
   version: '1.36.0:3',
@@ -20,8 +21,12 @@ export const v_1_36_0_3 = VersionInfo.of({
       ).then(YAML.parse, () => undefined)
 
       if (configYaml) {
+        const adminToken = configYaml['admin-token']?.trim()
         await configJson.merge(effects, {
-          admin_token: configYaml['admin-token'] || '',
+          admin_token:
+            adminToken && !adminToken.startsWith('$argon2')
+              ? await hashToken(effects, adminToken)
+              : adminToken || '',
           domain: '',
           smtp_security: 'starttls',
         })

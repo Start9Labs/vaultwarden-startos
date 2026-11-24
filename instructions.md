@@ -15,9 +15,9 @@
 
 1. Start Vaultwarden.
 2. Open the **Web Vault** interface and create your first user account.
-3. Vaultwarden posts an **important task** asking you to confirm the signup setting. After your account exists, run the **Disable Signups** action so strangers with your URL can't register on your server.
+3. Vaultwarden posts an **important task** asking you to confirm the signup setting. After your account exists, run the **Disable Signups** action so strangers with your URL can't register on your server. Invitations still let people create accounts; see **Disable Signups** under Actions.
 4. A second **important task** asks you to choose the **primary domain**. Choose it before you register a passkey or security key for two-step login, since those are tied to it.
-5. If you need the Admin Portal — to invite users while signups are off, or to manage organizations and server settings — run **Enable Admin Portal**. A random 32-character token is generated and shown once; copy it somewhere safe before dismissing, since only its hash is stored. Then open the **Admin Portal** interface and sign in with it.
+5. If you need the Admin Portal — to invite users, or to manage organizations and server settings — run **Enable Admin Portal**. A random 32-character token is generated and shown once; copy it somewhere safe before dismissing, since only its hash is stored. Then open the **Admin Portal** interface and sign in with it.
 
 ## Using Vaultwarden
 
@@ -27,9 +27,9 @@ Install a Bitwarden client (browser extension, desktop, mobile, or CLI). In the 
 
 ### Actions
 
-- **Disable Signups / Enable Signups** — toggles whether new accounts can be created on your server. The label flips to reflect the current state. After creating your own account, leave signups disabled unless you're actively inviting new users.
+- **Disable Signups / Enable Signups** — toggles whether anyone can sign up for an account on your server. The label flips to reflect the current state. After creating your own account, leave signups disabled unless you want people to register without an invitation. Disabling signups doesn't stop invitations: the Admin Portal, and any user through an organization or emergency access, can still invite people, and each invitation lets its recipient create an account. To stop them, turn off **Allow invitations** in the Admin Portal's **General settings**. Without SMTP, no invitation email is sent, and whoever first registers an invited email address gets that account.
 - **Enable Admin Portal / Disable Admin Portal** — turns the Admin Portal on, generating its token, or off, deleting it. While it's off, the portal isn't reachable at any address. Leave it off when you're not using it.
-- **Rotate Admin Token** — replaces the Admin Portal's token with a new one, shown once. Use it if you've lost the token or think it's exposed. Only shown while the portal is on.
+- **Rotate Admin Token** — replaces the Admin Portal's token with a new one, shown once. Use it if you've lost the token or think it's exposed. An Admin Portal session that is already signed in stays signed in for up to 20 minutes afterward. Only shown while the portal is on.
 - **Set Primary Domain** — picks which of your Vaultwarden URLs is treated as the primary one when Vaultwarden builds links for password-reset emails, organization invites, and similar messages, and which one **Open UI** opens. Use this when you want emails to link to a particular address. Passkeys and security keys are tied to this domain, so after changing it, register them again. If the chosen address stops being available, Vaultwarden uses a public domain if you have one, otherwise its `.local` address, until it returns — passkeys registered on the chosen domain don't work there, and a task asks you to choose again.
 - **Configure SMTP** — sets up outbound email for invitations, password-reset emails, and admin notifications. You can choose **Disabled**, **System** (reuse StartOS's system SMTP, optionally with a custom From address), or **Custom** (supply host, port, username, password, security mode, From address). In **System** mode, removing StartOS's SMTP settings stops email sending until you configure them again.
 
