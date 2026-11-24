@@ -48,7 +48,7 @@ Two images: upstream's unmodified Alpine image, and a four-line Alpine build tha
 | `vaultwarden-sub` | The `primary` daemon — the one to `attach` to |
 | `argon2`          | Temporary; hashes the admin token, then exits |
 
-**The second image is only there so the admin token never has to be stored in the clear.** Vaultwarden accepts an Argon2 PHC string in place of a plaintext admin token, and the alpine build provides the `argon2` binary to produce one. It runs for a second or two when the token action is invoked and holds no mounts at all.
+**The second image is only there so the admin token never has to be stored in the clear.** Vaultwarden accepts an Argon2 PHC string in place of a plaintext admin token, and the alpine build provides the `argon2` binary to produce one. It runs for a second or two when a token action is invoked, or at init when `admin_token` holds a plaintext token (one carried over from the legacy package, or typed into the admin portal), and holds no mounts at all.
 
 ## Volume and Data Layout
 
@@ -72,13 +72,13 @@ Three models. One is Vaultwarden's own file, and two are small stores the packag
 
 **`config.json` is Vaultwarden's, not the package's.** It is the same file Vaultwarden's own admin portal writes, so a setting changed in the portal and a setting changed by an action land in the same place. Only the keys below are modelled; anything else the portal writes is left untouched, because the model parses loosely.
 
-| Key               | Set by                                     | Notes                                                                           |
-| ----------------- | ------------------------------------------ | ------------------------------------------------------------------------------- |
-| `admin_token`     | The token action                           | Stored as an Argon2 hash, never as the token itself                             |
-| `domain`          | Init, from the primary-domain choice       | The address Vaultwarden builds links from                                       |
-| `signups_allowed` | Install, then the toggle action            | Seeded **on**, so you can create the first account                              |
-| `ip_header`       | Model default                              | Defaults to `X-Forwarded-For`; an admin-portal override survives package writes |
-| `smtp_*`          | Configure SMTP, or the system-SMTP watcher | Absent entirely when email is off                                               |
+| Key               | Set by                                         | Notes                                                                           |
+| ----------------- | ---------------------------------------------- | ------------------------------------------------------------------------------- |
+| `admin_token`     | The token actions; init hashes a plaintext one | Stored as an Argon2 hash, never as the token itself                             |
+| `domain`          | Init, from the primary-domain choice           | The address Vaultwarden builds links from                                       |
+| `signups_allowed` | Install, then the toggle action                | Seeded **on**, so you can create the first account                              |
+| `ip_header`       | Model default                                  | Defaults to `X-Forwarded-For`; an admin-portal override survives package writes |
+| `smtp_*`          | Configure SMTP, or the system-SMTP watcher     | Absent entirely when email is off                                               |
 
 **`domain` follows the choice in `store.json`, and is rewritten on every init.** The user's choice is `store.json`'s `primaryUrl`, set by Set Primary Domain. Init writes `domain` from it, at the hostname's current port and scheme. While that hostname is not one of the vault interface's addresses, init writes the preferred address instead — a public domain (HTTPS first), else `.local`, else any other address — and raises the primary-domain task; with no address at all it keeps the stored one. The choice itself is kept, and `domain` returns to it when the address does. A `domain` edited in the admin portal is overwritten at the next init.
 
@@ -116,7 +116,7 @@ The order that works:
 1. **Create your account** in the web vault. Vaultwarden has no bootstrap user; the first signup is yours.
 2. **Disable signups** (`important`). Until you do, anyone who can reach a published address can create an account on your server.
 3. **Set the primary domain** (`important`) — before registering a passkey or security key, since those are bound to it.
-4. **Enable the admin portal** only if you need it — to invite users with signups off, manage organisations, or run diagnostics. Its token is shown once, and only the Argon2 hash is kept — there is no way to recover it, only to replace it.
+4. **Enable the admin portal** only if you need it — to invite users, manage organisations, or run diagnostics. Its token is shown once, and only the Argon2 hash is kept — there is no way to recover it, only to replace it.
 
 Email is optional and off at install. Without SMTP, Vaultwarden cannot send invitations, email-verification, or the emergency-access flows, and two-factor by email is unavailable.
 
@@ -137,7 +137,7 @@ One action whose name, description, and warning flip with whether `admin_token` 
 
 Hidden while the portal is off.
 
-- **What it changes:** replaces `admin_token` with the hash of a fresh token; the old one stops working.
+- **What it changes:** replaces `admin_token` with the hash of a fresh token; the old one stops working. Existing admin-session JWTs do not depend on the token and remain usable until their expiry (`admin_session_lifetime`, about 20 minutes by default). They can still change settings, including the admin token; rotation alone does not remove an attacker with an active session.
 - **Cost:** seconds, then a restart.
 - **Repeat safety:** safe to re-run; each run invalidates the previous token, and asks for confirmation first.
 - **Outputs:** the new token, masked and copyable, shown once. This is also the recovery for a lost token.
@@ -157,7 +157,8 @@ One action whose name, description, and warning flip with the current state.
 - **What it changes:** `signups_allowed` in `config.json`.
 - **Cost:** seconds, then a restart.
 - **Repeat safety:** it is a toggle — running it twice returns to where you started. Both directions ask for confirmation.
-- **Existing accounts are unaffected**; this governs only whether new ones can be created. Invitations sent from the admin portal work either way.
+- **Existing accounts are unaffected**; this governs only open registration. `invitations_allowed` is not changed (upstream defaults it on), so invitations still create accounts: from the admin portal, and from any user inviting to an organization (open to every user unless `org_creation_users` restricts it) or for emergency access. Turning it off in the admin portal's General settings blocks new-user invitations from organizations and emergency access; existing invitations remain redeemable, and admin-portal invitations ignore it.
+- **Without SMTP, an invitation is claimed by whoever registers its email address first.** Vaultwarden then records the invitation instead of mailing a token, and registration checks only the address.
 
 ### Configure SMTP
 

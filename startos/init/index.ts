@@ -5,6 +5,7 @@ import { versionGraph } from '../versions'
 import { actions } from '../actions'
 import { restoreInit } from '../backups'
 import { seedFiles } from './seedFiles'
+import { hashAdminToken } from './hashAdminToken'
 import { taskToggleSignups } from './taskToggleSignups'
 import { setup } from './setup'
 import { primaryUrlTask } from './primaryUrlTask'
@@ -15,6 +16,7 @@ export const init = sdk.setupInit(
   restoreInit,
   versionGraph,
   seedFiles,
+  hashAdminToken,
   setInterfaces,
   actions,
   primaryUrlTask,

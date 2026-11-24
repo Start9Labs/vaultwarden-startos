@@ -23,7 +23,7 @@ export const toggleSignups = sdk.Action.withoutInput(
           ),
       warning: allowed
         ? i18n(
-            'New accounts can no longer be created. Existing accounts are unaffected, and invitations from the Admin Portal still work.',
+            "New accounts can no longer be created by signing up. Existing accounts are unaffected. Invitations still let people create accounts, whether sent from the Admin Portal or by any user to an organization or for emergency access; to block new-user invitations from organizations and emergency access, turn off Allow invitations in the Admin Portal's General settings. This does not revoke existing invitations or block Admin Portal invitations. Without SMTP, whoever first registers an invited email address gets that account.",
           )
         : i18n(
             'Anyone with your Vaultwarden URL will be able to create an account on your server, which represents a security risk. Be careful!',

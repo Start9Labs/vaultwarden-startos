@@ -1,8 +1,8 @@
 import { T, utils } from '@start9labs/start-sdk'
-import * as crypto from 'crypto'
 import { sdk } from '../sdk'
 import { configJson } from '../fileModels/config.json'
 import { i18n } from '../i18n'
+import { hashToken } from '../utils'
 
 export const toggleAdminPortal = sdk.Action.withoutInput(
   // id
@@ -27,7 +27,7 @@ export const toggleAdminPortal = sdk.Action.withoutInput(
           ),
       warning: enabled
         ? i18n(
-            'The current admin token stops working. While the portal is off, users can be invited only by turning it back on.',
+            'The current admin token stops working, and the Admin Portal is unreachable until you turn it back on.',
           )
         : i18n(
             'The Admin Portal will be reachable at every address the Web Vault is, protected only by its token.',
@@ -57,7 +57,7 @@ export const rotateAdminToken = sdk.Action.withoutInput(
     name: i18n('Rotate Admin Token'),
     description: i18n('Generate a new token for the Admin Portal, shown once.'),
     warning: i18n(
-      'Replaces the current admin token. The old token stops working, and the new one is shown only once.',
+      'Replaces the current admin token. The old token stops working, and the new one is shown only once. Already signed-in Admin Portal sessions are not revoked; they can still change settings, including the admin token, until they expire (about 20 minutes by default).',
     ),
     allowedStatuses: 'any',
     group: null,
@@ -93,22 +93,4 @@ async function issueAdminToken(effects: T.Effects) {
       type: 'single' as const,
     },
   }
-}
-
-export async function hashToken(effects: T.Effects, token: string) {
-  const salt = crypto.randomBytes(32).toString('base64')
-  const { stdout } = await sdk.SubContainer.withTemp(
-    effects,
-    { imageId: 'argon2' },
-    null,
-    'argon2',
-    (subc) =>
-      subc.execFail(
-        ['argon2', salt, '-e', '-id', '-k', '65540', '-t', '3', '-p', '4'],
-        {
-          input: token,
-        },
-      ),
-  )
-  return String(stdout).trim()
 }

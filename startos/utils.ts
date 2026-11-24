@@ -1,4 +1,6 @@
 import { T } from '@start9labs/start-sdk'
+import * as crypto from 'crypto'
+import { sdk } from './sdk'
 
 export const uiPort = 80
 
@@ -19,4 +21,22 @@ export function smtpConfig(
     smtp_password: smtp?.password ?? undefined,
     smtp_security: smtp?.security === 'tls' ? 'force_tls' : 'starttls',
   } as const
+}
+
+export async function hashToken(effects: T.Effects, token: string) {
+  const salt = crypto.randomBytes(32).toString('base64')
+  const { stdout } = await sdk.SubContainer.withTemp(
+    effects,
+    { imageId: 'argon2' },
+    null,
+    'argon2',
+    (subc) =>
+      subc.execFail(
+        ['argon2', salt, '-e', '-id', '-k', '65540', '-t', '3', '-p', '4'],
+        {
+          input: token,
+        },
+      ),
+  )
+  return String(stdout).trim()
 }
